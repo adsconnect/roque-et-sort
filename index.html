@@ -536,6 +536,45 @@ body{background-color:#22292B;background-image:radial-gradient(120% 70% at 50% 0
 .mode.r.hero b{font-size:17px}
 @media (max-width:380px){.modes{grid-template-columns:1fr}}
 
+/* ===== Panneau compact ===== */
+.phead{display:flex;align-items:center;gap:8px;min-width:0}
+.phead .crest{flex-shrink:0}
+.pname{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pname b{font-family:var(--disp);font-size:15px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pname .tag{align-self:flex-start;font-size:10.5px;padding:1px 7px}
+.mstats{display:grid;grid-template-columns:repeat(4,auto);gap:4px;flex-shrink:0}
+.mstats span{display:flex;flex-direction:column;align-items:center;min-width:38px;padding:2px 4px;border:1.5px solid var(--line);border-radius:8px;background:#fff}
+.mstats i{font-style:normal;font-size:8.5px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.mstats b{font-family:var(--disp);font-size:14px;line-height:1.1;font-variant-numeric:tabular-nums}
+.panel .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.panel .chips::-webkit-scrollbar{display:none}
+.panel .chip{white-space:nowrap;flex-shrink:0}
+.abar{display:grid;grid-template-columns:repeat(auto-fit,minmax(52px,1fr));gap:6px}
+.abtn{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 3px 5px;min-width:0;border:2px solid var(--navy);border-radius:12px;background:#fff;cursor:pointer;
+  box-shadow:0 2px 0 rgba(0,0,0,.22);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.abtn:active:not(.off){transform:translateY(1px);box-shadow:0 1px 0 rgba(0,0,0,.22)}
+.abtn .aic2{width:30px;height:30px;border-radius:8px;border:2px solid var(--navy);background:var(--c);padding:3px;display:block}
+.abtn .aic2 .ic{width:100%;height:100%}
+.abtn .acost{position:absolute;top:-6px;right:-4px;min-width:20px;height:20px;padding:0 4px;display:grid;place-items:center;border:2px solid var(--navy);border-radius:7px;
+  background:linear-gradient(#9AD6D0,var(--elx) 60%,var(--elxD));color:#fff;font-family:var(--disp);font-size:11px;line-height:1}
+.abtn .acost.free{background:linear-gradient(#A8D6B1,var(--grn))}
+.abtn .alab{font-size:10.5px;font-weight:800;line-height:1.15;text-align:center;max-width:100%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--ink)}
+.abtn.ult{background:linear-gradient(#FAF3E2,#EEDDB2);border-color:var(--c)}
+.abtn.off{filter:grayscale(1);opacity:.45;cursor:help}
+.ainfo{margin:0;font-size:12.5px;line-height:1.3;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ainfo b{color:var(--ink)}
+.ainfo .awhy{color:var(--redD);font-weight:800}
+.say.onplate{transform:none;max-width:none;display:flex;align-items:center;padding:4px 10px 4px 44px;border-radius:12px;font-size:12.5px;line-height:1.25;overflow:hidden}
+.say.onplate::before{width:26px;height:26px;margin-top:-13px}
+.panel>*{flex-shrink:0}
+.chips+.abar+.ainfo{-webkit-line-clamp:1}
+.abar:has(.abtn:nth-child(6)) .alab{font-size:9px}
+.abar{grid-template-columns:repeat(auto-fit,minmax(44px,1fr));gap:5px}
+.abtn{padding:5px 2px 4px}
+.abtn .aic2{width:26px;height:26px}
+.abtn .alab{font-size:10px}
+.ainfo{-webkit-line-clamp:2;font-size:12px}
+.panel .chip{font-size:11px;padding:1px 6px}
 /* ===== Adaptation téléphone ===== */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button{touch-action:manipulation}
@@ -549,7 +588,9 @@ input,select,textarea{font-size:16px!important}   /* évite le zoom automatique 
 .stat b{white-space:nowrap}
 .sheet{overscroll-behavior:contain}
 @media (max-width:440px){
-  .app{padding-inline:10px;gap:5px;--bs:max(230px,min(calc(100vw - 38px),calc(100vh - 398px),500px))}
+  .app{padding-inline:10px;gap:5px;--bs:max(230px,min(calc(100vw - 38px),calc(100vh - 404px),500px))}
+  .mstats span{min-width:34px;padding:2px 3px}
+  .abtn .aic2{width:24px;height:24px}
   .top{min-height:30px}
   .top .ghost{padding:4px 8px;font-size:12.5px}
   .side b{font-size:15px}
@@ -1632,9 +1673,15 @@ function showHist(){
   <div class="hist">${rows||`<p class="hint">Rien pour l’instant : la partie n’a pas commencé.</p>`}</div></div>`);
 }
 function showRules(){ ov(`<div class="sheet rulesheet"><div class="hubtop"><h2>Règles</h2><button class="ghost" data-act="${AUTH?"home":"close"}">Retour</button></div>${$("rulesTpl").innerHTML}</div>`); }
-function btn(a,name,cost,desc,dis,extra="",col="",ic=""){
-  const c=cost===0?`<span class="cost free">gratuit</span>`:`<span class="cost">${cost}</span>`;
-  return `<button class="act ${extra}${col?" k":""}${ic?" hasic":""}" data-a="${a}" ${col?`style="--c:${col}"`:""} ${dis?"disabled":""}>${ic?`<span class="aic">${icon(ic)}</span>`:""}<b>${name}</b>${c}<small>${desc}</small></button>`;
+/* bouton d'action compact : icône, coût, nom court. Appui long (ou survol) : description */
+function btn(a,name,cost,desc,dis,extra="",col="",ic="",why=""){
+  return `<button class="abtn ${extra}${dis?" off":""}" data-a="${a}" data-name="${esc(name)}" data-cost="${cost}" data-desc="${esc(desc)}" data-why="${esc(why)}" style="--c:${col||"#5B6785"}" aria-disabled="${dis?"true":"false"}" aria-label="${esc(name)}, ${cost?cost+" mana":"gratuit"}">
+    <span class="aic2">${ic?icon(ic):""}</span><span class="acost${cost===0?" free":""}">${cost===0?"0":cost}</span><span class="alab">${name}</span></button>`;
+}
+function actInfo(b){
+  const I=$("ainfo"); if(!I||!b) return;
+  const off=b.classList.contains("off");
+  I.innerHTML=`<b>${b.dataset.name}</b> (${b.dataset.cost==="0"?"gratuit":b.dataset.cost+" mana"}) : ${b.dataset.desc}${off&&b.dataset.why?` <span class="awhy">${b.dataset.why}</span>`:""}`;
 }
 function renderPanel(play,o){
   const P=$("panel");
@@ -1653,30 +1700,36 @@ function renderPanel(play,o){
     return;
   }
   const master=isMaster(p),c=cls(p.o),C=CL[c];
-  let h=`<div class="ptitle"><span class="crest">${piece(p.t,p.o,master?"m":"",master?`--c:${C.col}`:"",setOf(c))}</span><b>${T[p.t].n} ${SIDE[p.o]}</b>${master?`<span class="tag" style="--c:${C.col}">★ ${C.champ}, ${C.n}</span>`:""}</div>`;
-  h+=`<div class="stats"><div class="stat"><span>PV</span><b>${p.hp}/${p.max}</b></div><div class="stat"><span>Att. ${T[p.t].dt==="mag"?"mag":T[p.t].dt==="hyb"?"hyb":"phy"}</span><b>${Math.round(atkOf(p))}</b></div><div class="stat"><span>Armure</span><b>${armOf(p)}</b></div><div class="stat"><span>RM</span><b>${mrOf(p)}</b></div></div>`;
-  if(p.shield) h+=`<p class="desc">Bouclier : ${p.shield} PV</p>`;
-  h+=`<p class="desc" style="--c:${C.col}">${master&&icOf(c,"passif")?`<span class="dic">${icon(icOf(c,"passif"))}</span>`:""}${master?C.passif:LAMBDA[p.t]}</p>`;
-  const chips=[...Object.keys(p.st).map(k=>{const v=p.st[k];const t=typeof v==="object"?v.t:(v===true?"":v);return `<span class="chip ${NEG.includes(k)?"bad":"good"}">${STI[k]} ${STL[k]}${t?` (${t})`:""}</span>`;}),
-    ...Object.keys(p.bf).map(k=>`<span class="chip good">${BFL[k]} (${p.bf[k]})</span>`)];
+  const dtl=T[p.t].dt==="mag"?"mag":T[p.t].dt==="hyb"?"hyb":"phy";
+  let h=`<div class="phead"><span class="crest">${piece(p.t,p.o,master?"m":"",master?`--c:${C.col}`:"",setOf(c))}</span>
+    <div class="pname"><b>${p.skel?"Squelette":T[p.t].n} ${SIDE[p.o]}</b>${master?`<span class="tag" style="--c:${C.col}">★ ${C.champ}</span>`:""}</div>
+    <div class="mstats"><span><i>PV</i><b>${p.hp}</b></span><span><i>Att ${dtl}</i><b>${Math.round(atkOf(p))}</b></span><span><i>Arm</i><b>${armOf(p)}</b></span><span><i>RM</i><b>${mrOf(p)}</b></span></div></div>`;
+  const chips=[...(p.shield?[`<span class="chip good">Bouclier ${p.shield}</span>`]:[]),
+    ...Object.keys(p.st).map(k=>{const v=p.st[k];const tt=typeof v==="object"?v.t:(v===true?"":v);return `<span class="chip ${NEG.includes(k)?"bad":"good"}">${STI[k]} ${STL[k]}${tt?` (${tt})`:""}</span>`;}),
+    ...Object.keys(p.bf).map(k=>`<span class="chip good">${BFL[k]||k} (${p.bf[k]})</span>`),
+    ...(p.chg?[`<span class="chip bad">⚡ ${p.chg} charge(s)</span>`]:[])];
   if(chips.length) h+=`<div class="chips">${chips.join("")}</div>`;
-  if(p.noAtk) h+=`<p class="hint">Stase arcanique : cette pièce ne peut plus attaquer ce tour.</p>`;
+  let info=master?C.passif:LAMBDA[p.t];
+  if(p.noAtk) info="Stase arcanique : cette pièce ne peut plus attaquer ce tour.";
   if(p.o===S.cur&&myTurn()){
     const pl=S.pl[p.o],m=S.mana,blocked=p.st.silence||p.st.stun;
-    let a="";
-    if(canAct(p)&&p.free) a+=`<p class="hint">Attaque gratuite : touche une case rouge.</p>`;
-    else if(canAct(p)){} else if(p.st.stun) a+=`<p class="hint">Étourdie : elle ne peut rien faire ce tour.</p>`;
-    else a+=`<p class="hint">Cette pièce a déjà agi ce tour.</p>`;
-    a+=`<div class="acts">`;
-    if(c==="gardien"&&!pl.gpass&&p.perm<15) a+=btn("pass","Renforcer (passif)",0,"+5 armure et +5 RM, une fois par tour.",false,"",CL.gardien.col,"shield");
-    a+=btn("prot","Protection",1,"Bloque les nouveaux statuts jusqu’à ton prochain tour.",m<1||p.st.prot,"","#5B6785","shield");
-    if(master) a+=btn("sort",C.sort[0],costOf(c,"sort"),C.sort[1],m<costOf(c,"sort")||blocked||(c==="assassin"&&p.acted&&!p.free)||p.sortUsed,"",C.col,spellIc(c,"sort"));
-    if(p.t!=="Q"&&p.t!=="K") a+=btn("glob",C.glob[0],costOf(c,"glob"),C.glob[1],m<costOf(c,"glob"),"",C.col,spellIc(c,"glob"));
-    if(p.t==="K"||master){const ok=pl.mids.some(id=>{const q=byId(id);return q&&!q.dead;});a+=btn("castle","Roque",3,"Échange le Roi et une pièce maîtresse.",m<3||!ok,"","#5B6785","pc-K");}
-    if(master&&!pl.ult) a+=btn("ult",C.ult[0],4,C.ult[1],m<4||blocked,"ult",C.col,spellIc(c,"ult"));
+    if(canAct(p)&&p.free) info="Attaque gratuite : touche une case rouge.";
+    else if(canAct(p)) info=(master?C.passif:LAMBDA[p.t]);
+    else if(p.st.stun) info="Étourdie : elle ne peut rien faire ce tour.";
+    else info="Cette pièce a déjà agi ce tour.";
+    const noMana=n=>m<n?"Pas assez de mana.":"";
+    let a=`<div class="abar">`;
+    if(c==="gardien"&&!pl.gpass&&p.perm<21) a+=btn("pass","Renforcer",0,"+7 armure et +7 RM à cette pièce, une fois par tour (max +21).",false,"",CL.gardien.col,"shield");
+    a+=btn("prot","Protection",1,"Bloque les nouveaux statuts jusqu’à ton prochain tour.",m<1||p.st.prot,"","#5B6785","shield",p.st.prot?"Déjà protégée.":noMana(1));
+    if(master){const k=costOf(c,"sort"),dis=m<k||blocked||(c==="assassin"&&p.acted&&!p.free)||p.sortUsed;
+      a+=btn("sort",C.sort[0],k,C.sort[1],dis,"",C.col,spellIc(c,"sort"),p.sortUsed?"Déjà lancé ce tour.":blocked?"Pièce étourdie ou réduite au silence.":noMana(k)||"Cette pièce a déjà agi.");}
+    if(p.t!=="Q"&&p.t!=="K"){const k=costOf(c,"glob");a+=btn("glob",C.glob[0],k,C.glob[1],m<k,"",C.col,spellIc(c,"glob"),noMana(k));}
+    if(p.t==="K"||master){const ok=pl.mids.some(id=>{const q=byId(id);return q&&!q.dead;});a+=btn("castle","Roque",3,"Échange le Roi et une pièce maîtresse, où qu’ils soient.",m<3||!ok,"","#5B6785","pc-K",!ok?"Aucune pièce maîtresse en vie.":noMana(3));}
+    if(master&&!pl.ult) a+=btn("ult",C.ult[0],4,C.ult[1],m<4||blocked,"ult",C.col,spellIc(c,"ult"),blocked?"Pièce étourdie ou réduite au silence.":noMana(4));
     a+=`</div>`;
     h+=a;
   }
+  h+=`<p class="ainfo" id="ainfo" style="--c:${C.col}">${master&&icOf(c,"passif")&&info===C.passif?`<span class="dic">${icon(icOf(c,"passif"))}</span>`:""}${info}</p>`;
   P.innerHTML=h;
 }
 
@@ -2046,7 +2099,8 @@ function sayCls(c,o,key,sub,maxWait){
 function bubble(c,o,text){
   const el=$("say"); el.innerHTML=`<b>${CL[c].champ} :</b> « ${text} »`; el.style.setProperty("--c",CL[c].col);
   const bottom=(!!ON.gameId&&ON.side===1)?1:0, box=$(o===bottom?"plateBot":"plateTop").getBoundingClientRect();
-  el.style.top=(o===bottom?Math.max(4,box.top-el.offsetHeight-6):box.bottom+6)+"px";
+  el.classList.add("onplate");
+  el.style.top=box.top+"px"; el.style.left=box.left+"px"; el.style.width=box.width+"px"; el.style.height=Math.max(box.height,40)+"px";
   el.classList.add("show"); clearTimeout(sayT); sayT=setTimeout(()=>el.classList.remove("show"),4200);
 }
 const say=(o,key,sub)=>o!=null&&S.pl[o]&&S.pl[o].cls?sayCls(S.pl[o].cls,o,key,sub):false;
@@ -2152,8 +2206,15 @@ function fillChars(){
 
 /* ---------- branchements ---------- */
 $("board").addEventListener("click",e=>{const c=e.target.closest(".cell");if(c){onCell(+c.dataset.s);commit();}});
+let lpT=null, lpDone=false;
+$("panel").addEventListener("pointerdown",e=>{const b=e.target.closest(".abtn"); if(!b) return; lpDone=false; clearTimeout(lpT); lpT=setTimeout(()=>{lpDone=true; actInfo(b); if(navigator.vibrate) try{navigator.vibrate(15);}catch(_){} },420);});
+["pointerup","pointerleave","pointercancel"].forEach(ev=>$("panel").addEventListener(ev,()=>clearTimeout(lpT)));
+$("panel").addEventListener("mouseover",e=>{const b=e.target.closest(".abtn"); if(b&&e.pointerType!=="touch") actInfo(b);});
+$("panel").addEventListener("contextmenu",e=>{if(e.target.closest(".abtn")) e.preventDefault();});
 $("panel").addEventListener("click",e=>{
   const b=e.target.closest("[data-a]");if(!b||b.disabled)return;
+  if(lpDone){lpDone=false;return;}
+  if(b.classList.contains("off")){actInfo(b);return;}
   if(!myTurn()) return;
   ({prot:actProt,pass:actPass,sort:actSort,glob:actGlob,ult:actUlt,castle:actCastle,cancel:()=>{S.mode=null;render();}})[b.dataset.a]();
   commit();
