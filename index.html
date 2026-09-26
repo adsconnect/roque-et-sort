@@ -535,6 +535,77 @@ body{background-color:#22292B;background-image:radial-gradient(120% 70% at 50% 0
 .mode.r.hero{grid-column:auto;min-height:74px;padding-right:10px}
 .mode.r.hero b{font-size:17px}
 @media (max-width:380px){.modes{grid-template-columns:1fr}}
+
+/* ===== Adaptation téléphone ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button{touch-action:manipulation}
+input,select,textarea{font-size:16px!important}   /* évite le zoom automatique d'iOS sur les champs */
+.acts{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.act{min-width:0;min-height:50px}
+.act b,.act small{overflow:hidden;text-overflow:ellipsis}
+.act b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.stat{min-width:0}
+.stat span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat b{white-space:nowrap}
+.sheet{overscroll-behavior:contain}
+@media (max-width:440px){
+  .app{padding-inline:10px;gap:5px;--bs:max(230px,min(calc(100vw - 38px),calc(100vh - 398px),500px))}
+  .top{min-height:30px}
+  .top .ghost{padding:4px 8px;font-size:12.5px}
+  .side b{font-size:15px}
+  .brandmini{font-size:11px}
+  .plate{padding:3px 7px}
+  .plate .crest,.crest{width:30px;height:30px}
+  .pinfo b{font-size:15px}
+  .pinfo small{font-size:11px}
+  .khp{width:70px;height:18px}
+  .khp span{font-size:12px;line-height:12px}
+  .khp::before{line-height:12px;font-size:11px}
+  .arena{padding:4px}
+  .ctrl{gap:5px}
+  .drop{width:24px;height:24px;font-size:13px}
+  .bar{height:16px}
+  .ctrl .endbtn{font-size:16px;padding:5px}
+  .panel{padding:8px;gap:6px}
+  .ptitle .crest{width:30px;height:30px}
+  .ptitle b{font-size:15px}
+  .tag{font-size:11px;padding:2px 7px}
+  .stats{gap:4px}
+  .stat{padding:2px 3px}
+  .stat span{font-size:8.5px}
+  .stat b{font-size:13px}
+  .desc{font-size:12px}
+  .act{padding:5px 28px 5px 6px}
+  .act.hasic{padding-left:40px}
+  .aic{width:28px;height:28px;left:5px;top:50%;transform:translateY(-50%)}
+  .act .cost{width:22px;height:22px;font-size:12px;right:4px;top:4px}
+  .act b{font-size:13px}
+  .overlay{padding:8px 8px;padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+  .sheet{padding:14px;gap:10px;border-width:2px}
+  .sheet h2{font-size:22px}
+  .brand{font-size:36px}
+  .brand.sm{font-size:22px}
+  .mode{padding:9px 9px 9px 52px;min-height:66px}
+  .mode .mi{width:36px;height:36px}
+  .mode b{font-size:16px}
+  .mode.hero b{font-size:18px}
+  .mode small{font-size:12px}
+  .clsgrid{grid-template-columns:1fr}
+  .clsbtn{min-height:0;padding:9px 9px 9px 54px}
+  .clsbtn .ci{width:38px;height:38px}
+  .char{grid-template-columns:68px 1fr;gap:10px;padding:8px}
+  .pframe{width:68px;height:84px}
+  .ctext>b{font-size:19px}
+  .boss{grid-template-columns:36px 1fr auto;gap:8px;padding:8px}
+  .boss .bn{width:36px;height:40px;font-size:18px}
+  .diff{padding:10px 10px 10px 60px;min-height:64px}
+  .fchip{font-size:12px;padding:3px 8px 3px 5px}
+  .hist div{font-size:13px}
+  .rulesheet p{font-size:13px}
+  .field{flex-wrap:wrap}
+  .field input{flex:1 1 150px}
+}
+@media (max-height:620px){ .app{--bs:max(210px,min(calc(100vw - 38px),calc(100vh - 360px),500px))} .panel{min-height:96px} }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -1583,7 +1654,7 @@ function renderPanel(play,o){
   }
   const master=isMaster(p),c=cls(p.o),C=CL[c];
   let h=`<div class="ptitle"><span class="crest">${piece(p.t,p.o,master?"m":"",master?`--c:${C.col}`:"",setOf(c))}</span><b>${T[p.t].n} ${SIDE[p.o]}</b>${master?`<span class="tag" style="--c:${C.col}">★ ${C.champ}, ${C.n}</span>`:""}</div>`;
-  h+=`<div class="stats"><div class="stat"><span>PV</span><b>${p.hp}/${p.max}</b></div><div class="stat"><span>${T[p.t].dt==="mag"?"Att. mag.":T[p.t].dt==="hyb"?"Att. hyb.":"Att. phys."}</span><b>${Math.round(atkOf(p))}</b></div><div class="stat"><span>Armure</span><b>${armOf(p)}</b></div><div class="stat"><span>RM</span><b>${mrOf(p)}</b></div></div>`;
+  h+=`<div class="stats"><div class="stat"><span>PV</span><b>${p.hp}/${p.max}</b></div><div class="stat"><span>Att. ${T[p.t].dt==="mag"?"mag":T[p.t].dt==="hyb"?"hyb":"phy"}</span><b>${Math.round(atkOf(p))}</b></div><div class="stat"><span>Armure</span><b>${armOf(p)}</b></div><div class="stat"><span>RM</span><b>${mrOf(p)}</b></div></div>`;
   if(p.shield) h+=`<p class="desc">Bouclier : ${p.shield} PV</p>`;
   h+=`<p class="desc" style="--c:${C.col}">${master&&icOf(c,"passif")?`<span class="dic">${icon(icOf(c,"passif"))}</span>`:""}${master?C.passif:LAMBDA[p.t]}</p>`;
   const chips=[...Object.keys(p.st).map(k=>{const v=p.st[k];const t=typeof v==="object"?v.t:(v===true?"":v);return `<span class="chip ${NEG.includes(k)?"bad":"good"}">${STI[k]} ${STL[k]}${t?` (${t})`:""}</span>`;}),
@@ -1740,7 +1811,7 @@ function showHome(){
     <button class="mode b" data-act="vsai"><span class="mi">${piece("N",0)}</span><b>Contre l’ordinateur</b><small>Facile, Normal ou Difficile</small></button>
     <button class="mode g" data-act="online"><span class="mi">${piece("R",0)}</span><b>En ligne</b><small>Défie tes amis</small></button>
     <button class="mode p" data-act="local"><span class="mi">${piece("B",1)}</span><b>Local à deux</b><small>Sur le même écran</small></button>
-    <button class="mode r hero" data-act="chars"><span class="mi">${piece("Q",0)}</span><b>Personnages</b><small>Les 6 champions et les 10 boss, avec leurs portraits</small></button>
+    <button class="mode r hero" data-act="chars"><span class="mi">${piece("Q",0)}</span><b>Personnages</b><small>Tous les champions et les 10 boss, avec leurs portraits</small></button>
   </div><button class="ghost wide" data-act="rules">Règles du jeu</button></div>`);
   fillHome(); muteUI();
 }
