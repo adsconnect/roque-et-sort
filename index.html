@@ -536,6 +536,21 @@ body{background-color:#22292B;background-image:radial-gradient(120% 70% at 50% 0
 .mode.r.hero b{font-size:17px}
 @media (max-width:380px){.modes{grid-template-columns:1fr}}
 
+/* ===== Vue 3D façon arène ===== */
+.stand{position:absolute;inset:0;pointer-events:none;z-index:2}
+.shd{display:none}
+.v3d .arena{perspective:1000px;perspective-origin:50% 0%;overflow:hidden}
+.v3d .board{transform:rotateX(24deg);transform-origin:50% 100%;transform-style:preserve-3d;overflow:visible;border-radius:4px;
+  box-shadow:0 12px 0 #5a3d25,0 12px 0 1px #2F2A25,0 26px 28px rgba(0,0,0,.55)}
+.v3d .cell{transform-style:preserve-3d}
+.v3d .cell:not(.d){background-image:linear-gradient(155deg,rgba(255,255,255,.35),rgba(255,255,255,0) 60%)}
+.v3d .cell.d{background-image:linear-gradient(155deg,rgba(255,255,255,.18),rgba(0,0,0,.08) 70%)}
+.v3d .stand{transform-origin:50% 92%;transform:rotateX(-24deg) translateY(-6%) scale(1.12);transform-style:preserve-3d}
+.v3d .shd{display:block;position:absolute;left:14%;right:14%;bottom:6%;height:26%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.5),transparent);z-index:1}
+.v3d .pc{filter:drop-shadow(0 3px 2px rgba(0,0,0,.35))}
+.v3d .gtile{box-shadow:0 4px 0 rgba(0,0,0,.35),inset 0 2px 0 rgba(255,255,255,.35)}
+.v3d .wall{box-shadow:0 5px 0 rgba(0,0,0,.35),inset 0 3px 0 rgba(255,255,255,.3)}
+.v3d .ring{bottom:4%}
 /* ===== Panneau compact ===== */
 .phead{display:flex;align-items:center;gap:8px;min-width:0}
 .phead .crest{flex-shrink:0}
@@ -871,7 +886,11 @@ const setOf=c=>c&&SETS[c]||"";
 function piece(t,o,extra="",style="",set=""){
   if(set) return `<span class="gtile ${o==null?"":["blue","red"][o]} ${extra}" style="--bg:${SETCOL[set]||"#555"};${style}" aria-hidden="true"><svg class="gi2" viewBox="0 0 512 512"><use href="#gi-${SETSYM[set]||set}-${t}"/></svg></span>`;
   return `<svg class="pc ${o==null?"tint":["blue","red"][o]} ${extra}" viewBox="0 0 100 100" ${style?`style="${style}"`:""} aria-hidden="true"><use href="#pc-${t}"/></svg>`;}
-let SIM=false;            // vrai pendant que l’ordinateur simule des coups
+let SIM=false;
+/* vue 3D du plateau (préférence gardée sur l'appareil) */
+let V3D=true; try{V3D=localStorage.getItem("rs_3d")!=="0";}catch(e){}
+function setV3D(v){V3D=v;try{localStorage.setItem("rs_3d",v?"1":"0");}catch(e){}document.body.classList.toggle("v3d",v);}
+document.body.classList.toggle("v3d",V3D);            // vrai pendant que l’ordinateur simule des coups
 let GM={mode:"local",ai:1,lvl:1,boss:null,tok:0,done:false};
 let AIBUSY=false;
 const $=id=>document.getElementById(id);
@@ -1624,22 +1643,25 @@ function render(){
     let inner="";
     if(i%N===0) inner+=`<span class="co r">${N-R_(s)}</span>`;
     if(Math.floor(i/N)===N-1) inner+=`<span class="co f">${"abcdefghij"[C_(s)]}</span>`;
-    if(w) inner+=`<span class="wall ${SCLS[w.o]} ${w.k||""}"></span>`;
+    let up="";
+    if(w) up+=`<span class="wall ${SCLS[w.o]} ${w.k||""}"></span>`;
     if((S.storms||[]).some(x=>cheb(x.c,s)<=1)) inner+=`<span class="stz"></span>`;
     const tr=(S.traps||[]).find(x=>x.s===s); if(tr&&trapVisible(tr)) inner+=`<span class="trap"></span>`;
     if(p){
       const ratio=p.hp/p.max, m=isMaster(p), col=m?CL[cls(p.o)].col:"";
       const icons=Object.keys(p.st).map(x=>STI[x]).slice(0,3).join("");
       const dim=play&&p.o===S.cur&&p.acted&&!p.free?"dim":"";
+      inner+=`<span class="shd"></span>`;
       if(m) inner+=`<span class="ring" style="--c:${col}"></span>`;
-      inner+=piece(p.bf.beast?"N":p.t,p.o,(m?"m ":"")+dim+(p.skel?" skel":""),m?`--c:${col}`:"",setOf(cls(p.o)));
-      if(p.chg) inner+=`<span class="chg">⚡${p.chg}</span>`;
-      if((S.bombs||[]).some(b=>b.id===p.id)) inner+=`<span class="bomb">💣</span>`;
-      if(m) inner+=`<span class="star">★</span>`;
-      if(icons) inner+=`<span class="sts">${icons}</span>`;
-      inner+=`<span class="hpb ${SCLS[p.o]}"><i style="width:${Math.max(0,ratio*100)}%"></i>${p.shield?`<em style="width:${Math.min(100,p.shield/p.max*100)}%"></em>`:""}</span>`;
+      up+=piece(p.bf.beast?"N":p.t,p.o,(m?"m ":"")+dim+(p.skel?" skel":""),m?`--c:${col}`:"",setOf(cls(p.o)));
+      if(p.chg) up+=`<span class="chg">⚡${p.chg}</span>`;
+      if((S.bombs||[]).some(b=>b.id===p.id)) up+=`<span class="bomb">💣</span>`;
+      if(m) up+=`<span class="star">★</span>`;
+      if(icons) up+=`<span class="sts">${icons}</span>`;
+      up+=`<span class="hpb ${SCLS[p.o]}"><i style="width:${Math.max(0,ratio*100)}%"></i>${p.shield?`<em style="width:${Math.min(100,p.shield/p.max*100)}%"></em>`:""}</span>`;
     }
-    fxs.filter(f=>f.s===s).forEach((f,j)=>{inner+=`<span class="fx ${f.k}" style="margin-top:${j*-16}px">${f.t}</span>`;});
+    fxs.filter(f=>f.s===s).forEach((f,j)=>{up+=`<span class="fx ${f.k}" style="margin-top:${j*-16}px">${f.t}</span>`;});
+    if(up) inner+=`<span class="stand">${up}</span>`;
     const lab=p?`${nm(p)}, ${p.hp} PV`:w?"Mur":"Case vide";
     b+=`<button class="${k}" data-s="${s}" aria-label="${lab}">${inner}</button>`;
   }
@@ -1857,7 +1879,7 @@ function showHome(){
   if(ON.gameId) closeGame();
   ON.screen="home";
   const done=ACC&&ACC.boss||0;
-  ov(`<div class="sheet"><div class="hubtop">${`<p class="brand sm">Roque <span class="amp">&amp;</span> Sort</p>`}<div class="row" style="flex:0 0 auto">${inGame()?`<button class="ghost" data-act="close">Reprendre</button>`:""}<button class="ghost" data-mute data-act="mute">Son</button></div></div>
+  ov(`<div class="sheet"><div class="hubtop">${`<p class="brand sm">Roque <span class="amp">&amp;</span> Sort</p>`}<div class="row" style="flex:0 0 auto">${inGame()?`<button class="ghost" data-act="close">Reprendre</button>`:""}<button class="ghost" data-mute data-act="mute">Son</button><button class="ghost" data-act="v3d">${V3D?"Vue 2D":"Vue 3D"}</button></div></div>
   <div class="pcard"><span class="crest">${piece("K",0)}</span><div class="pinfo"><b id="homeName"></b><small>Campagne : ${done}/10 boss vaincus</small></div><button class="link" data-act="profile">Profil</button></div>
   <div class="modes">
     <button class="mode hero y" data-act="campaign"><span class="mi">${piece("K",1)}</span><b>Campagne des 10 boss</b><small>${done>=10?"Terminée. Tu peux rejouer chaque boss.":`Prochain adversaire : ${esc(BOSSES[done].n)}, ${esc(BOSSES[done].t)}`}</small><span class="prog">${done}/10</span></button>
@@ -2232,7 +2254,7 @@ $("overlay").addEventListener("click",e=>{
     ai:need(()=>startGame({mode:"ai",lvl:+id})),boss:need(()=>startGame({mode:"ai",boss:+id})),
     local:need(()=>startGame({mode:"local"})),again:need(replay),
     online:need(goOnline),hub:need(showHub),chars:need(showChars),ctab:()=>{charTab=id;fillChars();},cfilt:()=>{clsFilter=id; if(ON.screen==="chars") fillChars(); else showSetup(true);},
-    pic:()=>pickPortrait(id),unpic:()=>removePortrait(id),mute:()=>setMute(!MUTED),rules:showRules,
+    pic:()=>pickPortrait(id),unpic:()=>removePortrait(id),mute:()=>setMute(!MUTED),v3d:()=>{setV3D(!V3D);showHome();},rules:showRules,
     addfriend:addFriend,open:()=>openGame(id),accept:()=>acceptGame(id),challenge:()=>challenge(id),
     delgame:()=>{if(a.dataset.sure){dbw(ON.db.doc("games/"+id).delete());}else{a.dataset.sure="1";a.textContent="Confirmer";}},
     acceptfriend:()=>dbw(ON.db.doc("friends/"+id).update({status:"accepted"}),"Ami ajouté"),
