@@ -753,9 +753,9 @@ const T = {
 const LAMBDA = {
   P:"Soldat de base.",
   R:"Tank : beaucoup de PV et d’armure. Dégâts hybrides.",
-  B:"Dégâts magiques, frappe de loin en diagonale.",
+  B:"Dégâts magiques, et 15 % des dégâts sur les ennemis autour de la cible.",
   N:"Saute par-dessus les pièces et frappe depuis sa case.",
-  Q:"La pièce la plus mobile, mais fragile.",
+  Q:"La pièce la plus mobile. Si elle tue, elle peut réattaquer gratuitement. Fragile.",
   K:"Tour de contrôle aux défenses élevées. S’il tombe, la partie est perdue."
 };
 const CL = {
@@ -1118,11 +1118,13 @@ function doAttack(p,a,opts={}){
     if(p.bf.dagger&&addSt(tgt,"bleed",2,8)) log(`${nm(tgt)} saigne (Dague)`);
   }
   if(p.bf.light&&!tgt.dead&&!p.dead) hit(p,tgt,10,"mag");
+  if(p.t==="B"&&!master) adjSq(tsq).forEach(s=>{const q=S.board[s];if(q&&q.o!==p.o) hit(p,q,raw*0.15,"mag");});
   if(p.bf.frost){ if(!tgt.dead) addSt(tgt,"slow",1); adjSq(tsq).forEach(s=>{const q=S.board[s];if(q&&q.o!==p.o) addSt(q,"slow",1);}); }
   if(killed&&!p.st.root&&!p.dead&&!S.board[tsq]) moveTo(p,tsq);
   S.last=[from,tsq];
   p.acted=true;
   if(killed&&!p.dead){
+    if(p.t==="Q"&&!master&&!p.bf.blood){p.free=true;voice("combo");log(`La Dame ${SIDE[p.o]} peut réattaquer`);}
     if(p.bf.blood){heal(p,15);p.free=true;voice("combo");log(`${nm(p)} a soif : elle réattaque`);}
     if(chain){S.chain.n++; if(S.chain.n<3){p.free=true;voice("combo");log(`Exécution orchestrée : attaque ${S.chain.n+1}`);} else S.chain=null;}
   } else if(chain) S.chain=null;
