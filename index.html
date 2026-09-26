@@ -1,0 +1,2142 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Roque &amp; Sort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* Style arène mobile : couleurs vives, contours épais, boutons en relief. Une seule ambiance, couleurs explicites. */
+:root{
+  color-scheme:light;
+  --navy:#1B2340; --ink:#1B2340; --muted:#5B6785;
+  --card:#F4F7FF; --card2:#DDE7F8; --line:#B9C7E3;
+  --yel:#FFCC33; --yelD:#D99A00; --grn:#4CD964; --grnD:#2A9C44; --pur:#B85CFF; --purD:#7A2FC0;
+  --blue:#3FA3FF; --blueD:#1C63C9; --red:#FF5A5F; --redD:#C22F3A;
+  --elx:#D63CF2; --elxD:#8E1BB0;
+  --g1:#9ED863; --g2:#85C44B; --wood:#A8692F; --woodD:#6E3F17;
+  --ol:-2px -2px 0 var(--navy),2px -2px 0 var(--navy),-2px 2px 0 var(--navy),2px 2px 0 var(--navy),0 3px 0 var(--navy);
+  --ols:-1.5px -1.5px 0 var(--navy),1.5px -1.5px 0 var(--navy),-1.5px 1.5px 0 var(--navy),1.5px 1.5px 0 var(--navy),0 2px 0 var(--navy);
+  --disp:'Lilita One','Arial Black',Impact,sans-serif;
+  --body:'Nunito','Segoe UI',system-ui,sans-serif;
+}
+html{height:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100%;color:var(--ink);font-family:var(--body);font-weight:700;font-size:15px;line-height:1.35;-webkit-tap-highlight-color:transparent;
+  background-color:#2F7BE0;
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 14px,transparent 14px 28px),linear-gradient(180deg,#5BB8FF 0%,#2F7BE0 42%,#1B4BA3 100%);
+  background-repeat:no-repeat;background-size:100% 100%;background-attachment:scroll}
+button,input{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+.app{max-width:540px;margin:0 auto;padding-inline:16px;padding-block:10px 30px;display:flex;flex-direction:column;gap:9px}
+
+/* boutons en relief */
+.btn,.primary,.ghost,.endbtn,.mini{font-family:var(--disp);font-weight:400;letter-spacing:.02em;border:3px solid var(--navy);border-radius:12px;cursor:pointer;
+  box-shadow:inset 0 -5px 0 rgba(0,0,0,.18),inset 0 3px 0 rgba(255,255,255,.35),0 4px 0 var(--navy);transition:transform .06s,box-shadow .06s}
+.btn:active,.primary:active,.ghost:active,.endbtn:active,.mini:active{transform:translateY(3px);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18),0 1px 0 var(--navy)}
+.primary,.endbtn{background:linear-gradient(#FFE07A,var(--yel) 55%,#F5B400);color:#fff;text-shadow:var(--ol);font-size:18px;padding:10px 22px}
+.endbtn{font-size:16px;padding:8px 14px;white-space:nowrap}
+.ghost{background:linear-gradient(#FFFFFF,var(--card2));color:var(--navy);padding:8px 14px;font-size:15px}
+.mini{background:linear-gradient(#FFFFFF,var(--card2));color:var(--navy);padding:6px 11px;font-size:14px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.15),0 3px 0 var(--navy)}
+.mini.primary{background:linear-gradient(#FFE07A,var(--yel) 55%,#F5B400);color:#fff;text-shadow:var(--ols)}
+.mini:disabled{filter:grayscale(1);opacity:.6;cursor:not-allowed}
+.btn.blue{background:linear-gradient(#7CC4FF,var(--blue) 55%,var(--blueD));color:#fff;text-shadow:var(--ols);padding:8px 14px;font-size:16px}
+
+/* barre du haut */
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.side{display:flex;flex-direction:column;min-width:0}
+.brandmini{font-family:var(--disp);color:var(--yel);font-size:16px;text-shadow:var(--ols);line-height:1.1}
+.side b{font-family:var(--disp);font-weight:400;font-size:21px;color:#fff;text-shadow:var(--ol);line-height:1.15}
+.topr{display:flex;gap:8px;align-items:center}
+
+/* bannières de joueur */
+.plate{border:3px solid var(--navy);border-radius:16px;padding:7px 9px;box-shadow:inset 0 -5px 0 rgba(0,0,0,.15),inset 0 3px 0 rgba(255,255,255,.3),0 4px 0 var(--navy);color:#fff}
+.plate.blue{background:linear-gradient(#6DBBFF,var(--blue) 50%,var(--blueD))}
+.plate.red{background:linear-gradient(#FF9296,var(--red) 50%,var(--redD))}
+.plate.on{outline:4px solid var(--yel);outline-offset:1px}
+.prow{display:flex;align-items:center;gap:9px}
+.crest{position:relative;width:40px;height:40px;flex-shrink:0;border-radius:12px;border:3px solid var(--navy);background:linear-gradient(#FFFFFF,var(--card2));box-shadow:0 3px 0 var(--navy)}
+.crest .pc{left:8%;top:6%;width:84%;height:84%}
+.pinfo{flex:1;min-width:0;display:flex;flex-direction:column}
+.pinfo b{font-family:var(--disp);font-weight:400;font-size:18px;text-shadow:var(--ols);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.15}
+.pinfo small{font-size:12.5px;font-weight:800;opacity:.95;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 0 rgba(0,0,0,.35)}
+.think{color:var(--yel)}
+@media (prefers-reduced-motion:no-preference){.think{animation:blink .8s ease-in-out infinite alternate}@keyframes blink{from{opacity:.35}to{opacity:1}}}
+.khp{position:relative;width:92px;height:22px;flex-shrink:0;border:3px solid var(--navy);border-radius:8px;background:#2A3358;overflow:hidden}
+.khp i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#9CF07A,#43B53A)}
+.khp span{position:relative;z-index:1;display:block;text-align:center;font-family:var(--disp);font-size:14px;line-height:16px;color:#fff;text-shadow:var(--ols)}
+.khp::before{content:'♚\FE0E';position:absolute;left:3px;top:0;z-index:2;font-size:13px;line-height:16px;color:var(--yel);text-shadow:var(--ols)}
+.elx{display:flex;align-items:center;gap:7px;margin-top:7px}
+.drop{width:30px;height:30px;flex-shrink:0;display:grid;place-items:center;border:3px solid var(--navy);border-radius:50% 50% 50% 50%/58% 58% 42% 42%;
+  background:radial-gradient(circle at 35% 30%,#F9B8FF,var(--elx) 50%,var(--elxD));font-family:var(--disp);font-size:16px;color:#fff;text-shadow:var(--ols)}
+.bar{flex:1;display:grid;grid-template-columns:repeat(var(--n),1fr);gap:3px;padding:3px;height:22px;border:3px solid var(--navy);border-radius:9px;background:#2A2046}
+.seg{border-radius:4px;background:#4A3A6E}
+.seg.on{background:linear-gradient(#F7B2FF,var(--elx) 55%,#A221C8);box-shadow:inset 0 2px 0 rgba(255,255,255,.4)}
+.seg.lock{background:#241C3C;opacity:.45}
+
+/* arène */
+.arena{padding:7px;border:3px solid var(--navy);border-radius:16px;background:linear-gradient(var(--wood),var(--woodD));box-shadow:inset 0 3px 0 rgba(255,255,255,.25),0 5px 0 var(--navy)}
+.board{display:grid;grid-template-columns:repeat(10,1fr);width:100%;max-width:100%;aspect-ratio:1;border:3px solid var(--navy);border-radius:8px;overflow:hidden;touch-action:manipulation;background:var(--g1)}
+.cell{position:relative;border:0;margin:0;padding:0;background:var(--g1);cursor:pointer;aspect-ratio:1;min-width:0}
+.cell.d{background:var(--g2)}
+.cell::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:4}
+.co{position:absolute;font-family:var(--disp);font-size:10px;line-height:1;color:#fff;text-shadow:var(--ols);pointer-events:none;z-index:1;opacity:.85}
+.co.r{top:2px;left:3px} .co.f{bottom:1px;right:3px}
+.cell.lm{background-image:linear-gradient(rgba(255,230,90,.45),rgba(255,230,90,.45))}
+.pc{position:absolute;left:10%;top:3%;width:80%;height:80%;overflow:visible;stroke:var(--navy);stroke-width:5;stroke-linejoin:round;stroke-linecap:round;z-index:2;
+  filter:drop-shadow(0 3px 0 rgba(0,0,0,.28))}
+.pc.blue{fill:url(#gB)} .pc.red{fill:url(#gR)} .pc.tint{fill:var(--c)}
+.pc.m{filter:drop-shadow(0 0 3px var(--c)) drop-shadow(0 0 2px var(--c)) drop-shadow(0 3px 0 rgba(0,0,0,.28))}
+.pc.dim{filter:grayscale(.75) brightness(.85) drop-shadow(0 2px 0 rgba(0,0,0,.2))}
+.ring{position:absolute;left:12%;right:12%;bottom:6%;height:24%;border-radius:50%;background:var(--c);border:2px solid var(--navy);opacity:.9;z-index:1}
+.star{position:absolute;top:1px;right:2px;font-size:11px;line-height:1;z-index:3;color:var(--yel);text-shadow:var(--ols)}
+.hpb{position:absolute;left:12%;right:12%;bottom:3%;height:6px;border:1.5px solid var(--navy);background:#2A3358;border-radius:3px;overflow:hidden;z-index:3}
+.hpb i{display:block;height:100%}
+.hpb.blue i{background:#5FB8FF} .hpb.red i{background:#FF6B70}
+.hpb em{position:absolute;right:0;top:0;height:100%;background:#fff}
+.sts{position:absolute;top:1px;left:1px;display:flex;gap:1px;font-size:9px;line-height:1;z-index:3}
+.wall{position:absolute;inset:5%;border:2.5px solid var(--navy);border-radius:5px;z-index:1;
+  background:linear-gradient(#B7A48A,#8A7659);box-shadow:inset 0 -4px 0 rgba(0,0,0,.2),inset 0 3px 0 rgba(255,255,255,.3)}
+.wall::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 48%,rgba(27,35,64,.45) 48% 54%,transparent 54%),linear-gradient(transparent 47%,rgba(27,35,64,.45) 47% 53%,transparent 53%)}
+.wall.blue{border-bottom:4px solid var(--blue)} .wall.red{border-bottom:4px solid var(--red)}
+.cell.sel::after{box-shadow:inset 0 0 0 3px var(--navy),inset 0 0 0 6px var(--yel)}
+.cell.mv::before{content:'';position:absolute;left:36%;top:36%;width:28%;height:28%;border-radius:50%;background:#fff;border:2.5px solid var(--navy);z-index:3;opacity:.9}
+.cell.at::after{box-shadow:inset 0 0 0 4px var(--red);background:rgba(255,70,80,.25)}
+.cell.tg::after{box-shadow:inset 0 0 0 4px var(--yel);background:rgba(255,215,60,.28)}
+.fx{position:absolute;left:50%;top:10%;transform:translate(-50%,0);z-index:6;font-family:var(--disp);font-size:17px;white-space:nowrap;pointer-events:none;color:#fff;text-shadow:var(--ol)}
+.fx.dmg{color:#FFD0D2} .fx.mag{color:#E8B8FF} .fx.heal{color:#9DF5A8} .fx.crit{color:var(--yel);font-size:22px} .fx.info{font-size:13px}
+@media (prefers-reduced-motion:no-preference){
+  .cell.tg::after{animation:pulse .9s ease-in-out infinite alternate}
+  @keyframes pulse{from{background:rgba(255,215,60,.12)}to{background:rgba(255,215,60,.4)}}
+  .fx{animation:pop 1.2s ease-out forwards}
+  @keyframes pop{0%{opacity:0;transform:translate(-50%,8px) scale(.5)}18%{opacity:1;transform:translate(-50%,-4px) scale(1.25)}35%{transform:translate(-50%,-6px) scale(1)}100%{opacity:0;transform:translate(-50%,-28px) scale(1)}}
+}
+
+/* panneau d'action */
+.panel{background:var(--card);border:3px solid var(--navy);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;box-shadow:inset 0 -5px 0 rgba(0,0,0,.07),0 5px 0 var(--navy)}
+.hint{color:var(--muted);margin:0}
+.ptitle{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ptitle .crest{width:46px;height:46px}
+.ptitle b{font-family:var(--disp);font-weight:400;font-size:21px;color:var(--navy)}
+.tag{font-size:12px;padding:3px 9px;border-radius:20px;border:2.5px solid var(--navy);background:var(--c);color:#fff;text-shadow:var(--ols);font-weight:900}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.stat{background:#fff;border:2.5px solid var(--navy);border-radius:10px;padding:4px 6px;text-align:center;display:flex;flex-direction:column}
+.stat span{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.stat b{font-family:var(--disp);font-weight:400;font-size:17px;font-variant-numeric:tabular-nums}
+@media (max-width:380px){.stats{grid-template-columns:repeat(2,1fr)}}
+.desc{margin:0;font-size:14px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;padding:3px 8px;border-radius:8px;background:#fff;border:2px solid var(--line);font-weight:800}
+.chip.bad{border-color:var(--red)} .chip.good{border-color:var(--grn)}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:420px){.acts{grid-template-columns:1fr}}
+.act{position:relative;display:flex;flex-direction:column;gap:2px;text-align:left;border:3px solid var(--navy);background:#fff;border-radius:12px;padding:9px 46px 10px 11px;cursor:pointer;
+  box-shadow:inset 0 -4px 0 rgba(0,0,0,.08),0 4px 0 var(--navy)}
+.act:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--navy)}
+.act b{font-family:var(--disp);font-weight:400;font-size:16px;color:var(--navy)}
+.act small{color:var(--muted);font-size:12.5px;line-height:1.3}
+.act .cost{position:absolute;right:8px;top:8px;width:30px;height:30px;display:grid;place-items:center;border:2.5px solid var(--navy);border-radius:50% 50% 50% 50%/58% 58% 42% 42%;
+  background:radial-gradient(circle at 35% 30%,#F9B8FF,var(--elx) 50%,var(--elxD));font-family:var(--disp);font-size:15px;color:#fff;text-shadow:var(--ols)}
+.act .cost.free{background:radial-gradient(circle at 35% 30%,#C7FFB8,var(--grn) 50%,var(--grnD));font-size:10px}
+.act.k{border-left-width:8px;border-left-color:var(--c)}
+.act.ult{background:linear-gradient(#FFF6D6,#FFE38A)}
+.champ{font-weight:900;color:var(--c)}
+.act:disabled{filter:grayscale(1);opacity:.5;cursor:not-allowed}
+.modebar{display:flex;justify-content:space-between;align-items:center;gap:8px}
+
+.log{font-size:13px;color:#fff;display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:12px;background:rgba(27,35,64,.35);text-shadow:0 1px 0 rgba(0,0,0,.4)}
+.log:empty{display:none}
+.log div{opacity:.8} .log div:first-child{opacity:1}
+.rules{background:var(--card);border:3px solid var(--navy);border-radius:16px;padding:10px 12px;box-shadow:0 5px 0 var(--navy)}
+.rules summary{cursor:pointer;font-family:var(--disp);font-size:17px}
+.rules p{margin:8px 0 0;font-size:14px;color:var(--muted);max-width:68ch;font-weight:600}
+.rules b{color:var(--ink);font-weight:900}
+
+/* écrans */
+.overlay{position:fixed;inset:0;z-index:20;background:rgba(10,20,50,.6);display:flex;align-items:center;justify-content:center;
+  padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));overflow-y:auto}
+.overlay[hidden]{display:none}
+.sheet{background:var(--card);border:4px solid var(--navy);border-radius:22px;padding:18px;width:100%;max-width:520px;max-height:100%;overflow-y:auto;
+  box-shadow:inset 0 -6px 0 rgba(0,0,0,.07),0 8px 0 var(--navy),0 20px 40px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:12px}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:bounce .28s ease-out}@keyframes bounce{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}}
+.sheet.center{text-align:center;align-items:center}
+.sheet h2{margin:0;font-family:var(--disp);font-weight:400;font-size:26px;color:#fff;text-shadow:var(--ol);text-wrap:balance}
+.sheet h2.blue{color:#8ACBFF} .sheet h2.red{color:#FF9EA1}
+.sub{margin:0;color:var(--muted);font-size:15px}
+.sub b{color:var(--ink)}
+.brand{font-family:var(--disp);font-size:46px;line-height:.95;margin:4px 0 0;color:var(--yel);text-shadow:-3px -3px 0 var(--navy),3px -3px 0 var(--navy),-3px 3px 0 var(--navy),3px 3px 0 var(--navy),0 6px 0 var(--navy);transform:rotate(-2deg)}
+.brand .amp{color:#fff}
+.brand.sm{font-size:26px;margin:0;transform:none;text-shadow:var(--ol)}
+.eyebrow{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:900;margin:0}
+.wide{width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1}
+.big{font-family:var(--disp);font-size:36px;margin:0;color:#fff;text-shadow:var(--ol)}
+.big.blue{color:#8ACBFF} .big.red{color:#FF9EA1} .big.gold{color:var(--yel)}
+.link{border:0;background:none;color:var(--blueD);padding:0;cursor:pointer;text-decoration:underline;font-size:inherit;font-weight:900}
+
+.form{display:flex;flex-direction:column;gap:12px;text-align:left}
+.fl{display:flex;flex-direction:column;gap:5px}
+.fl label{font-size:13px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.fl input{width:100%;padding:11px 12px;border-radius:12px;border:3px solid var(--navy);background:#fff;font-weight:800;box-shadow:inset 0 3px 0 rgba(0,0,0,.06)}
+.fine{font-size:13px;color:var(--muted);margin:0;font-weight:600}
+
+.pcard{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;border:3px solid var(--navy);background:linear-gradient(#6DBBFF,var(--blue) 50%,var(--blueD));color:#fff;box-shadow:0 4px 0 var(--navy)}
+.pcard .crest{width:48px;height:48px}
+.pcard .pinfo b{font-size:20px}
+.pcard .link{color:#fff;text-shadow:var(--ols)}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:3px solid var(--navy);border-radius:16px;padding:12px 12px 12px 70px;min-height:78px;cursor:pointer;color:#fff;
+  box-shadow:inset 0 -6px 0 rgba(0,0,0,.18),inset 0 3px 0 rgba(255,255,255,.35),0 5px 0 var(--navy)}
+.mode:active{transform:translateY(3px);box-shadow:0 2px 0 var(--navy)}
+.mode .mi{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:50px;height:50px}
+.mode .mi .pc{left:0;top:0;width:100%;height:100%}
+.mode b{font-family:var(--disp);font-weight:400;font-size:19px;text-shadow:var(--ols);line-height:1.1}
+.mode small{font-size:12.5px;font-weight:800;text-shadow:0 1px 0 rgba(0,0,0,.35)}
+.mode.y{background:linear-gradient(#FFE07A,var(--yel) 55%,#F0A800)}
+.mode.b{background:linear-gradient(#7CC4FF,var(--blue) 55%,var(--blueD))}
+.mode.g{background:linear-gradient(#8BF08F,var(--grn) 55%,var(--grnD))}
+.mode.p{background:linear-gradient(#D8A2FF,var(--pur) 55%,var(--purD))}
+.mode.hero{grid-column:1/-1;min-height:96px}
+.mode.hero b{font-size:23px}
+.mode .prog{position:absolute;right:12px;top:10px;font-family:var(--disp);font-size:22px;text-shadow:var(--ol)}
+@media (max-width:380px){.modes{grid-template-columns:1fr}}
+
+.clsgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.clsbtn{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;border:3px solid var(--navy);background:#fff;border-radius:14px;padding:10px 10px 10px 58px;min-height:88px;cursor:pointer;box-shadow:0 4px 0 var(--navy)}
+.clsbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--navy)}
+.clsbtn .ci{position:absolute;left:8px;top:10px;width:42px;height:42px;border-radius:12px;border:3px solid var(--navy);background:var(--c)}
+.clsbtn .ci .pc{left:8%;top:6%;width:84%;height:84%}
+.clsbtn b{font-family:var(--disp);font-weight:400;font-size:17px}
+.clsbtn .cp{font-size:12px;color:var(--c);font-weight:900;filter:brightness(.8)}
+.clsbtn .cd{font-size:12px;color:var(--muted);font-weight:600}
+@media (max-width:380px){.clsgrid{grid-template-columns:1fr}}
+
+.bosses{display:flex;flex-direction:column;gap:8px}
+.boss{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;padding:9px 10px;border-radius:14px;background:#fff;border:3px solid var(--navy);box-shadow:0 4px 0 var(--navy)}
+.boss.cur{background:linear-gradient(#FFF8DC,#FFE9A0)}
+.boss.lock{filter:grayscale(1);opacity:.55}
+.boss .bn{width:40px;height:44px;display:grid;place-items:center;font-family:var(--disp);font-size:20px;color:#fff;text-shadow:var(--ols);
+  background:linear-gradient(#FF9296,var(--red) 50%,var(--redD));border:3px solid var(--navy);border-radius:10px 10px 50% 50%}
+.boss.won .bn{background:linear-gradient(#8BF08F,var(--grn) 55%,var(--grnD))}
+.boss .bt{min-width:0;display:flex;flex-direction:column}
+.boss .bt b{font-family:var(--disp);font-weight:400;font-size:17px}
+.boss .bt small{color:var(--muted);font-size:12.5px;font-weight:700}
+.boss .bt .cl{font-weight:900;color:var(--c);filter:brightness(.8)}
+.boss .won{color:var(--grnD);font-weight:900;font-size:12px}
+.lvl{display:inline-flex;gap:2px;vertical-align:-1px;margin-left:4px}
+.lvl i{font-style:normal;font-size:12px;color:#C9D2E6;text-shadow:0 1px 0 var(--navy)}
+.lvl i.on{color:var(--yel)}
+.diffs{display:flex;flex-direction:column;gap:10px}
+.diff{position:relative;display:flex;flex-direction:column;text-align:left;border:3px solid var(--navy);border-radius:16px;padding:12px 12px 12px 70px;min-height:74px;justify-content:center;color:#fff;cursor:pointer;
+  box-shadow:inset 0 -6px 0 rgba(0,0,0,.18),inset 0 3px 0 rgba(255,255,255,.35),0 5px 0 var(--navy)}
+.diff:active{transform:translateY(3px);box-shadow:0 2px 0 var(--navy)}
+.diff .mi{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:48px;height:48px}
+.diff .mi .pc{left:0;top:0;width:100%;height:100%}
+.diff b{font-family:var(--disp);font-weight:400;font-size:20px;text-shadow:var(--ols)}
+.diff small{font-size:13px;font-weight:800;text-shadow:0 1px 0 rgba(0,0,0,.35)}
+.diff.d0{background:linear-gradient(#8BF08F,var(--grn) 55%,var(--grnD))}
+.diff.d1{background:linear-gradient(#FFE07A,var(--yel) 55%,#F0A800)}
+.diff.d2{background:linear-gradient(#FF9296,var(--red) 55%,var(--redD))}
+
+.hub h3{margin:6px 0 0;font-family:var(--disp);font-weight:400;font-size:20px}
+.hubtop{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.field{display:flex;gap:6px}
+.field input{flex:1;min-width:0;padding:10px;border-radius:12px;border:3px solid var(--navy);background:#fff;font-weight:800}
+.field .primary{padding:8px 14px;font-size:16px}
+.rowi{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:2px dashed var(--line)}
+.rt{flex:1;min-width:0;display:flex;flex-direction:column}
+.rt b{overflow:hidden;text-overflow:ellipsis;font-weight:900}
+.rt small{color:var(--muted)} .rt small.hot{color:var(--redD);font-weight:900}
+.rb{display:flex;gap:6px;flex-shrink:0}
+.dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:2px solid var(--navy)} .dot.blue{background:var(--blue)} .dot.red{background:var(--red)}
+
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:#fff;border:3px solid var(--yel);
+  padding:9px 16px;border-radius:12px;font-size:15px;font-weight:900;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+/* écran fixe : le plateau ne bouge jamais, seule la zone d'actions défile */
+html,body{height:100%}
+body{overflow:hidden;overscroll-behavior:none}
+.app{height:100%;padding-block:8px 10px;gap:7px;overflow-y:auto;
+  --bs:max(220px,min(calc(100vw - 52px),calc(100vh - 470px),500px))}
+@supports (height:100dvh){.app{--bs:max(220px,min(calc(100vw - 52px),calc(100dvh - 470px),500px))}}
+.app>*{flex:none}
+.top .ghost{padding:6px 10px;font-size:14px}
+.side b{font-size:19px}
+.plate{padding:5px 8px}
+.plate .crest{width:36px;height:36px}
+.arena{align-self:center;width:calc(var(--bs) + 20px);max-width:100%}
+.ctrl{display:flex;flex-direction:column;gap:7px}
+.ctrl .elx{margin-top:0}
+.ctrl .endbtn{width:100%;font-size:19px;padding:9px}
+.endbtn:disabled{filter:grayscale(1);opacity:.55;cursor:default}
+.panel{flex:1 1 auto!important;min-height:120px;overflow-y:auto;overscroll-behavior:contain}
+.toast{bottom:auto;top:calc(12px + env(safe-area-inset-top,0px))}
+.hist{display:flex;flex-direction:column;gap:3px;max-height:62vh;overflow-y:auto;overscroll-behavior:contain}
+.hist div{padding:5px 9px;border-radius:8px;font-size:14px;font-weight:700;background:#fff;border:2px solid var(--line)}
+.hist .turn{margin-top:8px;font-family:var(--disp);font-weight:400;font-size:16px;color:#fff;text-shadow:var(--ols);border-color:var(--navy);background:linear-gradient(#7CC4FF,var(--blue) 55%,var(--blueD))}
+.hist .turn.r{background:linear-gradient(#FF9296,var(--red) 55%,var(--redD))}
+.hist .kill{border-color:var(--red);color:var(--redD)}
+.hist .ult{border-color:var(--pur);color:var(--purD)}
+.hist .heal{border-color:var(--grn);color:var(--grnD)}
+.rulesheet p{margin:0;font-size:14px;color:var(--muted);font-weight:600}
+.rulesheet b{color:var(--ink);font-weight:900}
+.pcic{fill:#fff;stroke:var(--navy);stroke-width:6}
+/* compact téléphone : tout visible sans défiler */
+.app{gap:6px;padding-block:6px 8px;--bs:max(220px,min(calc(100vw - 52px),calc(100vh - 430px),500px))}
+@supports (height:100dvh){.app{--bs:max(220px,min(calc(100vw - 52px),calc(100dvh - 430px),500px))}}
+.top{min-height:34px}
+.brandmini{font-size:12px}
+.side b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side{flex:1}
+.topr{gap:5px;flex-shrink:0}
+.top .ghost{padding:5px 8px;font-size:13px;border-width:2.5px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.15),0 3px 0 var(--navy)}
+.plate{padding:4px 8px;border-radius:14px}
+.plate .crest{width:32px;height:32px;border-radius:10px;border-width:2.5px}
+.pinfo b{font-size:16px}
+.pinfo small{font-size:11.5px}
+.khp{width:80px;height:20px}
+.khp span{font-size:13px;line-height:14px}
+.khp::before{line-height:14px}
+.arena{padding:5px;border-radius:14px}
+.ctrl{gap:6px}
+.drop{width:26px;height:26px;font-size:14px}
+.bar{height:18px}
+.ctrl .endbtn{font-size:17px;padding:6px}
+.panel{padding:9px;gap:7px;border-radius:14px}
+.ptitle{gap:8px}
+.ptitle .crest{width:34px;height:34px}
+.ptitle b{font-size:17px}
+.stats{gap:5px}
+.stat{padding:2px 4px;border-width:2px;border-radius:8px;flex-direction:row;justify-content:center;align-items:baseline;gap:4px}
+.stat span{font-size:9.5px}
+.stat b{font-size:14px}
+@media (max-width:380px){.stats{grid-template-columns:repeat(4,1fr)}.stat span{font-size:8.5px}}
+.desc{font-size:12.5px;line-height:1.3}
+.hint{font-size:13px}
+.acts{grid-template-columns:1fr 1fr!important;gap:6px}
+.act{padding:6px 32px 6px 8px;border-width:2.5px;border-radius:10px;box-shadow:0 3px 0 var(--navy)}
+.act.hasic{padding-left:44px}
+.aic{left:6px;top:6px;width:32px;height:32px;border-width:2px;border-radius:8px;padding:3px}
+.act b{font-size:14px;line-height:1.15}
+.act small{font-size:11px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.act .cost{right:5px;top:5px;width:24px;height:24px;font-size:13px;border-width:2px}
+.act.k{border-left-width:6px}
+.chips{gap:4px}
+.chip{font-size:11px;padding:2px 6px}
+@media (max-width:480px){
+  .act small{-webkit-line-clamp:1}
+  .desc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+}
+/* bulle de dialogue des champions */
+.say{position:fixed;z-index:15;left:50%;transform:translateX(-50%);max-width:min(92vw,480px);padding:8px 12px 8px 44px;border:3px solid var(--navy);border-radius:14px;
+  background:#fff;color:var(--ink);font-weight:800;font-size:14px;line-height:1.3;box-shadow:0 4px 0 var(--navy);pointer-events:none;opacity:0;transition:opacity .2s}
+.say.show{opacity:1}
+.say::before{content:'';position:absolute;left:8px;top:50%;width:28px;height:28px;margin-top:-14px;border-radius:8px;border:2px solid var(--navy);background:var(--c)}
+.say b{color:var(--c);filter:brightness(.8)}
+/* pièces d'un champion : couleurs d'origine des fichiers, camp indiqué par le contour */
+.gtile{position:absolute;left:9%;top:6%;width:82%;height:82%;border-radius:20%;background:var(--bg);border:2.5px solid var(--navy);z-index:2;box-shadow:0 3px 0 rgba(0,0,0,.3);padding:6%}
+.gtile.blue{border:3.5px solid var(--blue);outline:1.5px solid var(--navy)}
+.gtile.red{border:3.5px solid var(--red);outline:1.5px solid var(--navy)}
+.gtile.m{box-shadow:0 0 0 2px var(--yel),0 0 9px 2px var(--c),0 3px 0 rgba(0,0,0,.3)}
+.gtile.dim{filter:grayscale(.75) brightness(.8)}
+.gtile .gi2{display:block;width:100%;height:100%;fill:#fff}
+/* icônes de sorts */
+.ic{display:block;width:100%;height:100%;fill:#fff;stroke:none}
+.act.hasic{padding-left:58px}
+.aic{position:absolute;left:8px;top:9px;width:40px;height:40px;border-radius:10px;border:2.5px solid var(--navy);background:var(--c);padding:4px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.22)}
+.dic{display:inline-block;width:22px;height:22px;vertical-align:-6px;border-radius:6px;border:2px solid var(--navy);background:var(--c);padding:2px;margin-right:5px}
+.ab{display:flex;gap:8px;align-items:flex-start}
+.abic{flex:0 0 28px;height:28px;border-radius:8px;border:2px solid var(--navy);background:var(--c);padding:3px}
+/* portraits, personnages, son */
+.por{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;z-index:3}
+.crest{overflow:hidden}
+.clsbtn .ci{overflow:hidden}
+.boss .bn{position:relative;overflow:hidden}
+.ghost.off{opacity:.75;text-decoration:line-through}
+.tabs{display:flex;gap:8px}
+.tab{flex:1;font-family:var(--disp);font-size:16px;padding:8px;border:3px solid var(--navy);border-radius:12px;background:#fff;color:var(--navy);cursor:pointer;box-shadow:0 3px 0 var(--navy)}
+.tab[aria-selected="true"]{background:linear-gradient(#7CC4FF,var(--blue) 55%,var(--blueD));color:#fff;text-shadow:var(--ols)}
+.chars{display:flex;flex-direction:column;gap:10px}
+.char{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:start;padding:10px;border:3px solid var(--navy);border-radius:16px;background:#fff;box-shadow:0 4px 0 var(--navy)}
+.pframe{position:relative;width:96px;height:116px;border:3px solid var(--navy);border-radius:14px;background:var(--c);overflow:hidden;cursor:pointer;padding:0;box-shadow:inset 0 -5px 0 rgba(0,0,0,.2),0 3px 0 var(--navy)}
+.pframe:not(.has)::before{content:'';position:absolute;inset:5px;border:2.5px dashed rgba(255,255,255,.8);border-radius:9px}
+.pframe .pc{left:15%;top:8%;width:70%;height:60%}
+.pframe:disabled{cursor:default}
+.pframe:not(:disabled):active{transform:translateY(2px)}
+.padd{position:absolute;left:0;right:0;bottom:9px;font-family:var(--disp);font-size:13px;color:#fff;text-shadow:var(--ols);text-align:center}
+.pnum{position:absolute;left:0;right:0;top:18%;font-family:var(--disp);font-size:42px;color:#fff;text-shadow:var(--ol);text-align:center}
+.ctext{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ctext>b{font-family:var(--disp);font-weight:400;font-size:22px;color:#fff;text-shadow:var(--ol)}
+.ctext .cls{font-size:13px;font-weight:900;color:var(--c);filter:brightness(.8)}
+.ctext small{font-size:13px;color:var(--muted);font-weight:600}
+.ctext small b{color:var(--ink);font-weight:900}
+.ctext .link{align-self:flex-start;margin-top:4px;font-size:13px}
+.mode.r{background:linear-gradient(#FF9296,var(--red) 55%,var(--redD))}
+@media (max-width:380px){.char{grid-template-columns:76px 1fr}.pframe{width:76px;height:94px}}
+
+/* ===== Identité « Arène céleste » : garde l'énergie arcade, s'éloigne du look herbe/elixir ===== */
+:root{
+  --navy:#20113D; --ink:#20113D; --muted:#6A5D8C;
+  --card:#F7F4FF; --card2:#E4DDF7; --line:#CFC4EC;
+  --yel:#FFC83D; --blue:#3CB4FF; --blueD:#1768C8; --red:#FF4F6E; --redD:#C2203F;
+  --grn:#3FD99A; --grnD:#169868; --pur:#A66BFF; --purD:#6C35C9;
+  --elx:#35D6E8; --elxD:#1486A8;
+  --g1:#E9E3FA; --g2:#CBBFEE; --wood:#F0C75E; --woodD:#9A6414;
+  --disp:'Righteous','Arial Black',Impact,sans-serif;
+}
+body{background-color:#1A1040;
+  background-image:radial-gradient(1.6px 1.6px at 20% 30%,rgba(255,255,255,.55) 50%,transparent 52%),
+    radial-gradient(1.1px 1.1px at 70% 62%,rgba(255,255,255,.45) 50%,transparent 52%),
+    radial-gradient(1.3px 1.3px at 42% 84%,rgba(190,220,255,.4) 50%,transparent 52%),
+    linear-gradient(180deg,#3E2C8C 0%,#24155E 48%,#140C33 100%);
+  background-size:170px 170px,230px 230px,290px 290px,100% 100%;
+  background-repeat:repeat,repeat,repeat,no-repeat}
+/* formes « feuille » : coins alternés, signature du jeu */
+.btn,.primary,.ghost,.endbtn,.mini,.tab{border-radius:14px 5px 14px 5px}
+.plate,.pcard,.mode,.diff,.clsbtn,.boss,.char{border-radius:18px 6px 18px 6px}
+.panel,.sheet,.rules{border-radius:22px 8px 22px 8px}
+.act{border-radius:12px 4px 12px 4px}
+.arena{border-radius:18px 6px 18px 6px}
+.board{border-radius:8px 3px 8px 3px}
+/* plateau : dalles de pierre lunaire, cadre doré */
+.cell{background-image:radial-gradient(circle at 30% 25%,rgba(255,255,255,.35),transparent 60%)}
+.cell.d{background-image:radial-gradient(circle at 70% 75%,rgba(80,50,160,.12),transparent 60%)}
+.co{color:#5B4A9E;text-shadow:none;opacity:.9}
+.cell.d .co{color:#fff;text-shadow:0 1px 0 rgba(32,17,61,.6)}
+.cell.lm{background-image:linear-gradient(rgba(255,200,61,.5),rgba(255,200,61,.5))}
+.cell.mv::before{background:var(--elx);border-color:var(--navy)}
+.arena{background:linear-gradient(135deg,#FFE08A,var(--wood) 40%,var(--woodD));box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 5px 0 var(--navy),0 0 26px rgba(120,90,255,.35)}
+/* mana : cristaux cyan au lieu de gouttes */
+.drop{border-radius:9px 3px 9px 3px;background:linear-gradient(135deg,#D8FDFF,var(--elx) 50%,var(--elxD))}
+.bar{background:#1B1340}
+.seg{background:#2E2366;border-radius:5px 2px 5px 2px}
+.seg.on{background:linear-gradient(#D8FDFF,var(--elx) 55%,var(--elxD));box-shadow:inset 0 2px 0 rgba(255,255,255,.5),0 0 6px rgba(53,214,232,.6)}
+.act .cost{border-radius:8px 3px 8px 3px;background:linear-gradient(135deg,#D8FDFF,var(--elx) 50%,var(--elxD))}
+/* bannières et titres */
+.plate.blue{background:linear-gradient(120deg,#7FD0FF,var(--blue) 45%,var(--blueD))}
+.plate.red{background:linear-gradient(120deg,#FF9BAE,var(--red) 45%,var(--redD))}
+.plate.on{outline:3px solid var(--yel);box-shadow:inset 0 -5px 0 rgba(0,0,0,.15),0 4px 0 var(--navy),0 0 18px rgba(255,200,61,.55)}
+.brandmini{color:var(--yel)}
+.brand{transform:rotate(-1deg)}
+.side b,.pinfo b,.mode b,.diff b,.big,.sheet h2,.brand,.act b,.ptitle b,.boss .bt b,.clsbtn b,.ctext>b,.hub h3,.rules summary,.tab{letter-spacing:.01em}
+.log,.say{border-radius:14px 5px 14px 5px}
+.toast{border-radius:12px 4px 12px 4px}
+
+/* ===== Style sobre : ambiance jeu de stratégie, couleurs éteintes, contours fins ===== */
+:root{
+  --navy:#2F2A25; --ink:#2F2A25; --muted:#7A6E60;
+  --card:#F4EEE2; --card2:#E6DCC8; --line:#D6C9B1;
+  --yel:#D6AE5C; --yelD:#9C7A36; --blue:#4F82B8; --blueD:#335E8C; --red:#B9564A; --redD:#873A31;
+  --grn:#5E9E6E; --grnD:#3F7550; --pur:#8570B0; --purD:#5E4C86;
+  --elx:#4FA9A2; --elxD:#2E756F;
+  --g1:#DCD2BC; --g2:#B3A485; --wood:#7A5638; --woodD:#4E3522;
+  --ol:0 1px 1px rgba(0,0,0,.35); --ols:0 1px 1px rgba(0,0,0,.3);
+  --disp:'Fredoka','Trebuchet MS',system-ui,sans-serif;
+}
+body{background-color:#22292B;background-image:radial-gradient(120% 70% at 50% 0%,#34403F 0%,#22292B 55%,#191E20 100%);background-size:100% 100%;background-repeat:no-repeat}
+.side b,.pinfo b,.mode b,.diff b,.big,.sheet h2,.brand,.brandmini,.act b,.ptitle b,.boss .bt b,.clsbtn b,.ctext>b,.hub h3,.rules summary,.tab,
+.primary,.ghost,.endbtn,.mini,.btn,.drop,.act .cost,.khp span,.co,.fx,.pnum,.padd,.boss .bn,.stat b,.hist .turn{font-weight:600;letter-spacing:0}
+/* formes : arrondi régulier, contours fins, ombres discrètes */
+.btn,.primary,.ghost,.endbtn,.mini,.tab,.plate,.pcard,.mode,.diff,.clsbtn,.boss,.char,.act,.panel,.sheet,.rules,.arena,.log,.say,.toast{border-radius:12px}
+.board{border-radius:4px;border-width:2px}
+.btn,.primary,.ghost,.endbtn,.mini,.tab,.plate,.pcard,.mode,.diff,.clsbtn,.boss,.char,.act,.panel,.sheet,.rules,.arena,.crest,.stat,.fl input,.field input,.say,.pframe,.khp,.bar,.drop{border-width:2px;box-shadow:0 2px 0 rgba(0,0,0,.22)}
+.btn:active,.primary:active,.ghost:active,.endbtn:active,.mini:active,.act:active:not(:disabled),.mode:active,.diff:active,.clsbtn:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(0,0,0,.22)}
+.act.k{border-left-width:5px}
+.sheet{box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.sheet{animation:none}
+/* boutons */
+.primary,.endbtn,.mini.primary{background:linear-gradient(#E4C681,var(--yel));color:var(--ink);text-shadow:none}
+.ghost,.mini,.tab{background:var(--card);color:var(--ink)}
+.tab[aria-selected="true"],.btn.blue{background:var(--blue);color:#fff;text-shadow:none}
+/* bannières */
+.plate.blue{background:linear-gradient(180deg,#5E8FC4,var(--blueD))}
+.plate.red{background:linear-gradient(180deg,#C46A5E,var(--redD))}
+.plate.on{outline:2px solid var(--yel);outline-offset:1px;box-shadow:0 0 12px rgba(214,174,92,.35)}
+.pcard{background:linear-gradient(180deg,#5E8FC4,var(--blueD))}
+.khp{background:#2A2622}
+.khp i{background:linear-gradient(#94CC8B,#4E9A57)}
+.khp::before{color:#F1D58F}
+/* plateau : pierre sableuse, cadre bois sombre, marques sobres */
+.arena{background:linear-gradient(#8A6443,var(--woodD));padding:6px}
+.cell,.cell.d{background-image:none}
+.cell.lm{background-image:linear-gradient(rgba(214,174,92,.42),rgba(214,174,92,.42))}
+.co{color:#6E6150;text-shadow:none}
+.cell.d .co{color:#F4EEE2;text-shadow:none}
+.cell.mv::before{background:#F4EEE2;border:2px solid var(--ink);opacity:.85}
+.cell.at::after{box-shadow:inset 0 0 0 3px var(--red);background:rgba(185,86,74,.22)}
+.cell.tg::after{box-shadow:inset 0 0 0 3px var(--yel);background:rgba(214,174,92,.2)}
+.cell.sel::after{box-shadow:inset 0 0 0 3px var(--yel)}
+@media (prefers-reduced-motion:no-preference){@keyframes pulse{from{background:rgba(214,174,92,.1)}to{background:rgba(214,174,92,.32)}}}
+.pc{stroke-width:4;filter:drop-shadow(0 2px 0 rgba(0,0,0,.25))}
+.pc.m{filter:drop-shadow(0 0 3px var(--c)) drop-shadow(0 2px 0 rgba(0,0,0,.25))}
+.ring{opacity:.75;border-width:1.5px}
+.hpb{border-width:1px}
+.hpb.blue i{background:#86AEDB} .hpb.red i{background:#DA8A80}
+.gtile{filter:saturate(.8);border-width:2.5px}
+.gtile.m{box-shadow:0 0 0 2px var(--yel),0 2px 0 rgba(0,0,0,.3)}
+.wall{border-width:2px}
+.star{color:#F1D58F}
+/* mana : cristaux sarcelle discrets */
+.drop,.act .cost{background:linear-gradient(#9AD6D0,var(--elx) 55%,var(--elxD));color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.3)}
+.act .cost.free{background:linear-gradient(#A8D6B1,var(--grn))}
+.bar{background:#1F2526}
+.seg{background:#3A4644}
+.seg.on{background:linear-gradient(#9AD6D0,var(--elx) 60%,var(--elxD));box-shadow:none}
+/* panneaux et textes : encre sur parchemin, plus de texte détouré */
+.panel,.sheet,.rules,.act,.stat,.char,.boss,.clsbtn{background:var(--card)}
+.act.ult{background:linear-gradient(#FAF3E2,#EEDDB2)}
+.sheet h2,.ctext>b{color:var(--ink);text-shadow:none}
+.big{color:var(--ink);text-shadow:none} .big.gold{color:var(--yelD)} .big.blue{color:var(--blueD)} .big.red{color:var(--redD)}
+.brand{color:var(--yelD);text-shadow:none;transform:none}
+.brand .amp{color:var(--ink)}
+.brandmini{color:#E4C681;text-shadow:none}
+.side b{text-shadow:none}
+.pinfo b,.mode b,.diff b,.tag,.padd,.pnum,.boss .bn,.hist .turn{text-shadow:0 1px 1px rgba(0,0,0,.35)}
+.mode.y{background:linear-gradient(#D9B86E,#A8823A)}
+.mode.b{background:linear-gradient(#5E8FC4,var(--blueD))}
+.mode.g{background:linear-gradient(#6FAE7E,var(--grnD))}
+.mode.p{background:linear-gradient(#9580BD,var(--purD))}
+.mode.r{background:linear-gradient(#C46A5E,var(--redD))}
+.diff.d0{background:linear-gradient(#6FAE7E,var(--grnD))}
+.diff.d1{background:linear-gradient(#D9B86E,#A8823A)}
+.diff.d2{background:linear-gradient(#C46A5E,var(--redD))}
+.boss .bn{background:linear-gradient(#C46A5E,var(--redD))}
+.boss.won .bn{background:linear-gradient(#6FAE7E,var(--grnD))}
+.boss.cur{background:linear-gradient(#FBF4E2,#F0E2BC)}
+.hist .turn{background:linear-gradient(#5E8FC4,var(--blueD))}
+.hist .turn.r{background:linear-gradient(#C46A5E,var(--redD))}
+.toast{background:var(--ink);border:2px solid var(--yel)}
+.say{background:var(--card)}
+.link{color:var(--blueD)}
+.pcard .link{color:#fff}
+.skel{filter:grayscale(1) brightness(1.25)!important;opacity:.85}
+.chg{position:absolute;left:2px;bottom:14%;font-size:9px;font-weight:900;color:#2F6BFF;z-index:3;text-shadow:0 0 2px #fff}
+.bomb{position:absolute;right:1px;bottom:14%;font-size:11px;z-index:3}
+.stz{position:absolute;inset:0;z-index:1;background:repeating-linear-gradient(45deg,rgba(47,107,255,.28) 0 6px,transparent 6px 12px)}
+.fchips{display:flex;flex-wrap:wrap;gap:6px}
+.fchip{display:inline-flex;align-items:center;gap:5px;border:2px solid var(--navy);border-radius:999px;background:var(--card);color:var(--ink);padding:4px 10px 4px 6px;font-weight:800;font-size:13px;cursor:pointer}
+.fchip small{opacity:.6;font-weight:700}
+.fchip .pc{position:relative;left:auto;top:auto;width:18px;height:18px;filter:none}
+.fchip .pc.tint{fill:currentColor;stroke:none}
+.fchip[aria-pressed="true"]{background:var(--blueD);color:#fff}
+.chars .fchips{margin-bottom:4px}
+.trap{position:absolute;inset:28%;border-radius:50%;border:2.5px dashed #D6589B;background:rgba(214,88,155,.22);z-index:1}
+.wall.courage{background:linear-gradient(#E0C27E,#A8823A)}
+.wall.mur{background:linear-gradient(#8C7B66,#5C4E3E)}
+.modes{grid-template-columns:repeat(2,minmax(0,1fr))}
+.mode{padding:10px 10px 10px 58px;min-height:74px}
+.mode .mi{width:40px;height:40px;left:9px}
+.mode b{font-size:17px}
+.mode.hero{padding-right:64px}
+.mode.hero b{font-size:20px}
+.mode.r.hero{grid-column:auto;min-height:74px;padding-right:10px}
+.mode.r.hero b{font-size:17px}
+@media (max-width:380px){.modes{grid-template-columns:1fr}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gB" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#BCD3EC"/><stop offset=".45" stop-color="#5585BD"/><stop offset="1" stop-color="#2E5282"/></linearGradient>
+    <linearGradient id="gR" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#EBB8AF"/><stop offset=".45" stop-color="#B9564A"/><stop offset="1" stop-color="#7A2E27"/></linearGradient>
+    <symbol id="base" viewBox="0 0 100 100"><path d="M20 94 Q18 80 30 80 H70 Q82 80 80 94 Z"/><rect x="29" y="71" width="42" height="11" rx="4"/></symbol>
+    <symbol id="pc-P" viewBox="0 0 100 100">
+      <path d="M36 74 C38 60 42 55 44 51 H56 C58 55 62 60 64 74 Z"/><rect x="35" y="44" width="30" height="9" rx="4.5"/><circle cx="50" cy="29" r="16"/>
+      <use href="#base"/><ellipse cx="43" cy="23" rx="5" ry="4" fill="#fff" fill-opacity=".55" stroke="none"/></symbol>
+    <symbol id="pc-R" viewBox="0 0 100 100">
+      <path d="M34 74 L37 44 H63 L66 74 Z"/><path d="M27 45 V15 H38 V24 H45 V15 H55 V24 H62 V15 H73 V45 Z"/><rect x="31" y="41" width="38" height="9" rx="3"/>
+      <use href="#base"/><rect x="33" y="19" width="4" height="20" rx="2" fill="#fff" fill-opacity=".5" stroke="none"/></symbol>
+    <symbol id="pc-B" viewBox="0 0 100 100">
+      <path d="M36 74 C38 62 42 57 43 53 H57 C58 57 62 62 64 74 Z"/><path d="M50 15 C67 25 69 41 58 53 H42 C31 41 33 25 50 15 Z"/><path d="M57 25 L46 39" fill="none"/>
+      <circle cx="50" cy="11" r="5.5"/><rect x="37" y="49" width="26" height="8" rx="4"/>
+      <use href="#base"/><ellipse cx="43" cy="30" rx="3.5" ry="6" fill="#fff" fill-opacity=".5" stroke="none"/></symbol>
+    <symbol id="pc-N" viewBox="0 0 100 100">
+      <path d="M34 76 C33 64 38 57 43 51 C35 52 26 51 23 44 C21 37 27 32 34 30 C38 22 45 15 53 13 L55 4 L62 12 C74 18 79 34 75 52 C73 62 69 68 69 76 Z"/>
+      <path d="M63 15 C71 25 73 41 69 57" fill="none"/><circle cx="47" cy="25" r="3.8" fill="#1B2340" stroke="none"/><circle cx="29" cy="40" r="2" fill="#1B2340" stroke="none"/>
+      <use href="#base"/><ellipse cx="54" cy="24" rx="3" ry="6" fill="#fff" fill-opacity=".5" stroke="none"/></symbol>
+    <symbol id="pc-Q" viewBox="0 0 100 100">
+      <path d="M34 74 C37 61 41 54 41 48 H59 C59 54 63 61 66 74 Z"/><path d="M25 22 L37 41 L42 15 L50 35 L58 15 L63 41 L75 22 L68 50 H32 Z"/>
+      <circle cx="25" cy="20" r="5"/><circle cx="42" cy="12" r="5"/><circle cx="58" cy="12" r="5"/><circle cx="75" cy="20" r="5"/>
+      <use href="#base"/><rect x="38" y="55" width="4" height="14" rx="2" fill="#fff" fill-opacity=".5" stroke="none"/></symbol>
+    <symbol id="pc-K" viewBox="0 0 100 100">
+      <path d="M34 74 C37 61 41 54 41 48 H59 C59 54 63 61 66 74 Z"/><path d="M32 49 L28 28 H72 L68 49 Z"/>
+      <path d="M45 3 H55 V11 H63 V20 H55 V29 H45 V20 H37 V11 H45 Z"/>
+      <use href="#base"/><rect x="35" y="32" width="4" height="12" rx="2" fill="#fff" fill-opacity=".5" stroke="none"/></symbol>
+    <symbol id="ic-daggers" viewBox="0 0 512 512"><path d="M255.844 19.156c-9.972.074-19.945 2.48-29.406 6.844v14.156h58.78V25.938c-9.4-4.524-19.348-6.855-29.374-6.782zM65.03 33.376c-16.145.014-31.578 5.59-44.093 16.343l3.688 13.75 56.78-15.22-3.655-13.656c-4.262-.735-8.505-1.223-12.72-1.22zm381.72 0c-4.21-.005-8.46.484-12.72 1.218l-3.655 13.656 56.78 15.22 3.69-13.75c-12.52-10.765-27.94-16.33-44.095-16.345zM240.72 57.187v99.156c-.49 1.148-.96 2.312-1.44 3.47h32.25c-.21-.51-.41-1.024-.624-1.533V57.188H240.72zM71.97 68.406 42.812 76.22 69 173.905c-.072.532-.118 1.062-.188 1.594l31.126-8.375a348.373 348.373 0 0 0-2.282-2.938L71.97 68.407zm367.81 0-25.655 95.78c-.77.983-1.52 1.978-2.28 2.97l31.092 8.313c-.067-.512-.118-1.02-.187-1.532l26.188-97.72-29.157-7.812zM229.5 178.5c-7.172 13.366-21.99 22.273-39.375 25.625v10.844a436.09 436.09 0 0 1 39.063-3.907c4.143-10.668 14.568-18.313 26.625-18.313 12.114 0 22.585 7.72 26.687 18.47 13.02.772 26.03 2.067 39.03 3.843v-10.938c-17.397-3.348-32.228-12.252-39.405-25.625H229.5zm-115.313 4.188-50.78 13.593c-3.46 14.788-15.46 27.258-31.407 35l2.813 10.532c12.1-5.08 24.338-9.690 36.718-13.812 1.183-11.44 9.276-21.616 20.97-24.75a27.994 27.994 0 0 1 5.656-.906c9.736-.563 19.087 3.99 24.75 11.72 12.77-2.685 25.69-4.84 38.78-6.376l-2.78-10.438c-17.686 1.27-34.327-3.484-44.72-14.563zm283.375 0c-10.385 11.072-27.013 15.825-44.687 14.562l-2.813 10.438c13.095 1.537 26.007 3.69 38.782 6.375 5.663-7.728 15.014-12.282 24.75-11.72 1.885.11 3.8.4 5.687.907 11.696 3.134 19.79 13.31 20.97 24.75a514.241 514.241 0 0 1 36.72 13.813l2.81-10.532c-15.944-7.742-27.946-20.212-31.405-35l-50.813-13.593zm-141.75 28.75c-5.538 0-9.812 4.275-9.812 9.812 0 5.537 4.273 9.844 9.813 9.844 5.54 0 9.843-4.307 9.843-9.844 0-5.54-4.304-9.813-9.844-9.813zm-155.5 9.5a9.256 9.256 0 0 0-.968.03c-.66.047-1.332.165-2 .345-5.35 1.433-8.403 6.68-6.97 12.03 1.434 5.35 6.682 8.372 12.032 6.938 5.35-1.432 8.402-6.682 6.97-12.03-1.076-4.01-4.293-6.72-8.095-7.22-.316-.04-.645-.08-.968-.093zm311.157.03c-.325.01-.653.022-.97.063-3.802.5-7.02 3.21-8.094 7.22-1.433 5.348 1.587 10.598 6.938 12.03 5.35 1.435 10.598-1.588 12.030-6.936 1.435-5.35-1.586-10.598-6.937-12.030a10.195 10.195 0 0 0-2.968-.345zm-182.908 8.75c-3.42.202-6.833.436-10.25.72-17.21 88.982-4.777 187.617 37.344 262.625 42.076-85.616 55.17-175.81 37.563-262.407-3.418-.29-6.837-.53-10.25-.75-2.75 8.496-9.41 15.323-17.814 18.28V410.25H246.47V248.187c-8.47-2.98-15.2-9.88-17.907-18.468zm-90.062.25c-3.4.615-6.778 1.28-10.156 1.97-.39 8.99-5.07 17.366-12.47 22.437l41.94 156.563-18.033 4.843-41.968-156.560c-8.893-.682-17.094-5.546-21.937-13.064a445.029 445.029 0 0 0-9.720 3.375c5.4 88.204 41.413 171.937 104.220 243.750 21.270-83.350 7.772-181.827-31.875-263.310zm234.780 0c-39.657 81.486-53.177 179.960-31.905 263.313 62.810-71.815 98.790-155.544 104.188-243.750-3.220-1.160-6.450-2.286-9.688-3.374-4.846 7.503-13.020 12.376-21.906 13.063L372 415.780l-18.063-4.842 41.970-156.563c-7.412-5.070-12.110-13.438-12.500-22.438a455.807 455.807 0 0 0-10.126-1.968z"/></symbol>
+    <symbol id="ic-hidden" viewBox="0 0 512 512"><path d="M16.375 17.22v94.28l20.47 14.25 6.374-32.063 50.468 33.22L71.844 37.03l29.53 14.032L91.22 17.22H16.374zm119.72 0 19.843 42.03-42.032 46.72H155l4.656 39.718L180.686 120l10.408 61.938 38.75-56.72 25.22 32.657 24.186-91.156 33.78 21.124.595-50.78 47.656 24.436-3.03 67.5 28.438-41.813 12.78 22.126 60.157-64.25 1.188 44.187 33.875-42.625V17.22H136.094zM85.468 186.03c-16.63.038-34.107 1.616-52.345 4.376l-7.906 1.188-.064 7.97c-.35 40.24 4.84 67.31 16.125 85.936 11.287 18.627 29.17 27.313 48.626 29.938 6.937.935 14.17 1.266 21.656 1.218v-92.47c-18.67 4.285-32.593 20.996-32.593 40.97 0 12.76 5.68 24.195 14.655 31.906a78.07 78.07 0 0 1-1.22-.156c-16.03-2.162-26.822-7.34-35.155-21.094-7.72-12.74-12.852-34.287-13.313-67.968 14.533-1.918 28.44-3.073 41.47-3.094 25.72-.042 48.403 3.894 67.593 12.78 27.768 12.86 49.145 36.087 63.406 75.626-23.567-1.313-45.838.293-65.906 1.97 7.748-7.628 12.563-18.238 12.563-29.97 0-20.04-14.044-36.785-32.813-41v91.75c29.98-2.004 63.35-7.024 98.438-3.187l13.968 1.53-4-13.47c-15.143-51.256-42.066-83.663-77.812-100.217-22.342-10.347-47.66-14.594-75.375-14.532zm347.624 0c-27.716-.06-53.034 4.186-75.375 14.532-35.748 16.555-62.67 48.962-77.814 100.22l-3.97 13.468 13.94-1.53c35.57-3.89 69.386 1.335 99.687 3.28v-92.125c-19.397 3.735-34.063 20.795-34.063 41.28 0 11.726 4.822 22.344 12.563 29.97-20.063-1.682-42.327-3.31-65.875-2 14.26-39.522 35.645-62.737 63.406-75.594 19.19-8.886 41.87-12.822 67.594-12.78 13.038.022 26.924 1.173 41.468 3.094-.46 33.68-5.624 55.228-13.344 67.97-8.333 13.753-19.093 18.93-35.125 21.092-.41.056-.832.107-1.25.156 8.984-7.71 14.688-19.137 14.688-31.906 0-19.525-13.332-35.927-31.375-40.656v92.156c7.04.004 13.86-.335 20.406-1.22 19.458-2.623 37.37-11.31 48.656-29.936 11.287-18.627 16.443-45.695 16.094-85.938l-.062-7.968-7.875-1.188c-18.24-2.76-35.747-4.338-52.376-4.375zm37.937 139.19-2.717 35.124-80.407-4.063 78.375 66.25-39.874 9.44 68.28 27.03.002-105.406-23.657-28.375zm-131.124 12.03L274.5 422.53l-12.28-42.06-29.19 96.936-50.218-67.72-14.593 85.845h257.53l-6.406-34.467-53.156 19.875-9.344-53.157-16.938 13.44V337.25zm-300.78 15.188-22.75 19.843v123.25h130.06l-16.186-76.5-13.875 16.72-24.688-54.125-33.28 54.344-19.282-83.533z"/></symbol>
+    <symbol id="ic-shadow-follower" viewBox="0 0 512 512"><path d="M128.912 21.563c-.507.012-1.01.043-1.504.11C97.753 25.525 74.6 57.760 74.6 96.662c0 21.547 7.39 40.787 18.767 54.5-61.678 11.593-66.342 115.44-66.342 188.347h42.772l11.348 152.158h108.68L199.860 339.51h40.593c0-73.108 1.470-178.783-65.904-189.220 10.890-13.647 17.893-32.613 17.893-53.628 0-41.496-26.445-74.990-58.923-74.990-1.523 0-3.087-.146-4.608-.110zm239.828 0c-.507.012-1.010.043-1.504.110-29.655 3.853-52.808 36.087-52.808 74.990 0 21.547 7.390 40.787 18.767 54.500-61.678 11.593-66.340 115.440-66.340 188.347h30.323l-10.170-11.422c-.310-51.837 1.858-95.180 24.008-135.484l-1.543 146.906h.152l11.348 152.158h86.013l-66.030-12.006c-11.876-104.370-18.402-205.544-4.090-308.360 0 0 9.455-6.070 24.030-13.396-14.157-12.080-23.552-33.240-23.552-57.345 0-37.564 22.797-68.013 50.918-68.013 8.887 0 17.240 3.046 24.510 8.392-10.450-11.980-24.280-19.268-39.424-19.268-1.523 0-3.087-.146-4.608-.110zm69.192 171.308 1.685 147.214 22.324-.262c.310-51.836-1.860-106.647-24.008-146.950zm1.685 147.214h-.002l.002.006v-.006z"/></symbol>
+    <symbol id="ic-sprint" viewBox="0 0 512 512"><path d="M169.53 16.344 259.345 88 337 92.28l-1.03 18.657-161.376-8.906-118.78-4.905 227.28 68.03-197.72 246.75-14.530-17.655-49.220 96.625 248.690-202.780 51.810 11.592-38.780 40.594L270.500 329.500l-57.280 84.125L444.843 273.470 328 241.060l100.220-81.718c1.132.460 2.300.898 3.500 1.220 23.324 6.248 49.764-16.835 59.060-51.533 9.298-34.695-2.080-67.874-25.405-74.124-23.325-6.250-49.765 16.802-59.063 51.500a95.430 95.430 0 0 0-2.875 16.220L169.530 16.343z"/></symbol>
+    <symbol id="ic-shield" viewBox="0 0 512 512"><path d="M256 36 L440 100 V236 C440 362 360 440 256 478 C152 440 72 362 72 236 V100 Z M256 92 L126 138 V238 C126 330 182 392 256 422 Z"/></symbol>
+    <symbol id="gi-nyx-P" viewBox="0 0 512 512"><path d="M312.07 194.46A56.07 56.07 0 1 1 256 138.39a56.07 56.07 0 0 1 56.07 56.07zM406 418.01H106v60h300v-60zM282.33 261.52a71.81 71.81 0 0 1-52.15.2c-.73 58.91-62.35 114.06-96.75 140.28H378.9c-34.09-26.33-95.44-81.78-96.57-140.48z"/></symbol>
+    <symbol id="gi-nyx-R" viewBox="0 0 512 512"><path d="M406 484.7H106v-60h300v60zm-56.67-330.83h-50.05V91.3h-82.39v62.57h-54.22V91.3h-54.23v113.67h295.12V91.3h-54.23v62.57zm23.35 67.23H139.32v187.6h233.36V221.1z"/></symbol>
+    <symbol id="gi-nyx-B" viewBox="0 0 512 512"><path d="M406.02 476.915h-300v-60h300v60zm-83.46-181H189.48v17.65h133.08v-17.65zm11.78-77.69a200 200 0 0 1-9.39 61.69H187.09a200 200 0 0 1-9.39-61.69c0-59.09 23.82-109 56.41-124.67a33.34 33.34 0 1 1 43.82 0c32.59 15.71 56.41 65.58 56.41 124.67zm-51.07-48.91h-19.25v-23.92h-16v23.92h-19.26v16h19.26v51.54h16v-51.54h19.25v-16zm38.15 180.69v-20.44h-130.8v20.44H93.29v.11l49.46 49.46h82.08l31.15-36 31.15 36h82.44l48.87-48.87.27-.69h-97.29z"/></symbol>
+    <symbol id="gi-nyx-N" viewBox="0 0 512 512"><path d="M60.81 476.91h300v-60h-300v60zm233.79-347.3 13.94 7.39c31.88-43.62 61.34-31.85 61.34-31.85l-21.62 53 35.64 19 2.87 33 64.42 108.75-43.55 29.37s-26.82-36.39-39.65-43.66c-10.66-6-41.22-10.25-56.17-12l-67.54-76.91-12 10.56 37.15 42.31c-.13.18-.25.37-.38.57-35.78 58.17 23 105.69 68.49 131.78H84.14C93 85 294.6 129.61 294.6 129.61z"/></symbol>
+    <symbol id="gi-nyx-Q" viewBox="0 0 512 512"><path d="M477.518 181.966a25 25 0 0 1-34.91 23l-62.29 150.26h-248.92l-62.24-150.19a25 25 0 1 1 9.73-7.29l87 71.2 20.92-126.4a25 25 0 1 1 14.7-1.85l54.31 117 54.42-117.3a25 25 0 1 1 14.58 2.08l20.93 126.42 87.26-71.3a25 25 0 1 1 44.51-15.63zm-71.66 241.25h-300v60h300v-60zm-27.75-52h-244.22v36h244.22v-36z"/></symbol>
+    <symbol id="gi-nyx-K" viewBox="0 0 512 512"><path d="M405.995 477.15h-300v-60h300v60zm-10.3-107.13h-279.4a96.88 96.88 0 0 1 6.65 31.12h266.1a96.88 96.88 0 0 1 6.65-31.12zm-139.7-241.06a35.76 35.76 0 0 0-35.76 35.76c0 50.16 35.76 99.34 35.76 99.34s35.76-49.18 35.76-99.34a35.76 35.76 0 0 0-35.76-35.76zm8-15.38V94.24h18.36v-16h-18.36V54.85h-16v23.39h-18.36v16h18.36v19.38a51.9 51.9 0 0 1 16-.04zm81.64 51.36a98.74 98.74 0 0 0-38.13 7.61c-3.23 51.75-37.07 98.85-38.58 100.93l-4.93 6.76V354h140c16.57-26.15 40.78-42.41 40.78-90a99.13 99.13 0 0 0-99.14-99.07zm-141.16 7.61a99.16 99.16 0 0 0-137.25 91.51c0 47.55 24.21 63.82 40.78 90h139.99v-73.82l-4.94-6.79c-1.51-2.05-35.34-49.15-38.58-100.9z"/></symbol>
+    <symbol id="ic-crossed-chains" viewBox="0 0 512 512"><path d="M19.023 19.676v27.2L75.48 104.32l24.842-24.843-58.804-59.8H19.023zm65.41 3.498c-4.468.09-8.392.9-11.83 2.244L189.15 141.963c2.893-7.395 3.085-17.245-.146-29.094-4.61-16.908-16.108-36.597-33.408-53.895-17.3-17.3-36.99-28.8-53.897-33.41-6.34-1.73-12.125-2.495-17.265-2.39zm-63.09 53.51c-2.894 7.394-3.088 17.243.143 29.090 4.610 16.908 16.110 36.598 33.410 53.898 17.300 17.300 36.988 28.797 53.895 33.408 11.850 3.232 21.700 3.040 29.095.147L21.342 76.684zm107.070 30.960-24.716 24.717 119.545 119.546 24.717-24.717-119.546-119.545zm366 56.570c-7.766 2.724-15.670 6.186-23.360 10.626-20.332 11.738-35.756 27.138-44.106 41.637-5.734 9.956-7.942 18.928-7.213 26.365l74.680-42.953v-35.675zm-257.070 11.870c-4.466.090-8.390.900-11.827 2.246l73.620 73.620c10.648-5.168 21.366-8.972 31.780-11.358-5.744-9.727-13.255-19.550-22.410-28.705-17.300-17.300-36.990-28.800-53.897-33.410-6.340-1.730-12.126-2.497-17.266-2.393zm-62.677 53.096c-2.894 7.394-3.085 17.244.147 29.093 4.610 16.907 16.110 36.597 33.410 53.897 6.408 6.408 13.144 12.014 19.945 16.775 1.550-7.685 4.687-15.440 9.016-22.860 1.705-2.925 3.620-5.822 5.700-8.690l-68.218-68.215zm304.063.668L338.360 311.030l16.425 28.750 137.880-79.628v-6.120l-13.936-24.184zm-122.783 26.406c-16.790.075-37.910 5.840-58.258 17.588-20.348 11.747-35.902 27.155-44.362 41.658-5.790 9.930-8.063 18.860-7.390 26.260l136.445-78.776c-6.074-4.282-14.942-6.780-26.436-6.730zm138.467 23.637-39.684 22.936c3.228 2.310 7.230 4.130 12.220 5.320 7.530 1.793 17.022 1.925 27.464.307V279.890zm-75.320 43.643-136.448 78.780c6.073 4.283 14.943 6.780 26.438 6.728 16.790-.074 37.912-5.840 58.260-17.587 20.347-11.747 35.900-27.154 44.360-41.658 5.793-9.930 8.063-18.860 7.390-26.262zM296.530 334.190l-10.686 6.167-.037-.037-12.730 7.350.090.008-116.956 67.525 16.472 28.530 140.320-81.012-16.473-28.530zm138.993 7.558c-1.740 5.896-4.360 11.778-7.675 17.463-2.508 4.300-5.440 8.550-8.743 12.710l68.754 68.754c2.892-7.394 3.084-17.244-.147-29.092-4.610-16.906-16.108-36.595-33.408-53.894a150.078 150.078 0 0 0-18.782-15.940zM177.440 360.326c-16.790.075-37.910 5.840-58.258 17.588C98.834 389.660 83.280 405.070 74.820 419.572c-5.790 9.928-8.062 18.860-7.390 26.260l136.445-78.775c-6.073-4.283-14.942-6.782-26.436-6.730zM427.200 406.610l-24.670 24.290 62.490 62.996h27.644V472.070L427.200 406.610zm-66.124 8.982c-10.614 4.730-21.244 8.110-31.514 10.076 5.956 10.888 14.173 22.015 24.458 32.300 17.298 17.300 36.987 28.800 53.894 33.410 11.850 3.233 21.700 3.040 29.096.147l-75.934-75.933zM239.090 427.674l-114.528 66.123h65.815c18.962-11.586 33.505-26.310 41.502-40.193 5.648-9.810 7.863-18.622 7.210-25.930zm-114.854 7.144L21.730 493.896h65.452l53.392-30.860-16.338-28.218z"/></symbol>
+    <symbol id="ic-ice-spell-cast" viewBox="0 0 512 512"><path d="m377.305 19.355-5.21 20.52-15.165-14.771-12.56 12.894 15.165 14.772-20.375 5.748 4.889 17.324 20.375-5.748-5.21 20.52 17.446 4.429 5.211-20.52 15.166 14.772L409.596 76.4l-15.168-14.773 20.377-5.748-4.887-17.322-20.375 5.748 5.209-20.52zm-171.918 56.41c-28.067-.116-49.927 56.533-57.727 90.608-11.26 49.19-14.529 83.515-.828 133.059l-17.348 4.798c-15.463-55.917-8.245-94.750 2.301-142.341 10.547-47.592 14.520-70.403-4.459-74.182C85.244 79.328 82.040 178.170 79.570 222.604c-1.396 25.808.710 57.017 6.540 77.552l-16.901 6.196c-14.430-53.350-6.657-97.957-1.693-150.770 2.493-15.582-1.787-25.677-19.102-25.166-15.833.467-27.015 143.362-13.275 179.041 8.713 53.061 31.247 130.572 10.955 152.766L18 494h205.973l19.986-28.592c23.080-5.008 28.420-19.860 37.023-33.787 25.291-40.946 82.384-83.166 129.114-99.226 21.142-7.510-21.912-48.546-53.836-32.782-55.005 27.162-81.646 56.298-117.772 38.295-55.855-27.834-47.245-100.648-35.861-162.830 6.141-33.544 40.410-89.602 7.156-98.824a21.158 21.158 0 0 0-4.396-.488zm90.718 24.835-30.718 29.390 23.394 25.104c-4.628 3.410-8.617 7.736-11.758 12.750l-24.132-25.899-23.290 22.285 7.204 38.215 32.650-7.190c.093 6.211 1.284 12.244 3.336 17.636l-32.662 7.191 7.203 38.215 29.500 10.660 12.846-34.066c4.690 3.307 9.918 5.625 15.406 6.832l-12.426 32.953 38.910 14.058 30.720-29.392-23.395-25.104c4.628-3.410 8.617-7.735 11.757-12.748l24.133 25.897 23.291-22.283-7.203-38.215-32.652 7.190c-.094-6.211-1.283-12.244-3.334-17.636l32.660-7.193-7.203-38.215-29.500-10.660-12.846 34.068c-4.690-3.307-9.918-5.626-15.406-6.834l12.426-32.950zm147.538 49.860-16.813 6.430 7.563 19.774-20.909-3.338-2.838 17.776 20.907 3.337-13.344 16.438 13.975 11.344 13.343-16.438 7.563 19.776 16.812-6.430-7.560-19.774 20.904 3.338 2.838-17.775-20.904-3.338 13.341-16.435-13.972-11.346-13.344 16.435zm-135.715 12.850 28.078 10.147 5.910 31.356-22.168 21.208-28.078-10.144-5.912-31.356z"/></symbol>
+    <symbol id="ic-magick-trick" viewBox="0 0 512 512"><path d="m313.203 25.94-.133 24.67-18.12 16.743 24.67.132 16.743 18.12.133-24.67 18.12-16.743-24.67-.132-16.743-18.12zm91.58 50.12L385.47 91.41l-24.4-3.638 15.35 19.313-3.637 24.4 19.313-15.35 24.4 3.637-15.35-19.312 3.637-24.4zM39.87 80.206l-7.116 16.268 7.637 3.340 256 112 8.247 3.607-.1.227.61.266 7.214-16.492-8.243-3.607-44.113-19.298a102.607 43.83 0 0 1 52.088-6.13A102.607 43.83 0 0 1 414.7 214.22a102.607 43.83 0 0 1-102.608 43.83 102.607 43.83 0 0 1-102.608-43.83 102.607 43.83 0 0 1 8.262-17.162L184.932 182.7c-12.552 5.49-22.514 11.71-29.192 17.96-7.646 7.16-10.802 13.782-10.802 20.134s3.156 12.975 10.802 20.133c7.646 7.158 19.596 14.274 34.81 20.3 30.43 12.047 73.71 19.835 121.542 19.835 47.832 0 91.11-7.788 121.54-19.836 15.215-6.025 27.165-13.14 34.81-20.3 7.647-7.157 10.804-13.78 10.804-20.132 0-6.352-3.157-12.975-10.803-20.133-7.646-7.160-19.596-14.275-34.810-20.300-30.430-12.048-73.710-19.836-121.540-19.836-26.422 0-51.440 2.386-73.683 6.543L48.117 83.813l-8.246-3.607zm204.903 4.310.077 16.708-12.160 11.460 16.708-.076 11.460 12.160-.075-16.708L272.940 96.600l-16.706.075-11.460-12.160zM215.940 286.592c-.147 15.018-.440 29.740-1.038 44.308 67.544 29.705 126.598 29.746 194.383.113-.600-14.603-.894-29.364-1.043-44.420-27.330 7.925-60.396 12.467-96.150 12.467-35.756 0-68.820-4.540-96.150-12.467zm-2.004 63.467a752.621 752.621 0 0 1-2.130 26.877l.555.250c69.454 31.175 129.756 31.177 199.486-.006l.535-.238a749.444 749.444 0 0 1-2.126-26.785c-66.975 27.646-129.550 27.616-196.318-.097zm200.552 45.595c-70.003 30.062-135.025 30.067-204.793.002-2.287 17.913-5.385 35.950-9.603 54.403 0 48 224 48 224 0-4.218-18.455-7.316-36.490-9.604-54.405z"/></symbol>
+    <symbol id="ic-snowflake-2" viewBox="0 0 512 512"><path d="M308.375 15.094 242.937 36.530l-14.156 67.376 38.814 34.780a115.719 115.719 0 0 0-37.063 2.783l12.157 37.093a77.207 77.207 0 0 0-17.750 5.843l-12.156-37.094a116.793 116.793 0 0 0-31.560 19.657L191.937 116l-51.250-45.938L75.250 91.470l-14.156 67.374 51.250 45.937 49.594-16.218c-6.804 9.870-12.145 20.955-15.688 32.970l38.250 8.062c-.990 2.920-1.850 5.905-2.500 9a78.370 78.370 0 0 0-1.375 9.280l-38.250-8.060a115.598 115.598 0 0 0 1.280 37.467L104.500 242.157l-65.438 21.438-14.156 67.344 51.250 45.968 65.438-21.406 10.844-51.656a117.025 117.025 0 0 0 20.968 30.750L199.470 305.500a77.389 77.389 0 0 0 13.874 12.500l-26.030 29.063a115.488 115.488 0 0 0 32.374 17.343l-49.657 16.250-14.155 67.375 51.250 45.970 65.438-21.438 14.156-67.343-38.845-34.845a115.617 115.617 0 0 0 37-2.780L272.750 330.560a77.291 77.291 0 0 0 17.780-5.812l12.126 37.030a116.650 116.650 0 0 0 31.656-19.750l-10.750 51.064 51.282 45.937 65.406-21.405 14.156-67.375-51.250-45.938-49.720 16.282a115.504 115.504 0 0 0 15.783-33.063l-38.126-8.030c.990-2.920 1.850-5.938 2.500-9.030.650-3.100 1.074-6.175 1.344-9.250l38.125 8.030a115.730 115.730 0 0 0-1.313-37.500l39.280 35.188L476.440 245.500l14.187-67.344-51.280-45.970-65.408 21.408-10.875 51.687a116.805 116.805 0 0 0-21.030-30.810l-26 29.030a77.458 77.458 0 0 0-13.938-12.500l26.030-29.030a115.621 115.621 0 0 0-32.312-17.282l49.657-16.250 14.155-67.375-51.250-45.970zm-64 189.375 49.906 13.374 13.376 49.906-36.530 36.530-49.907-13.374L207.843 241l36.530-36.530z"/></symbol>
+    <symbol id="ic-air-force" viewBox="0 0 512 512"><path d="M331.39 211.856c5.812 31.189-14.571 81.19-37.252 108.318-13.365 15.981-26.968 24.091-40.436 24.091h-.216c-12.728-.09-25.433-7.313-37.786-21.497-24.875-28.573-43.222-80.099-39.184-110.241l1.501-11.295 11.374-.114a77.073 77.073 0 0 0 55.041-23.624l9.441-9.76 9.44 9.76a77.016 77.016 0 0 0 55.246 23.636l10.84.068zm-173.54 6.301H16l18.78 18.825h124.094a116.019 116.019 0 0 1-1.024-18.813zm191.898 18.825H477.22L496 218.169H350.408a105.566 105.566 0 0 1-.66 18.813zm-187.246 18.825H53.604l18.813 18.824h95.818l-.102-.284a209.049 209.049 0 0 1-5.63-18.54zM340.24 274.63h99.344l18.825-18.824H346.154c-1.434 5.584-3.265 11.567-5.597 17.971zM91.242 293.445l18.824 18.824H185.9a203.602 203.602 0 0 1-9.93-18.824H91.242zm310.692 18.824 18.824-18.824h-88.55a211.69 211.69 0 0 1-10.236 18.824h79.962z"/></symbol>
+    <symbol id="ic-armor-upgrade" viewBox="0 0 512 512"><path d="m256 21.95-5.4 4.03C187.5 73.41 125.4 104.5 30.58 120.3l-7.5 1.2v7.6c0 19 8.4 48.7 22.1 85.1 13.6 36.5 32.8 78.8 55.02 119.2 22.3 40.4 47.4 78.9 73.8 107.7 26.1 28.9 53.5 48.9 82 48.9s55.9-20 82.2-48.9c26.2-28.8 51.3-67.3 73.7-107.7 22.2-40.4 41.3-82.7 55-119.2 13.6-36.4 22-66.1 22-85.1v-7.6l-7.4-1.2c-94.6-15.8-156.9-46.89-220.1-94.32zm0 22.2c61.1 45.04 124.4 76.15 214.4 92.35-1.9 15.2-9 41.4-20.3 71.5-4.1 10.8-8.6 22.2-13.7 34H288v-48.9l64 16-96-111.96-96 111.96 64-16V242H75.57c-5-11.8-9.59-23.2-13.69-34-11.2-30.1-18.4-56.3-20.3-71.5C131.6 120.3 194.8 89.19 256 44.15z"/></symbol>
+    <symbol id="ic-gauntlet" viewBox="0 0 512 512"><path d="M123.153 24.602c-11.349.764-48.792 83.005-63.545 132.174-8.046 26.818 2.983 74.734 41.723 106.45 8.813-1.502 16.946-3.047 24.434-4.626-22.473-24.22-39.048-50.488-47.772-82.059l-1.021-3.699 1.963-3.299c26.135-43.925 37.681-68.548 50.85-112.24l3.849-12.773 10.402 8.351c14.624 11.743 23.72 18.084 32.098 21.809-14.428-22.99-31.841-41.36-52.46-50.06a2.164 2.164 0 0 0-.52-.028zm19.791 50.203c-11.724 36.176-24.141 62.49-46.508 100.379 9.004 29.978 25.746 54.616 49.733 78.65 18.744-4.857 32.588-9.929 43.383-14.978 16.875-7.894 26.514-15.73 36.92-23.701-6.532-34.91-18.944-80.14-38.018-118.375-14.754-2.769-27.196-8.373-45.51-21.975zm90.094 158.008c-9.156 7.022-19.796 14.833-35.861 22.347-17.365 8.123-40.947 15.887-76.29 22.793 35.349 28.759 64.905 62.213 112.643 82.157 2.79-15.613 10.509-29.532 20.61-39.782 9.547-9.688 21.609-16.383 34.252-16.82 2.202-5.202 5.378-10.557 10.593-14.93 6.41-5.374 15.626-8.323 26.932-8.156a35.046 35.046 0 0 1 4.807-5.424c-7.384-1.603-16.19-3.168-27.145-5.586zm120.275 50.299c-.04.009-.084.012-.125.021-11.264 3.729-12.514 6.776-16.947 16.078-8.484-1.005-19.247-2.081-25.69 3.16-6.017 6.313-7.279 12.696-9.685 20.715-14.012-3.276-25.77 1.842-33.904 9.877-8.032 8.15-14.35 20.016-16.082 32.65 5.926 2.628 12.109 4.214 18.139 5.727 12.69-15.498 32.27-33.513 50.66-36.851 12.995-13.444 28.669-18.08 41.183-19.891a60.105 60.105 0 0 1 11.764-8.4c-6.632-11.786-12.405-18.622-19.313-23.086zm-232.011 18.882c-1.967 12.934-7.997 24.573-.64 46.305 32.36 70.655 41.042 23.73 93.735 22.953-38.944-18.938-66.126-45.737-93.095-69.258zm267.765 17.102c-4.87.972-9.343 3.536-13.062 6.28 9.197 12.249 16.987 27.313 23.28 43.81 7.916-2.052 14.75-4.612 21.103-7.506-6.473-26.762-18.951-37.976-31.32-42.584zm-29.935 13.906c-7.676 1.509-15.588 4.36-22.774 10.35 8.367 8.844 20.976 24.773 26.053 43.283 7.632-1.268 15.91-3.698 21.006-8.576-6.608-17.858-15.058-33.73-24.285-45.057zm-38.139 19.668c-14.313 5.357-25.257 14.981-34.674 25.938l19.383 26.324c13.696-1.49 26.639-6.254 39.39-13.299-4.69-15.098-18.62-32.912-24.447-38.607zm108.848 24.365c-6.679 3.099-13.973 5.985-22.237 8.375 6.323 10.32 11.618 21.138 15.602 32.543 7.703-3.07 14.902-6.372 21.264-10.082-3.964-11.28-8.68-22.055-14.63-30.836zM164.687 408.39l49.638 43.377c11.274-13.516 27.044-23.94 42.492-33.942l-22.02-25.32c-24.334-8.01-52.756 2.355-70.11 15.885zM391.9 394.153c-6.866 5.056-14.143 7.727-21.795 9.377 5.371 9.31 10.375 19.502 14.354 29.755 7.946-2.139 15.451-4.432 22.344-7.775-3.648-10.897-8.68-21.303-14.903-31.357zm-39.88 14.105c-11.759 6.313-24.191 11.162-37.42 13.545l13.316 27.447c14.663-2.177 28.099-3.684 39.666-9.746-4.195-10.706-9.777-21.706-15.563-31.246zm98.017 17.156c-6.627 3.604-13.647 6.703-20.846 9.534 2.83 7.167 5.28 14.119 7.21 20.757 10.397-1.435 20.263-5.912 18.179-13.869-1.423-5.296-2.923-10.83-4.543-16.422zM268.82 431.54c-16.062 10.564-31.09 20.975-40.728 32.256l1.392 1.217c16.648 14.548 36.256 20.475 44.95 9.13 8.522-11.12 10.536-24.116-5.614-42.603zm144.01 10.957c-7.166 3.334-14.4 5.634-21.465 7.58 3.051 6.991 5.842 13.849 8.244 20.48 9.2-.457 17.732-4.025 19.33-10.442-1.622-5.49-3.688-11.409-6.109-17.618zm-38.437 13.69c-12.724 6.396-25.866 8.467-38.184 10.154l6 12.367c10.038 10.705 32.656 11.336 42.21 2.944-2.654-7.907-6.1-16.516-10.026-25.465z"/></symbol>
+    <symbol id="ic-stakes-fence" viewBox="0 0 512 512"><path d="M334.7 21.05 300.2 154.7l30.5 12.5L363 155zM220.2 72.41 180.1 179.1l34.3 33.3 33.5-31zM55.57 101.6 47.9 224.4l36.52 23.7 25.38-38.7zm413.63 10.5-41.8 65.8 19.8 34.5 27.3-7zm-171.4 61-6.3 145 66.3-1.5 6.4-142.8-33.7 12.8zM177 201.2l-5 119.6 73.8-1.7 3.3-114.3-35.1 32.4zm244.3 2.2-19.9 112.2 53.8-1.3 17.8-89.9-34.6 8.8zm-305.8 30.1-25.87 39.4-41.04-26.7 10.08 77.2 71.93-1.6zm362.9 98.3L33.8 342l-3.78 44.2L482 384.1l-1.1-15.9-32.5-10.4s18.7-3.4 31.4-5.6zm-40.7 70.6-51.7.2-3.2 18.1 51.6-1.6zm-83.7.3-66.1.3-.9 20.9 66.2-2.2zm-110.5.5-75 .3-1 24.3 75.4-2.5zm-98.9.4-75.43.3 3.51 27 76.12-2.5zm345.3 31.6L22.07 450.5l.24 25.9 29 14.6 432.49-1.4z"/></symbol>
+    <symbol id="ic-angel-outfit" viewBox="0 0 512 512"><path d="M260.72 29.094c-54.533 0-98.97 21.704-98.97 48.312 0 26.61 44.437 48.28 98.97 48.28 54.53 0 98.967-21.67 98.967-48.28S315.25 29.094 260.72 29.094zm0 13.25c40.07 0 71.81 15.508 71.81 35.062s-31.74 35.47-71.81 35.47c-40.073 0-72.69-15.916-72.69-35.47 0-19.552 32.617-35.064 72.69-35.062zM86.53 57.187c-13.242-.094-32.234 14.59-42.31 37.688-43.3 99.244-9.583 359.695 87.874 351.97-22.002-50.492-43.8-107.983-56.72-168.75 26.337 72.494 72.33 135.58 117.845 120.186-32.017-40.185-66.048-87.265-90.032-140.342 35.016 59.175 85.37 105.853 123.03 85.5-29.742-26.583-61.568-57.524-88.812-93.25 39.647 37.38 87.092 61.34 112.25 37.75-47.69-21.07-94.37-53.67-125.062-89.75-16.312-19.176-28.195-39.39-32.72-60-2.26-10.306-2.508-20.796-.468-30.938.02-.095.043-.186.063-.28.007-.044.022-.083.03-.126 4.05-21.265 15.043-35.413 4.5-45.97-2.484-2.487-5.76-3.66-9.47-3.687zm347.658 0c-3.71.027-6.954 1.2-9.438 3.688-8.176 8.186-3.416 18.564 1.03 32.72 6.153 14.187 7.144 29.566 3.845 44.593-4.524 20.61-16.44 40.824-32.75 60-30.798 36.206-77.67 68.907-125.53 89.968 25.22 23.208 72.482-.71 112-37.97-27.245 35.728-59.07 66.67-88.814 93.25 37.662 20.355 88.016-26.323 123.033-85.498-23.985 53.077-58.016 100.157-90.032 140.343 45.515 15.395 91.478-47.69 117.814-120.186-12.918 60.768-34.686 118.26-56.688 168.75 97.457 7.726 131.142-252.725 87.844-351.970-10.077-23.097-29.070-37.780-42.313-37.686zm-22.220 73.970c-100.397 68.228-200.733 82.462-301.250 5.468 4.020 15.655 13.890 32.733 28.126 49.470 28.922 34 75.480 66.378 121.906 86.310 46.426-19.932 92.984-52.310 121.906-86.310 14.980-17.613 25.138-35.594 28.720-51.907.223-1.020.416-2.027.593-3.032z"/></symbol>
+    <symbol id="ic-deadly-strike" viewBox="0 0 512 512"><path d="m196.38 16.29 12.018 214.677-69.382-213.75h-19.65l70.52 217.25c-17.16-18.22-34.434-44.74-52.243-80.246 18.864 62.058 35.573 139.067 40.552 192.04L19.38 62.393v38.277l144.89 258.98c-33.493-21.316-67.86-56.375-97.918-92.87 26.712 52.73 55.26 104.847 73.076 160.54L19.378 289.453v28.46l107.997 124.026C99 434.69 70.625 422.05 42.25 408.165c38.03 26.607 62.036 50.897 84.234 85.82H230.84l-6.785-91.082H197.770c0-44.845 2.870-108.728 40.767-115.860-6.993-8.433-11.533-20.270-11.533-33.523 0-23.930 14.228-43.758 32.450-46.127h.005c.303-.038.610-.056.923-.063.934-.020 1.895.063 2.830.063 19.957 0 36.205 20.602 36.205 46.128 0 12.928-4.304 24.595-10.996 32.990 41.400 6.420 40.496 71.424 40.496 116.394h-24.940l-6.003 91.082h90.960c19.418-30.770 60.864-56.727 96.524-75.234-38.585 10.670-75.927 17.602-109.660 21.020l117.970-86.970v-23.218l-125.780 92.728c24.400-49.363 55.902-88.075 90.164-122.648-40.560 27.323-73.250 37.700-107.027 43.785L493.770 158.700v-30.580L339.297 328.190c1.190-51.240 16.946-114.427 39.156-171.047-17.383 25.054-33.876 46.073-49.713 62.742l56.406-202.668h-19.398l-53.412 191.906 3.832-192.834h-119.790z"/></symbol>
+    <symbol id="ic-health-normal" viewBox="0 0 512 512"><path d="M196 16a30 30 0 0 0-30 30v120H46a30 30 0 0 0-30 30v120a30 30 0 0 0 30 30h120v120a30 30 0 0 0 30 30h120a30 30 0 0 0 30-30V346h120a30 30 0 0 0 30-30V196a30 30 0 0 0-30-30H346V46a30 30 0 0 0-30-30H196z"/></symbol>
+    <symbol id="ic-defensive-wall" viewBox="0 0 512 512"><path d="M25 41v110h462V41h-21v55h-36V41h-60v55h-36V41h-60v55h-36V41h-60v55h-36V41H82v55H46V41H25zm0 128v206h62v-46H64v-18h71v-46H96v-18h96v18h-39v46h71v18h-7v46h270V169h-30v39h-18v-39H329v39h-18v-39H201v39h-18v-39H73v39H55v-39H25zm247 78h176v18h-87v55h-18v-55h-71v-18zm-167 82v46h94v-46h-94zm-80 64v94h47.973l14.297-57.184 17.46 4.368L91.527 487h328.946l-13.203-52.816 17.46-4.368L439.027 487H487v-94H346.98l13.846 69.234-17.652 3.532L328.62 393H183.38l-14.554 72.766-17.652-3.532L165.02 393H25z"/></symbol>
+    <symbol id="ic-master-of-arms" viewBox="0 0 512 512"><path d="M89.045 14.615c6.77 31.628 8.796 63.257.937 94.885H27.695v25.783c14.904-4.855 30.023-7.95 45.23-9.543.047 127.8 1.575 243.702 30.27 365.713 30.09-118.464 27.335-237.957 27.258-365.027 15.218 1.827 30.365 4.857 45.315 8.857V109.5h-62.12c-6.642-31.628-5.722-63.257.768-94.885h-25.37zm334.61.004c-28.694 122.01-30.224 237.912-30.272 365.712-15.206-1.59-30.325-4.687-45.23-9.543v25.782h62.288c7.86 31.628 5.837 63.257-.934 94.885h25.37c-6.49-31.628-7.41-63.257-.77-94.885h62.12v-25.78c-14.95 4-30.094 7.027-45.312 8.855.077-127.07 2.833-246.562-27.258-365.026zM255.34 23.36c-25.084 3.247-47.137 32.07-47.137 68.892 0 20.31 7.048 38.302 17.48 50.816l10.202 12.24-15.66 2.928c-13.684 2.56-23.8 9.845-32.27 21.42-8.47 11.576-14.848 27.52-19.31 45.8-8.22 33.672-9.91 74.718-10.137 110.554h43.994l11.88 158.584h96.356l10.508-158.584h41.87c-.013-36.225-.356-77.82-7.803-111.752-4.04-18.408-10.17-34.354-18.762-45.822-8.592-11.470-19.200-18.700-34.482-21.057l-15.980-2.466L296.200 142.300c9.983-12.452 16.680-30.230 16.680-50.048 0-39.264-24.734-68.813-52.340-68.813-2.905 0-4.742-.137-5.196-.080h-.004zM97.006 124.440c4.690-.020 9.383.093 14.074.328v181.015H92.383v-181.280c1.540-.034 3.082-.055 4.623-.062zm315.838 75.847h18.695v181.018c-6.233.310-12.467.404-18.696.260V200.288z"/></symbol>
+    <symbol id="ic-rally-the-troops" viewBox="0 0 512 512"><path d="M462.9 19.12c-9.6 0-17.2 7.59-17.2 17.19 0 9.61 7.6 17.19 17.2 17.19s17.2-7.58 17.2-17.19c0-9.6-7.6-17.19-17.2-17.19zm-80.3 21.82c-160.3.8-218.1 217.46-362.93 96.26 3.25 36.8 88.43 78.4 88.43 78.4-26.03 20-34.78 24.7-71.99 25.5 104.09 86.7 338.69-99.8 408.39 40.1l-2.3-38.4-45.4-46.5 42.7.6-.6-10.2-50.7-32.2 48.4-7.2-.7-11.1-50-27.3 47.9-8.8-.6-10.69L381 66.66l50.5-5.85-.8-13.9c-17.1-4.2-33-6.05-48.1-5.97zm70.8 29.97 20.2 423.99 18.7-.9-20.2-423c-6.3 1.54-12.7 1.5-18.7-.1zM360 292.9l-43.6 70 21.3 25L322 493h18.9l15.2-102.3 28-20.2c-8.1-25.9-16.1-51.8-24.1-77.6zm-156.7 17.9-28.8 69.8 20.5 20.2 2.2 92.2h18.7l-2.2-93 19.6-19.9-30-69.3zm-158.16 5-16.4 61.9 17.65 13.2L61.24 493h18.87L64.89 388.3l13.22-17.6-32.93-54.9zm85.96 7.4-28.2 57.5 15.1 17-6.7 95.3H130l6.8-95.3 15.9-14.2-21.6-60.3zM268 355.5l-19.5 68.4 19.4 15.2 5.8 53.9h18.9l-5.9-54.3 16.8-21.6c-11.9-20.5-23.7-41-35.5-61.6zm143.6.1-18.9 68.6 20.3 15.5 6.2 53.3H438l-6.4-55.2 16-20.9z"/></symbol>
+    <symbol id="ic-stone-wall" viewBox="0 0 512 512"><path d="m18.08 23 .1 18H494V23H18.08zM254.3 54.93 133 61.6l30.1 68.5 98.1-3.6-6.9-71.57zm115.9.28-92.9.53 3 71.96 96.8-.9-6.9-71.59zM18.23 56.43l.35 74.67 72.27-2.4 24.35-72.27H18.23zM393 64.24l-.5 47.16 15.7 21.5 85.8-6.3V64.93l-101-.69zM120.8 84.68l-17.6 49.82 41.1-1-8.2-34.02-15.3-14.8zm354.7 56.02-4 75.5 22.5-.6v-74.9h-18.5zm-25.7 3.5-97.3 10.7L346 219l110.7-3.2-6.9-71.6zm-243.8.7-4 75.5 126.1-3.9 7-71.1-129.1-.5zm-145.33 2.7-3.9 75.5 126.13-3.9-6.9-71.6H60.67zm-42 1.5.33 72.4 24.77-.8-6.9-71.6h-18.2zm278.93 84.3L276 277.2l2.1 42 128.7-1.9-7.6-79.7-101.6-4.2zm-40.2 1.4-127.2 6 8 69.5 124.7 6.6-5.5-82.1zm236.6 3.1-66.5 2.9-7.5 75.8 74-5.2v-73.5zm-474.89 7 .31 65.8 100.78-3.1-6.9-62.7H19.11zm470.29 81.2-115.9 10.5-3.3 65 121.5-3.5-2.3-72zm-422.36 4.1-47.52 2 .34 72.9 51.1-1.3-3.92-73.6zm17.84 0 3.98 68.5 138.64 9.6-3-78.1H84.88zm161.22 4.3-5.5 69 107.5 5.4-1-73.5-101-.9zm185.4 81.1-4 75.5 66.5-.6v-73.8l-62.5-1.1zm-9.8 1.2-39 3.6 27.4 28 11.6-31.6zm-399.46 1.8-2.13 40.6.16 34.8H145.4v-68.9l-46.56-2.5-18.4 14L68.56 421l-46.32-2.4zm247.96.3-111.3 1.5 3.5 72.5 114.7-2.4-6.9-71.6zm101.2 4.3-72.2 5.9-8.9 62.1 125.6.6-6.2-27-38.3-41.6z"/></symbol>
+    <symbol id="ic-dripping-blade" viewBox="0 0 512 512"><path d="M17.406 17.156V54.97c79.545 34.337 178.924 73.75 261.906 97.343-53.787-54.16-125.17-103.693-179.218-135.157H17.406zm118.813 0c59.04 36.955 129.675 89.52 179.218 146.5l19.28 22.22-28.562-7C218.233 157.345 106.5 113.523 17.406 75.28v41.47c168.198 73.64 345.253 128.555 476.344 151.5-37.757-41.128-76.177-78.16-114.25-111.5C314.105 99.484 250 53.816 192.03 17.156h-55.81zM42.843 148c17.93 33.19 29.747 103.934 20.125 139.938-2.986 11.166-19.064 40.526-19.064 53.812 0 18.01 14.468 32.664 32.47 32.22 18-.446 32.435-16.15 32.436-34.158 0-13.366-16.692-41.73-19.75-52.78-10.666-38.56 6.714-92.154 31.626-107.782-25.94-9.94-51.947-20.35-77.844-31.25zm169.312 64.375c43.138 48.155 51.117 154.67 39.375 197.5C248.288 421.71 231 453.25 231 467.438c0 19.116 14.893 33.87 34 33.718 19.107-.15 34.688-15.164 34.688-34.28 0-14.103-15.892-45.715-19.813-57.22-14.753-43.3-3.968-143.785 21.25-141.187 22.02 2.264 25.332 49.124 16.28 79.936-2.083 7.093-12.028 25.58-12.03 34.125 0 11.517 9.02 20.468 20.53 20.376 11.512-.093 20.53-9.203 20.533-20.72 0-8.494-8.95-26.975-11.313-33.905-8.155-23.937 3.22-74.906 20.906-91.967-45.956-12.332-94.36-27.076-143.874-43.938zm173 51.53c18.477 25.58 24.733 78.443 12.78 123.158-3.71 13.880-23.684 50.358-23.686 66.875 0 22.387 17.997 40.613 40.375 40.062 22.378-.550 40.344-20.050 40.344-42.438 0-16.616-20.764-51.887-24.564-65.625-13.298-48.074 7.292-89.676 35.906-103.780-25.730-5.033-52.903-11.147-81.156-18.250z"/></symbol>
+    <symbol id="ic-moon" viewBox="0 0 512 512"><path d="M253.125 18.563c-131.53 0-238.375 106.813-238.375 238.343 0 131.53 106.846 238.344 238.375 238.344 131.53 0 238.344-106.815 238.344-238.344 0-131.528-106.816-238.344-238.345-238.344zm-23.938 52.093c40.517 0 77.988 12.904 108.532 34.813a154.099 154.099 0 0 0-17.064-.97c-84.157 0-152.375 68.25-152.375 152.406 0 84.157 68.22 152.375 152.376 152.375 5.762 0 11.467-.313 17.063-.936-30.545 21.91-68.016 34.812-108.533 34.812-102.98 0-186.28-83.272-186.28-186.25 0-102.977 83.3-186.25 186.28-186.25z"/></symbol>
+    <symbol id="ic-neck-bite" viewBox="0 0 512 512"><path d="M18 18v269.635c12.326-4.654 24.576-9.755 36.59-15.332 20.283-16.343 31.497-28.505 37.603-43.502 6.494-15.947 7.643-36.665 5.246-70.93l17.955-1.26c2.457 35.128 1.698 58.774-6.532 78.982a83.859 83.859 0 0 1-4.96 10.137c.01-.006.02-.01.027-.017-6.666 16.806-47.957 57.937-85.932 84.416V494H494v-24.465c-57.7-4.972-120.788-12.223-178.53-37.746-71.53-31.618-133.716-92.173-162.952-207.93-1.824-7.22-.89-14.784.8-24.182 1.69-9.398 4.476-20.38 7.883-32.582 6.815-24.404 16.128-53.64 24.136-82.99 6.222-22.803 11.618-45.683 14.496-66.106H18zm253.326 43.703c-5.677.675-14.48 24.16-8.38 30.938 17.84 19.823 73.65 32.397 76.005 24.965 2.244-7.074-44.703-36.343-66.014-55.367a2.25 2.25 0 0 0-.522-.35c-.345-.17-.71-.23-1.088-.185zm214.418 70.44c-28.44 2.68-83.598-1.59-85.988 5.435-2.51 7.38 49.885 30.35 76.004 24.967 9.524-1.963 16.673-29.287 10.615-30.38a2.331 2.331 0 0 0-.63-.022zm-207.848 69.11c-12.725 12.637-22.49 43.11-20.156 60.743l30.303-40.517 5.107 35.407 20.225-10.147 10.146 20.227 20.226-10.15 10.15 20.228 25.262-25.332.07 50.596c11.704-12.976 23.372-42.82 20.157-60.744-43.176-3.936-83.91-16.537-121.49-40.314zm-22.308 67.296c-12.334 12.812-16.927 26.04-14.172 43.76 32.817 31.52 75.394 45.256 121.73 39.577 13.217-12.527 15.9-26.378 14.168-43.766l-24.437 23.605-10.316-20.178-20.164 10.27-10.27-20.167-20.16 10.27-10.27-20.162-20.116 10.285-5.99-33.494h-.002zM128 272c4.836-.035 10.04 1.717 14.506 4.88 9.482 6.715 13.138 17.85 8.166 24.868-.158.21-.324.41-.496.61-4.204 30.237-4.278 40.477.77 70.716 2.155 20.262-6.275 19.11-6.946 19.842 0 0-14.647-.792-11.053-19.842 4.267-29.007 4.585-37.817 1.24-66.443-3.362-.732-6.7-2.225-9.685-4.330-9.482-6.715-13.138-17.848-8.166-24.868 2.433-3.435 6.640-5.394 11.664-5.430V272zm66.660 87.720c4.836-.033 10.040 1.716 14.506 4.880 9.482 6.715 13.138 17.850 8.166 24.870-.158.208-.324.410-.496.608-4.204 30.240-4.278 38.478.770 68.717 2.786 20.262-1.643 26.247-8.670 26.162-7.028-.084-12.924-7.112-9.330-26.162 4.267-29.007 4.586-35.817 1.242-64.443-3.363-.734-6.700-2.227-9.686-4.332-9.482-6.716-13.138-17.850-8.166-24.870 2.433-3.435 6.640-5.392 11.664-5.430z"/></symbol>
+    <symbol id="ic-vampire-cape" viewBox="0 0 512 512"><path d="M256 29c-8 0-15.6 4.345-21.73 12.719C228.139 50.092 224 62.317 224 76s4.139 25.908 10.27 34.281C240.4 118.655 248 123 256 123s15.6-4.345 21.73-12.719C283.861 101.908 288 89.683 288 76s-4.139-25.908-10.27-34.281C271.6 33.345 264 29 256 29zm-95.193 17.709c5.36 11.73 10.839 23.721 17.06 34.92 9.615 17.307 20.842 31.662 34.158 38.32l11.79 5.895a56.89 56.89 0 0 1-4.069-4.93C211.038 109.02 206 93.244 206 76c0-5.837.59-11.5 1.691-16.906-14.322-2.912-29.655-7.03-46.884-12.385zm190.386 0c-17.229 5.355-32.562 9.473-46.884 12.385A84.694 84.694 0 0 1 306 76c0 17.245-5.038 33.02-13.746 44.914a56.89 56.89 0 0 1-4.068 4.93l11.789-5.895c13.316-6.658 24.543-21.013 34.158-38.32 6.221-11.199 11.7-23.19 17.06-34.92zm-124.523 82.02-14.645 7.322c-17.61 8.805-37.942 12.78-52.865 18.377-7.461 2.798-13.401 5.966-16.96 9.347-3.56 3.382-5.2 6.475-5.2 12.225 0 37.6 15.54 83.15 29.61 129.379 14.069 46.228 26.816 93.388 18.216 136.387l-.238 1.181-.537 1.078c-8.94 17.879-22.705 29.286-37.586 37.79-3.661 2.091-7.398 4.026-11.178 5.878 23.968-.33 48.317-4.023 66.35-22.056L208 459.27l6.363 6.366c8 8 15.805 15.74 23.037 21.164 3.413 2.56 6.625 4.506 9.6 5.873V244c0-1-1.397-6.713-4.414-13.21-3.017-6.498-7.362-14.25-12.219-22.02-9.714-15.543-21.79-31.467-28.73-38.407l-8.83-8.828 11.168-5.586c14.926-7.463 21.56-14.477 24.537-18.941 1.488-2.232 2.083-3.851 2.334-4.73.011-.041.006-.01.015-.044a51.013 51.013 0 0 1-4.191-3.506zm58.66 0a51.013 51.013 0 0 1-4.191 3.505c.01.035.004.003.015.043.251.88.846 2.499 2.334 4.73 2.976 4.465 9.61 11.479 24.537 18.942l11.168 5.586-8.83 8.828c-6.94 6.94-19.016 22.864-28.73 38.407-4.857 7.77-9.204 15.522-12.22 22.02C266.394 237.286 265 243 265 244v248.674c2.975-1.367 6.187-3.313 9.6-5.873 7.232-5.424 15.037-13.164 23.037-21.164L304 459.27l6.363 6.366c18.033 18.033 42.382 21.726 66.350 22.056-3.780-1.852-7.517-3.787-11.178-5.879-14.881-8.503-28.647-19.910-37.586-37.789l-.537-1.078-.238-1.181c-8.600-42.999 4.147-90.159 18.217-136.387C359.460 259.150 375 213.600 375 176c0-5.750-1.640-8.843-5.200-12.225-3.559-3.381-9.499-6.550-16.960-9.347-14.923-5.596-35.255-9.572-52.865-18.377zM246.736 141a37.331 37.331 0 0 1-3.248 5.992c-3.909 5.864-10.580 12.602-21.330 19.326 7.528 9.042 15.934 20.847 23.475 32.912.470.752.911 1.496 1.367 2.245V141zM265 141v60.475c.456-.749.898-1.493 1.367-2.245 7.541-12.065 15.947-23.870 23.475-32.912-10.750-6.724-17.421-13.462-21.330-19.326a37.331 37.331 0 0 1-3.248-5.992z"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <header class="top">
+    <div class="side"><span class="brandmini">Roque &amp; Sort</span><b id="sideName">Préparation</b></div>
+    <div class="topr"><button class="ghost" id="histBtn">Historique</button><button class="ghost" id="sndBtn" data-mute aria-pressed="true">Son</button><button class="ghost" id="menuBtn">Menu</button></div>
+  </header>
+  <div id="plateTop"></div>
+  <div class="arena"><div class="board" id="board" role="grid" aria-label="Plateau 10 par 10"></div></div>
+  <div id="plateBot"></div>
+  <div class="ctrl"><div id="elxBar"></div><button class="endbtn" id="endBtn" disabled>Fin du tour</button></div>
+  <section class="panel" id="panel"></section>
+</div>
+<template id="rulesTpl">
+    <p><b>But :</b> faire tomber le Roi adverse à 0 PV.</p>
+    <p><b>Plateau :</b> 10 × 10. Les armées commencent au fond, avec une colonne libre sur chaque flanc et 6 rangées d’écart entre elles. Un pion qui atteint la dernière rangée devient Dame.</p>
+    <p><b>Mana :</b> 1 au premier tour, puis +1 par tour jusqu’à 5. Le mana non utilisé est perdu.</p>
+    <p><b>Coûts :</b> déplacement 1, attaque 1, Protection 1, sort de pièce maîtresse 2 (une fois par tour et par pièce), sort global 3 (Nyx : 3 et 2), roque 3, ultime 4 (une fois par partie). Chaque pièce se déplace ou attaque une fois par tour.</p>
+    <p><b>Combat :</b> une pièce n’entre sur la case adverse que si elle tue. Sinon elle s’arrête juste devant. Le Cavalier, le Pion et le Roi frappent depuis leur case. Dégâts = attaque × 100 / (100 + défense).</p>
+    <p><b>Types de dégâts :</b> Roi et Fou font des dégâts magiques (contre la RM), Cavalier et Dame des dégâts physiques (contre l’armure), Tour et Pion des dégâts hybrides (contre la moyenne des deux).</p>
+    <p><b>Statuts :</b> séparés des dégâts. Protection bloque tout nouveau statut négatif jusqu’à ton prochain tour et met le saignement en pause. Seul le Soigneur retire un statut. Après un étourdissement, la pièce est immunisée aux contrôles pendant 1 tour.</p>
+    <p><b>Sorts globaux :</b> jamais sur la Dame ni le Roi. Le roque échange le Roi et une pièce maîtresse, où qu’ils soient.</p>
+    <p><b>Pièces maîtresses :</b> les 2 pièces du type de ta classe (2 Cavaliers, 2 Tours, 2 Fous ou 2 Pions au choix). Le Vampire n’a que sa Dame, qui monte à 95 PV. Pour le Bastion, tous les Pions sont des pièces maîtresses (+35 PV). Les Tours de Bran ont +50 PV. L’ultime reste unique par partie.</p>
+    <p><b>Soins :</b> une pièce qui saigne ne reçoit que 50 % des soins.</p>
+    <p><b>Crédits :</b> icônes de sorts de game-icons.net, sous licence CC BY 3.0. Voix de l’annonceur : Kenney (kenney.nl), CC0.</p>
+    <p><b>Boss :</b> chaque boss joue une classe fixe et a ses propres bonus (PV, attaque, mana ou régénération du Roi). Bats-les dans l’ordre pour débloquer le suivant.</p>
+</template>
+<div class="overlay" id="overlay" hidden></div>
+<div class="toast" id="toast"></div>
+<div class="say" id="say" role="status" aria-live="polite"></div>
+<input type="file" id="picIn" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+
+<script>
+"use strict";
+const G = s => s + "︎";
+const T = {
+  P:{n:"Pion",g:"♟",hp:55,atk:22,dt:"hyb",arm:8,mr:8},
+  R:{n:"Tour",g:"♜",hp:170,atk:30,dt:"hyb",arm:35,mr:25},
+  B:{n:"Fou",g:"♝",hp:90,atk:38,dt:"mag",arm:10,mr:25},
+  N:{n:"Cavalier",g:"♞",hp:105,atk:34,dt:"phys",arm:15,mr:15},
+  Q:{n:"Dame",g:"♛",hp:90,atk:42,dt:"phys",arm:10,mr:10},
+  K:{n:"Roi",g:"♚",hp:130,atk:15,dt:"mag",arm:25,mr:25}
+};
+const LAMBDA = {
+  P:"Soldat de base.",
+  R:"Tank : beaucoup de PV et d’armure. Dégâts hybrides.",
+  B:"Dégâts magiques, frappe de loin en diagonale.",
+  N:"Saute par-dessus les pièces et frappe depuis sa case.",
+  Q:"La pièce la plus mobile, mais fragile.",
+  K:"Tour de contrôle aux défenses élevées. S’il tombe, la partie est perdue."
+};
+const CL = {
+  assassin:{n:"Assassin",champ:"Nyx",col:"#8A5BE0",p:"N",
+    passif:"Une pièce qui tue se camoufle jusqu’à ton prochain tour : elle esquive la prochaine attaque directe, pas les sorts.",
+    sort:["Les yeux des ombres","Marque un ennemi à 3 cases ou moins (−15 armure pendant 2 tours) et l’attaque aussitôt à 60 % de sa force. Compte comme l’attaque du tour."],
+    glob:["Dague d’Agamemnon","Pendant 2 tours, les attaques de cette pièce appliquent 2 tours de saignement."],
+    ult:["Exécution orchestrée","Attaque gratuite à +20 % de dégâts. S’il tue, il réattaque encore plus fort (+40 %, puis +60 %, 3 attaques max)."]},
+  controle:{n:"Contrôle",champ:"Vaelis",col:"#2EC4B3",p:"B",
+    passif:"Brise-cristal : un ennemi sous contrôle (étourdi, immobilisé, ralenti ou provoqué) subit 20 % de dégâts en plus, et 30 % s’ils viennent d’un Fou.",
+    sort:["Chaînes du mage","Fou uniquement. Immobilise 1 tour un ennemi à portée d’attaque du Fou (sur ses diagonales), sauf s’il est sous Protection."],
+    glob:["Bouclier de glace","Pendant 2 tours, si cette pièce est attaquée, l’attaquant subit 20 % des dégâts infligés et est étourdi."],
+    ult:["Stase arcanique","Ennemis à 2 cases ou moins de la pièce : 35 dégâts magiques et étourdis 1 tour. La pièce ne peut plus attaquer ce tour."]},
+  gardien:{n:"Gardien",champ:"Bran",col:"#E0B23F",p:"R",
+    passif:"Une fois par tour, gratuitement : une pièce alliée gagne +7 armure et +7 RM (max +21). Le bonus disparaît dès que la pièce subit une attaque directe.",
+    sort:["Provocation","Les ennemis à 2 cases ou moins de la Tour ne peuvent attaquer qu’elle pendant 1 tour. La Tour gagne +5 armure et +5 RM par ennemi provoqué."],
+    glob:["Manœuvre offensive","Sur une autre pièce : elle et toutes celles de son type gagnent +20 armure pendant 2 tours. Sur une Tour : elle attaque aussitôt une cible à sa portée et inflige en plus 100 % de son armure, puis perd tous ses bonus d’armure."],
+    ult:["Serment du Gardien","Une pièce alliée, Roi compris, est immunisée à tous les effets adverses jusqu’à ton prochain tour."]},
+  soigneur:{n:"Soigneur",champ:"Sélène",col:"#4CCB7A",p:"B",
+    passif:"Au début de ton tour, ta pièce la plus blessée récupère 5 PV.",
+    sort:["Lumière sacrée","Le Fou désigne un allié sur une diagonale (3 cases) : le Fou et cet allié récupèrent 10 PV et infligent 10 dégâts magiques en plus à chaque attaque pendant 2 tours."],
+    glob:["Aura de soin","Soigne de 8 les alliés autour de cette pièce, maintenant et au début de ton prochain tour."],
+    ult:["Résurrection","Ramène une pièce morte (hors Dame et Roi) sur sa case de départ avec 30 % de ses PV."]},
+  bastion:{n:"Bastion",champ:"Rurik",col:"#C08A52",p:"P",
+    passif:"Tes pions ont +35 PV, +10 dégâts et avancent toujours de 2 cases. Un pion à côté d’un autre pion allié gagne +10 armure, +10 RM et +12 dégâts.",
+    sort:["Mur du courage","Pose un mur à côté du pion pendant 2 tours (3 murs actifs max). Seul un Cavalier saute par-dessus. Les pions à côté d’un Mur du courage gagnent +8 dégâts."],
+    glob:["Barricade défensive","Pose un mur de 3 cases (si possible) à côté de cette pièce pendant 2 tours. Les pions à côté de la barricade gagnent +10 armure et +10 RM."],
+    ult:["Grande Muraille","Murs sur 5 cases de la rangée choisie, centrées sur la case touchée, pendant 2 tours. Pendant ce temps, les dégâts et la défense de tes pions sont doublés."]},
+  vampire:{n:"Vampire",champ:"Morvanne",col:"#D0385E",p:"Q",
+    passif:"Toutes tes pièces récupèrent 7 % des dégâts qu’elles infligent.",
+    sort:["Morsure","La Dame attaque et récupère 100 % des dégâts. L’excédent devient un bouclier (15 max)."],
+    glob:["Soif de sang","Pendant 2 tours, si cette pièce tue, elle récupère 15 PV et réattaque."],
+    ult:["Nuit écarlate","Jusqu’à la fin de la partie, au début de chacun de tes tours, la Dame vole 6 PV à chaque ennemi collé à elle."]},
+  tireuse:{n:"Tireuse",champ:"Kessa",col:"#E07A2E",p:"R",
+    passif:"Une attaque sur quatre de ton armée est un coup critique ×1,25 (compteur affiché sur ta bannière). Ses Tours ont 150 PV.",
+    sort:["Tir perforant","La Tour tire en ligne droite sans bouger : elle touche le premier ennemi, puis le suivant à 50 %. Compte comme l’attaque du tour."],
+    glob:["Munitions lourdes","La prochaine attaque de cette pièce ignore 50 % de l’armure."],
+    ult:["Salve finale","La Tour tire sur toute sa ligne et toute sa colonne, à travers les pièces : chaque ennemi touché subit 60 % de son attaque."]},
+  belier:{n:"Bélier",champ:"Brakka",col:"#8A8F3C",p:"R",
+    passif:"Une pièce alliée qui avance d’au moins 3 cases avant d’attaquer fait +20 % de dégâts.",
+    sort:["Charge","La Tour fonce jusqu’au premier ennemi de sa ligne, l’attaque et le repousse de 2 cases. S’il heurte une pièce, un mur ou le bord, il est étourdi 1 tour."],
+    glob:["Blindage","Pendant 2 tours, la pièce ne peut être ni repoussée, ni déplacée de force, ni immobilisée."],
+    ult:["Défonceur","La Tour traverse toute sa ligne : elle blesse et écarte les ennemis sur son passage et détruit les murs."]},
+  duelliste:{n:"Duelliste",champ:"Sera",col:"#7EE0B5",p:"N",
+    passif:"Une de tes pièces qui survit à une attaque au corps à corps renvoie 15 % des dégâts à l’attaquant.",
+    sort:["Défi","Pendant 2 tours, le Cavalier et un ennemi à portée de saut ne peuvent attaquer que l’un l’autre. Le Cavalier fait +25 % de dégâts contre lui."],
+    glob:["Parade","La pièce bloque entièrement la prochaine attaque directe qu’elle subit."],
+    ult:["Estocade","Attaque à ×2 sur la cible défiée. Si elle meurt, le Cavalier récupère tous ses PV."]},
+  pieges:{n:"Piégeuse",champ:"Nira",col:"#D6589B",p:"N",
+    passif:"Tes pièces font +10 % de dégâts aux cibles immobilisées ou ralenties.",
+    sort:["Piège à loup","Pose un piège caché sur une case vide à portée de saut. L’ennemi qui s’y arrête subit 20 dégâts et est immobilisé 1 tour. 3 pièges max, durée 4 tours."],
+    glob:["Filet","La prochaine attaque de la pièce immobilise la cible 1 tour."],
+    ult:["Terrain miné","Pose un piège sur toutes les cases vides à portée de saut du Cavalier."]},
+  necro:{n:"Nécromancien",champ:"Ossian",col:"#5B5F73",p:"B",
+    passif:"Un ennemi tué à 2 cases ou moins d’une de tes pièces laisse un squelette sur sa case (45 PV, se joue comme un pion) pendant 3 tours.",
+    sort:["Relever","Invoque un squelette sur une case vide à côté du Fou. Un seul squelette actif par Fou."],
+    glob:["Lien spectral","Si cette pièce meurt dans les 2 tours, elle revient en squelette."],
+    ult:["Armée des morts","Chaque pion allié mort revient en squelette sur sa case de départ, pendant 3 tours."]},
+  tempete:{n:"Mage-tempête",champ:"Zéphyr",col:"#2F6BFF",p:"B",
+    passif:"Chaque sort qui touche un ennemi lui ajoute une charge. À 3 charges, il est étourdi 1 tour.",
+    sort:["Éclair en chaîne","20 dégâts magiques sur un ennemi en diagonale (3 cases), puis jusqu’à 3 rebonds sur des ennemis voisins, −25 % à chaque rebond."],
+    glob:["Orage","Pendant 2 tours, les attaques de la pièce font 10 dégâts magiques en plus à un ennemi collé à la cible."],
+    ult:["Tempête","Zone de 3 × 3 cases, visible par l’adversaire : 35 dégâts magiques au début de ton prochain tour."]},
+  metamorphe:{n:"Métamorphe",champ:"Ulfar",col:"#8DC63F",p:"P",
+    passif:"Chaque pièce alliée qui tue gagne +5 d’attaque pour le reste de la partie (max +15). Ses 2 pions maîtres ont 90 PV.",
+    sort:["Forme bestiale","Pendant 2 tours, le pion maître se déplace et attaque comme un Cavalier."],
+    glob:["Rugissement","Pendant 2 tours, +20 % de dégâts et insensible au ralentissement."],
+    ult:["Meute","Tous tes pions prennent la Forme bestiale pendant ce tour."]},
+  artificier:{n:"Artificière",champ:"Pyra",col:"#E6D23A",p:"P",
+    passif:"Un pion allié qui meurt explose et inflige 15 dégâts aux ennemis voisins. Ses 2 pions maîtres ont 90 PV.",
+    sort:["Bombe collante","Colle une bombe sur un ennemi voisin : elle explose au début de ton prochain tour (30 dégâts à la cible, 15 autour)."],
+    glob:["Poudre","Pendant 3 tours, la pièce explose aussi si elle meurt."],
+    ult:["Feu d’artifice","Un pion maître se sacrifie et inflige 50 dégâts à tous les ennemis à 2 cases ou moins."]}
+};
+const LV = ["Facile","Normal","Difficile"];
+const VQHP=95;
+/* coûts de sorts propres à une classe (sinon : sort 2, sort global 3) */
+const SCOST={assassin:{sort:3,glob:2},tireuse:{sort:3}};
+const costOf=(c,k)=>(SCOST[c]||{})[k]||(k==="sort"?2:3);
+const BOSSES = [
+  {n:"Gorvak",t:"le Geôlier des remparts",cls:"bastion",lvl:0,m:{},d:"Aucun bonus. Il s’abrite derrière ses murs."},
+  {n:"Sœur Ilmée",t:"la Veilleuse",cls:"soigneur",lvl:0,m:{regen:10},d:"Son Roi récupère 10 PV au début de chacun de ses tours."},
+  {n:"Kaar",t:"Lame grise",cls:"assassin",lvl:1,m:{},d:"Aucun bonus, mais il joue sérieusement."},
+  {n:"Hiverne",t:"la Tisse-Givre",cls:"controle",lvl:1,m:{atk:1.1},d:"Ses pièces frappent 10 % plus fort."},
+  {n:"Veyra",t:"la Pâle",cls:"vampire",lvl:1,m:{hp:1.15},d:"Toutes ses pièces ont 15 % de PV en plus."},
+  {n:"Brann",t:"le Colosse",cls:"gardien",lvl:1,m:{hp:1.25},d:"Toutes ses pièces ont 25 % de PV en plus."},
+  {n:"Ombrecorne",t:"la Traque",cls:"assassin",lvl:2,m:{atk:1.15},d:"Ses pièces frappent 15 % plus fort."},
+  {n:"Solen",t:"l’Archimage",cls:"controle",lvl:2,m:{mana:1},d:"+1 mana à chaque tour, jusqu’à 6."},
+  {n:"Carmine",t:"la Reine écarlate",cls:"vampire",lvl:2,m:{hp:1.2,atk:1.1},d:"+20 % de PV et +10 % d’attaque."},
+  {n:"Le Roi sans couronne",t:"dernier boss",cls:"gardien",lvl:2,m:{hp:1.3,atk:1.15,mana:1,regen:15},d:"+30 % de PV, +15 % d’attaque, +1 mana, et son Roi récupère 15 PV par tour."}
+];
+const STI = {bleed:"🩸",stun:"💫",root:"⛓",slow:"🐌",silence:"🔇",mark:"🎯",taunt:"😤",camo:"👤",prot:"🛡",immune:"✨",ccImm:"◎"};
+const STL = {bleed:"Saignement",stun:"Étourdi",root:"Immobilisé",slow:"Ralenti",silence:"Silence",mark:"Marqué −20 armure",taunt:"Provoqué",camo:"Camouflé",prot:"Protection",immune:"Immunisé",ccImm:"Immunisé aux contrôles"};
+const BFL = {dagger:"Dague d’Agamemnon",frost:"Onde de givre",ice:"Bouclier de glace",provo:"Provocation : armure et RM",light:"Lumière sacrée : +10 dégâts magiques",blood:"Soif de sang",aura:"Aura de soin",rempart:"Manœuvre : +20 armure"};
+const NEG = ["bleed","stun","root","slow","silence","mark","taunt"];
+const CC = ["stun","root","slow","taunt"];
+const ADJ=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+const ORTH=[[-1,0],[1,0],[0,-1],[0,1]], DIAG=[[-1,-1],[-1,1],[1,-1],[1,1]];
+const KN=[[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
+const N=10, NN=N*N;
+const sq=(r,c)=>r*N+c, R_=s=>Math.floor(s/N), C_=s=>s%N, inb=(r,c)=>r>=0&&r<N&&c>=0&&c<N;
+const cheb=(a,b)=>Math.max(Math.abs(R_(a)-R_(b)),Math.abs(C_(a)-C_(b)));
+const adjSq=s=>ADJ.filter(([dr,dc])=>inb(R_(s)+dr,C_(s)+dc)).map(([dr,dc])=>sq(R_(s)+dr,C_(s)+dc));
+const SIDE=["bleu","rouge"], SCLS=["blue","red"];
+
+let S;
+const SETS={assassin:"nyx",controle:"vaelis",gardien:"bran",soigneur:"selene",bastion:"rurik",vampire:"morvanne",
+    tireuse:"kessa",belier:"brakka",duelliste:"sera",pieges:"nira",necro:"ossian",tempete:"zephyr",metamorphe:"ulfar",artificier:"pyra"},
+  SETCOL={nyx:"#8a5be0",vaelis:"#2eafc4",bran:"#c69530",selene:"#7ed321",rurik:"#8b572a",morvanne:"#d0021b",
+    kessa:"#E07A2E",brakka:"#8A8F3C",sera:"#7EE0B5",nira:"#D6589B",ossian:"#5B5F73",zephyr:"#2F6BFF",ulfar:"#8DC63F",pyra:"#E6D23A"},
+  SETSYM={vaelis:"nyx",bran:"nyx",selene:"nyx",rurik:"nyx",morvanne:"nyx",kessa:"nyx",brakka:"nyx",sera:"nyx",nira:"nyx",ossian:"nyx",zephyr:"nyx",ulfar:"nyx",pyra:"nyx"};
+const setOf=c=>c&&SETS[c]||"";
+function piece(t,o,extra="",style="",set=""){
+  if(set) return `<span class="gtile ${o==null?"":["blue","red"][o]} ${extra}" style="--bg:${SETCOL[set]||"#555"};${style}" aria-hidden="true"><svg class="gi2" viewBox="0 0 512 512"><use href="#gi-${SETSYM[set]||set}-${t}"/></svg></span>`;
+  return `<svg class="pc ${o==null?"tint":["blue","red"][o]} ${extra}" viewBox="0 0 100 100" ${style?`style="${style}"`:""} aria-hidden="true"><use href="#pc-${t}"/></svg>`;}
+let SIM=false;            // vrai pendant que l’ordinateur simule des coups
+let GM={mode:"local",ai:1,lvl:1,boss:null,tok:0,done:false};
+let AIBUSY=false;
+const $=id=>document.getElementById(id);
+
+function mkPl(){return {cls:null,mids:[],turns:0,ult:false,night:0,gpass:false};}
+function place(t,o,s){
+  const p={id:S.nid++,t,o,sq:s,start:s,hp:T[t].hp,max:T[t].hp,st:{},bf:{},perm:0,shield:0,acted:false,free:false,moved:false,dead:false};
+  S.pieces.push(p); S.board[s]=p;
+}
+function initState(){
+  S={board:Array(NN).fill(null),walls:Array(NN).fill(null),pieces:[],dead:[],pl:[mkPl(),mkPl()],
+     cur:0,mana:0,phase:"setup",step:0,sel:null,mode:null,log:[],winner:null,chain:null,nid:1,last:null,fx:[],traps:[],storms:[],bombs:[]};
+  const back="RNBQKBNR";
+  for(let c=0;c<8;c++){const x=c+1;place(back[c],1,sq(0,x));place("P",1,sq(1,x));place("P",0,sq(N-2,x));place(back[c],0,sq(N-1,x));}
+}
+
+const byId=id=>S.pieces.find(p=>p.id===id);
+const cls=o=>S.pl[o].cls;
+const isMaster=p=>S.pl[p.o].mids.includes(p.id);
+const nm=p=>p.skel?`Squelette ${SIDE[p.o]}`:`${T[p.t].n} ${SIDE[p.o]}`;
+const empty=s=>!S.board[s]&&!S.walls[s];
+const alive=o=>S.pieces.filter(p=>!p.dead&&p.o===o);
+const bossOf=o=>GM.mode==="ai"&&GM.boss!=null&&o===GM.ai?BOSSES[GM.boss]:null;
+const manaBonus=o=>{const b=bossOf(o);return b&&b.m.mana||0;};
+const manaCap=o=>5+manaBonus(o);
+const atkMul=o=>{const b=bossOf(o);return b&&b.m.atk||1;};
+
+function log(m){S.log.unshift(m); if(S.log.length>400) S.log.pop();}
+function fx(s,t,k){ if(!SIM&&S.fx){S.fx.push({s,t,k});sfx(k==="dmg"?"hit":k);} }
+let tt;
+function toast(m){ if(SIM) return; const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2200);}
+function spend(n){ if(S.mana<n){toast("Pas assez de mana");return false;} S.mana-=n; return true; }
+
+function hasAdjPawn(p){return adjSq(p.sq).some(s=>{const q=S.board[s];return q&&q.o===p.o&&q.t==="P";});}
+const isBastPawn=p=>p.t==="P"&&cls(p.o)==="bastion";
+const nearWall=(p,k)=>adjSq(p.sq).some(s=>{const w=S.walls[s];return w&&w.o===p.o&&w.k===k;});
+const muraille=p=>isBastPawn(p)&&S.pl[p.o].mur>0;
+function atkOf(p){
+  let a=T[p.t].atk+(p.atkB||0);
+  if(isBastPawn(p)){ a+=10; if(hasAdjPawn(p)) a+=12; if(nearWall(p,"courage")) a+=8; }
+  if(muraille(p)) a*=2;
+  return a*atkMul(p.o);
+}
+function armOf(p,att){
+  let a=T[p.t].arm+p.perm+(p.bf.provo?p.provoAmt||0:0);
+  if(p.bf.rempart) a+=20;
+  if(isBastPawn(p)&&hasAdjPawn(p)) a+=10;
+  if(isBastPawn(p)&&nearWall(p,"barr")) a+=10;
+  if(muraille(p)) a*=2;
+  if(p.st.mark) a-=15;
+  
+  if(att&&att.heavy) a=Math.round(a*0.5);
+  return Math.max(0,a);
+}
+const mrOf=p=>(T[p.t].mr+p.perm+(p.bf.provo?p.provoAmt||0:0)+(isBastPawn(p)&&nearWall(p,"barr")?10:0)+(isBastPawn(p)&&hasAdjPawn(p)?10:0))*(muraille(p)?2:1);
+
+function heal(p,amt,overflow){
+  if(p.dead||amt<=0) return 0;
+  if(p.st.bleed) amt=Math.round(amt*0.5);
+  const h=Math.min(amt,p.max-p.hp); p.hp+=h;
+  if(overflow&&amt>h) p.shield=Math.min(15,p.shield+amt-h);
+  if(h>0) fx(p.sq,"+"+h,"heal");
+  return h;
+}
+/* défense selon le type : physique = armure, magique = RM, hybride = moitié-moitié */
+function defOf(tgt,src,dt){return dt==="true"?0:dt==="mag"?mrOf(tgt):dt==="hyb"?(armOf(tgt,src)+mrOf(tgt))/2:armOf(tgt,src);}
+const DTL={phys:"physique",mag:"magique",hyb:"hybride"};
+function hit(src,tgt,raw,dt,o={}){
+  if(tgt.dead) return 0;
+  if(tgt.st.immune){log(`${nm(tgt)} est immunisée`);fx(tgt.sq,"Immunisé","info");return 0;}
+  if(o.direct&&tgt.st.camo){delete tgt.st.camo;log(`${nm(tgt)} esquive grâce au camouflage`);voice("combo_breaker");fx(tgt.sq,"Esquive","info");return 0;}
+  if(o.direct&&tgt.parry){tgt.parry=false;log(`${nm(tgt)} pare l’attaque`);fx(tgt.sq,"Parade","info");return 0;}
+  if(src&&cls(src.o)==="controle"&&CC.some(k=>tgt.st[k])) raw*=src.t==="B"?1.3:1.2;
+  if(src&&cls(src.o)==="pieges"&&(tgt.st.root||tgt.st.slow)) raw*=1.1;
+  const def=defOf(tgt,src,dt);
+  let dmg=Math.max(1,Math.round(raw*100/(100+def)));
+  const total=dmg;
+  if(tgt.shield){const a=Math.min(tgt.shield,dmg);tgt.shield-=a;dmg-=a;}
+  tgt.hp-=dmg;
+  fx(tgt.sq,"−"+total,o.crit?"crit":dt==="mag"?"mag":"dmg");
+  const who=src?nm(src):o.boom?"Explosion":"Saignement";
+  log(`${who} → ${nm(tgt)} : ${total} dégâts${o.crit?" (critique)":""}${dt==="mag"?" magiques":dt==="hyb"?" hybrides":""}`);
+  if(src&&!src.dead){
+    let ls=cls(src.o)==="vampire"?0.07:0;
+    if(o.lifesteal) ls+=o.lifesteal;
+    if(ls>0){const h=Math.round(total*ls); heal(src,h,!!o.lifesteal);}
+  }
+  if(o.direct&&tgt.perm>0&&!SIM){log(`${nm(tgt)} perd son bonus d’armure`);}
+  if(o.direct&&tgt.perm>0) tgt.perm=0;
+  if(tgt.hp>0&&o.spell&&src&&cls(src.o)==="tempete"){tgt.chg=(tgt.chg||0)+1; if(tgt.chg>=3){tgt.chg=0; if(addSt(tgt,"stun",1)){log(`${nm(tgt)} est foudroyé (3 charges)`);fx(tgt.sq,"Foudroyé","info");}}}
+  if(tgt.hp<=0){kill(tgt,src);}
+  else if(!SIM&&tgt.t==="K"&&tgt.hp<tgt.max*0.3){S.fr=S.fr||{};if(!S.fr[tgt.o]){S.fr[tgt.o]=1;voice("final_round",300);}}
+  return total;
+}
+function kill(p,src){
+  sfx("kill");
+  if(!SIM&&src&&src.o===S.cur){S.kc=(S.kc||0)+1;const k=Math.min(3,S.kc);if(!say(src.o,"kill"+k)&&S.kc===2)voice("multi_kill");}
+  p.dead=true;p.hp=0;S.board[p.sq]=null;S.dead.push(p);
+  log(`${nm(p)} est tombé`);
+  if(src&&!src.dead&&cls(src.o)==="metamorphe"&&(src.atkB||0)<15){src.atkB=(src.atkB||0)+5;log(`${nm(src)} gagne +5 d’attaque`);}
+  if(!p.skel&&((p.t==="P"&&cls(p.o)==="artificier")||p.bf.powder)) explode(p.sq,p.o,15,p);
+  if(p.bf.spectral&&!p.skel&&p.t!=="K"&&!S.board[p.sq]) spawnSkel(p.o,p.sq);
+  else [0,1].forEach(o=>{ if(o!==p.o&&cls(o)==="necro"&&!S.board[p.sq]&&alive(o).some(q=>cheb(q.sq,p.sq)<=2)) spawnSkel(o,p.sq); });
+  if(p.t==="K"&&S.winner===null) S.winner=1-p.o;
+  if(src&&!src.dead&&cls(src.o)==="assassin"&&isMaster(src)){src.st.camo=true;log(`${nm(src)} se camoufle`);}
+}
+function spawnSkel(o,s,src){
+  const p={id:S.nid++,t:"P",o,sq:s,start:s,hp:45,max:45,st:{},bf:{},perm:0,shield:0,acted:true,free:false,moved:true,dead:false,skel:3};
+  if(src) p.from=src; S.pieces.push(p); S.board[s]=p; log(`Un squelette ${SIDE[o]} se relève`); fx(s,"Squelette","info"); return p;
+}
+function vanish(p){ if(p.dead) return; p.dead=true; S.board[p.sq]=null; log(`${nm(p)} retombe en poussière`); }
+function explode(s,o,dmg,src){
+  fx(s,"Boum","crit"); sfx("crit");
+  adjSq(s).forEach(x=>{const q=S.board[x]; if(q&&q.o!==o) hit(src&&!src.dead?src:null,q,dmg,"true",{boom:1});});
+}
+function addSt(p,k,t,extra){
+  if(p.dead) return false;
+  if(p.st.immune) return false;
+  if(p.st.prot&&NEG.includes(k)){log(`${STL[k]} bloqué par la Protection de ${nm(p)}`);return false;}
+  if(CC.includes(k)&&p.st.ccImm){log(`${nm(p)} est immunisée aux contrôles`);return false;}
+  if(k==="slow"&&p.bf.roar){log(`${nm(p)} rugit : pas de ralentissement`);return false;}
+  if(k==="root"&&p.bf.blind){log(`${nm(p)} est blindée : pas d’immobilisation`);return false;}
+  if(k==="bleed"){const c=p.st.bleed;p.st.bleed={t:Math.max(c?c.t:0,t),d:extra||10};}
+  else if(k==="taunt"){p.st.taunt={t,src:extra};}
+  else p.st[k]=Math.max(p.st[k]||0,t);
+  return true;
+}
+
+function occ(s){return S.board[s]||(S.walls[s]?"W":null);}
+function gen(p){
+  const moves=[];let atks=[];
+  if(p.st.stun) return {moves,atks};
+  const r=R_(p.sq),c=C_(p.sq),canMove=!p.st.root,slow=!!p.st.slow;
+  const enemy=q=>q&&q!=="W"&&q.o!==p.o;
+  const kind=(p.t==="P"&&p.bf.beast)?"N":p.t;
+  if(kind==="P"){
+    const d=p.o===0?-1:1,r1=r+d;
+    if(canMove&&inb(r1,c)&&!occ(sq(r1,c))){
+      moves.push(sq(r1,c));
+      const r2=r+2*d;
+      if((!p.moved||isBastPawn(p))&&!slow&&inb(r2,c)&&!occ(sq(r2,c))) moves.push(sq(r2,c));
+    }
+    for(const dc of[-1,1]) if(inb(r1,c+dc)){const q=occ(sq(r1,c+dc));if(enemy(q)) atks.push({tgt:q,land:p.sq});}
+  }else if(kind==="N"){
+    if(!slow) for(const[dr,dc] of KN){
+      if(!inb(r+dr,c+dc)) continue;
+      const s=sq(r+dr,c+dc),q=occ(s);
+      if(!q){if(canMove) moves.push(s);} else if(enemy(q)) atks.push({tgt:q,land:p.sq});
+    }
+  }else if(p.t==="K"){
+    for(const[dr,dc] of ADJ){
+      if(!inb(r+dr,c+dc)) continue;
+      const s=sq(r+dr,c+dc),q=occ(s);
+      if(!q){if(canMove) moves.push(s);} else if(enemy(q)) atks.push({tgt:q,land:p.sq});
+    }
+  }else{
+    const dirs=p.t==="R"?ORTH:p.t==="B"?DIAG:ADJ, maxD=slow?1:N;
+    for(const[dr,dc] of dirs){
+      let last=p.sq;
+      for(let k=1;k<N;k++){
+        const rr=r+dr*k,cc=c+dc*k; if(!inb(rr,cc)) break;
+        const s=sq(rr,cc),q=occ(s);
+        if(!q){if(canMove&&k<=maxD) moves.push(s); last=s; continue;}
+        if(enemy(q)){const need=k-1; if(need===0||(canMove&&need<=maxD)) atks.push({tgt:q,land:need===0?p.sq:last});}
+        break;
+      }
+    }
+  }
+  if(p.st.taunt){const src=byId(p.st.taunt.src); if(src&&!src.dead) atks=atks.filter(a=>a.tgt===src);}
+  if(p.noAtk) atks=[];
+  if(p.bf.duel){const d=byId(p.duelId); if(d&&!d.dead) atks=atks.filter(a=>a.tgt===d);}
+  return {moves,atks};
+}
+const canAct=p=>p&&!p.dead&&p.o===S.cur&&!p.st.stun&&(!p.acted||p.free);
+
+function moveTo(p,s){S.board[p.sq]=null;p.sq=s;S.board[s]=p;p.moved=true;if(!SIM)trapCheck(p);}
+/* pièges de Nira : se déclenchent quand un ennemi s'arrête dessus (jamais pendant les calculs de l'ordinateur, qui ne les voit pas) */
+function trapCheck(p){
+  const i=(S.traps||[]).findIndex(x=>x.s===p.sq&&x.o!==p.o); if(i<0||p.dead) return;
+  const tr=S.traps.splice(i,1)[0];
+  log(`${nm(p)} tombe dans un piège !`); sfx("hit");
+  hit(null,p,20,"phys"); if(!p.dead&&addSt(p,"root",1)) fx(p.sq,"Piégé","info");
+}
+const trapVisible=tr=>ON.gameId?tr.o===ON.side:GM.mode==="ai"?tr.o!==GM.ai:tr.o===S.cur;
+/* recul de Brakka : renvoie true si la cible heurte quelque chose */
+function push(q,dr,dc,n){
+  if(q.bf.blind){log(`${nm(q)} est blindée : pas de recul`);return false;}
+  for(let i=0;i<n;i++){
+    const r=R_(q.sq)+dr,c=C_(q.sq)+dc;
+    if(!inb(r,c)||occ(sq(r,c))) return true;
+    moveTo(q,sq(r,c)); if(q.dead) return false;
+  }
+  return false;
+}
+/* tir en ligne droite : premier ennemi puis le suivant (les alliés et les murs bloquent) */
+function lineShots(p){
+  const out=[],r=R_(p.sq),c=C_(p.sq);
+  for(const[dr,dc] of ORTH){
+    const hits=[];
+    for(let k=1;k<N;k++){
+      const rr=r+dr*k,cc=c+dc*k; if(!inb(rr,cc)) break;
+      const s=sq(rr,cc); if(S.walls[s]) break;
+      const q=S.board[s]; if(!q) continue; if(q.o===p.o) break;
+      hits.push(q); if(hits.length===2) break;
+    }
+    if(hits.length) out.push({dir:[dr,dc],hits});
+  }
+  return out;
+}
+function promo(p){
+  if(p.t!=="P"||p.dead||isMaster(p)||p.skel) return;
+  if((p.o===0&&R_(p.sq)===0)||(p.o===1&&R_(p.sq)===N-1)){
+    const ratio=p.hp/p.max;p.t="Q";p.max=T.Q.hp;p.hp=Math.max(1,Math.round(T.Q.hp*ratio));
+    log(`Un pion ${SIDE[p.o]} devient Dame`);
+  }
+}
+function doMove(p,s){
+  if(!spend(1)) return;
+  const from=p.sq;
+  sfx("move"); delete p.st.camo; moveTo(p,s); p.acted=true; S.last=[from,s]; promo(p);
+}
+function doAttack(p,a,opts={}){
+  const cost=opts.cost!=null?opts.cost:(p.free?0:1);
+  if(!spend(cost)) return;
+  p.free=false; delete p.st.camo;
+  const tgt=a.tgt, tsq=tgt.sq, master=isMaster(p), from=p.sq;
+  if(a.land!==p.sq) moveTo(p,a.land);
+  const chain=S.chain&&S.chain.id===p.id;
+  let mult=(chain?1+0.2*(S.chain.n+1):1)*(opts.mult||1), crit=false;
+  
+  if(kessaCrit(p.o)){mult*=1.25;crit=true;}
+  if(cls(p.o)==="belier"&&cheb(from,p.sq)>=3){mult*=1.2;log(`${nm(p)} prend de l’élan : +20 %`);}
+  if(p.bf.duel&&tgt.id===p.duelId) mult*=1.25;
+  if(p.bf.roar) mult*=1.2;
+  const raw=atkOf(p)*mult;
+  const dealt=hit(p,tgt,raw,T[p.t].dt,{direct:true,crit,lifesteal:opts.bite?1:0});
+  if(p.heavy) p.heavy=false;
+  if(p.bf.storm&&!p.dead){const nb=adjSq(tsq).map(s=>S.board[s]).find(q=>q&&q.o!==p.o&&q!==tgt); if(nb) hit(p,nb,10,"mag",{spell:true});}
+  if(dealt>0&&!tgt.dead&&cls(tgt.o)==="duelliste"&&cheb(p.sq,tgt.sq)<=1&&!p.dead){log(`${nm(tgt)} riposte`);hit(tgt,p,dealt*0.15,"true");}
+  if(p.net&&!tgt.dead){p.net=false;if(addSt(tgt,"root",1))log(`${nm(tgt)} est pris dans le filet`);}
+  if(dealt>0&&tgt.bf.ice&&!p.dead){hit(tgt,p,dealt*0.2,"true");if(!p.dead&&addSt(p,"stun",1)){log(`${nm(p)} est gelé par le Bouclier de glace`);fx(p.sq,"Gelé","info");}}
+  const killed=tgt.dead;
+  if(!killed){
+    if(p.bf.dagger&&addSt(tgt,"bleed",2,8)) log(`${nm(tgt)} saigne (Dague)`);
+  }
+  if(p.bf.light&&!tgt.dead&&!p.dead) hit(p,tgt,10,"mag");
+  if(p.bf.frost){ if(!tgt.dead) addSt(tgt,"slow",1); adjSq(tsq).forEach(s=>{const q=S.board[s];if(q&&q.o!==p.o) addSt(q,"slow",1);}); }
+  if(killed&&!p.st.root&&!p.dead&&!S.board[tsq]) moveTo(p,tsq);
+  S.last=[from,tsq];
+  p.acted=true;
+  if(killed&&!p.dead){
+    if(p.bf.blood){heal(p,15);p.free=true;voice("combo");log(`${nm(p)} a soif : elle réattaque`);}
+    if(chain){S.chain.n++; if(S.chain.n<3){p.free=true;voice("combo");log(`Exécution orchestrée : attaque ${S.chain.n+1}`);} else S.chain=null;}
+  } else if(chain) S.chain=null;
+  promo(p);
+}
+
+function kessaCrit(o){
+  if(SIM||cls(o)!=="tireuse") return false;
+  const pl=S.pl[o]; pl.kc=(pl.kc||0)+1;
+  if(pl.kc>=4){pl.kc=0;log("Kessa : coup critique ×1,25 !");return true;}
+  return false;
+}
+function wallCount(o){return S.walls.filter(w=>w&&w.o===o&&w.k==="courage").length;}
+function diagHits(p,n,pred){
+  const out=[],r=R_(p.sq),c=C_(p.sq);
+  for(const[dr,dc] of DIAG) for(let k=1;k<=n;k++){
+    if(!inb(r+dr*k,c+dc*k)) break;
+    const s=sq(r+dr*k,c+dc*k);
+    if(S.walls[s]) break;
+    const q=S.board[s]; if(q){if(pred(q)) out.push(s); break;}
+  }
+  return out;
+}
+
+/* ---------- actions ---------- */
+function actProt(){const p=S.sel; if(!spend(1)) return; p.st.prot=true; sfx("spell"); say(p.o,"prot"); log(`${nm(p)} est sous Protection`); after();}
+function actPass(){const p=S.sel; p.perm=Math.min(21,p.perm+7); S.pl[S.cur].gpass=true; log(`${nm(p)} : +5 armure et +5 RM`); after();}
+function actSort(){
+  const p=S.sel,c=cls(p.o); let targets=[],run;
+  if(p.sortUsed) return toast("Cette pièce a déjà lancé son sort ce tour");
+  const use=()=>{if(!spend(costOf(c,"sort")))return false;p.sortUsed=true;if(c!=="bastion")sfx("spell");say(p.o,"sort");return true;};
+  if(c==="gardien"){
+    if(!use()) return;
+    const es=S.pieces.filter(q=>!q.dead&&q.o!==p.o&&cheb(q.sq,p.sq)<=2);
+    const hitN=es.filter(q=>addSt(q,"taunt",1,p.id)).length;
+    if(hitN){p.bf.provo=2;p.provoAmt=5*hitN;fx(p.sq,"+"+(5*hitN)+" armure","info");}
+    log(`Provocation : ${hitN} ennemi(s) provoqué(s), la Tour gagne +${3*hitN} armure et RM`); return after();
+  }
+  if(c==="assassin"){if(p.acted&&!p.free) return toast("Cette pièce a déjà agi ce tour");targets=S.pieces.filter(q=>!q.dead&&q.o!==p.o&&cheb(q.sq,p.sq)<=3).map(q=>q.sq);
+    run=s=>{if(!use())return;const q=S.board[s];if(addSt(q,"mark",2)) log(`${nm(q)} est marqué`);hit(p,q,T[p.t].atk*0.6*atkMul(p.o),T[p.t].dt,{direct:true});p.acted=true;p.free=false;};}
+  if(c==="controle"){if(p.t!=="B") return toast("Seuls les Fous peuvent lancer Chaînes du mage");targets=diagHits(p,N,q=>q.o!==p.o);
+    run=s=>{if(!use())return;const q=S.board[s];if(addSt(q,"root",1)){log(`${nm(q)} est immobilisé`);fx(q.sq,"Immobilisé","info");}};}
+  if(c==="soigneur"){targets=diagHits(p,3,q=>q.o===p.o).filter(x=>!S.board[x].lit);
+    run=s=>{if(!use())return;const q=S.board[s];q.lit=true;const h1=heal(q,10),h2=heal(p,10);q.bf.light=2;p.bf.light=2;log(`Lumière sacrée : ${nm(q)} +${h1} PV et ${nm(p)} +${h2} PV, +10 dégâts magiques par attaque`);};}
+  if(c==="bastion"){if(wallCount(p.o)>=3) return toast("3 murs actifs maximum");targets=adjSq(p.sq).filter(empty);
+    run=s=>{if(!use())return;S.walls[s]={o:p.o,t:2,k:"courage"};sfx("wall");log("Un Mur du courage se dresse");};}
+  if(c==="vampire"){if(!canAct(p)||p.free) return toast("La Dame a déjà agi ce tour");
+    targets=gen(p).atks.map(a=>a.tgt.sq);
+    run=s=>{const a=gen(p).atks.find(x=>x.tgt.sq===s);if(a){doAttack(p,a,{cost:2,bite:true});p.sortUsed=true;}};}
+  if(c==="tireuse"){if(p.acted&&!p.free) return toast("Cette Tour a déjà agi ce tour");
+    const shots=lineShots(p); targets=shots.map(x=>x.hits[0].sq);
+    run=s=>{const sh=shots.find(x=>x.hits[0].sq===s); if(!sh||!use())return;
+      let m=kessaCrit(p.o)?1.25:1; const raw=atkOf(p)*m;
+      log(`Tir perforant${m>1?" (critique)":""}`);
+      hit(p,sh.hits[0],raw,T[p.t].dt,{direct:true,crit:m>1}); if(p.heavy)p.heavy=false;
+      if(sh.hits[1]) hit(p,sh.hits[1],raw*0.5,T[p.t].dt,{direct:true});
+      p.acted=true;p.free=false;};}
+  if(c==="belier"){if(!canAct(p)||p.free) return toast("Cette Tour a déjà agi ce tour");
+    const opts=[]; const r=R_(p.sq),cc=C_(p.sq);
+    for(const[dr,dc] of ORTH){let last=p.sq;for(let k=1;k<N;k++){const rr=r+dr*k,c2=cc+dc*k;if(!inb(rr,c2))break;const s=sq(rr,c2);if(S.walls[s])break;const q=S.board[s];if(!q){last=s;continue;}if(q.o!==p.o)opts.push({q,land:last,dr,dc});break;}}
+    targets=opts.map(x=>x.q.sq);
+    run=s=>{const o=opts.find(x=>x.q.sq===s); if(!o||!use())return; const from=p.sq;
+      if(o.land!==p.sq) moveTo(p,o.land);
+      let m=cheb(from,p.sq)>=3?1.2:1; if(kessaCrit(p.o))m*=1.25;
+      log(`Charge de ${nm(p)}`); hit(p,o.q,atkOf(p)*m,T[p.t].dt,{direct:true});
+      if(!o.q.dead){const bumped=push(o.q,o.dr,o.dc,2); if(bumped&&!o.q.dead&&addSt(o.q,"stun",1)){log(`${nm(o.q)} heurte un obstacle et est étourdi`);fx(o.q.sq,"Étourdi","info");}}
+      S.last=[from,p.sq]; p.acted=true;p.free=false;};}
+  if(c==="duelliste"){targets=KN.map(([dr,dc])=>[R_(p.sq)+dr,C_(p.sq)+dc]).filter(([r,cc])=>inb(r,cc)).map(([r,cc])=>sq(r,cc)).filter(s=>{const q=S.board[s];return q&&q.o!==p.o;});
+    run=s=>{if(!use())return; const q=S.board[s]; p.bf.duel=2; p.duelId=q.id; addSt(q,"taunt",2,p.id); log(`${nm(p)} défie ${nm(q)} en duel`);};}
+  if(c==="necro"){const mine=S.pieces.find(q=>!q.dead&&q.skel&&q.from===p.id); if(mine) return toast("Ce Fou a déjà un squelette actif");
+    targets=adjSq(p.sq).filter(empty); run=s=>{if(!use())return; spawnSkel(p.o,s,p.id);};}
+  if(c==="tempete"){targets=diagHits(p,3,q=>q.o!==p.o);
+    run=s=>{if(!use())return; let cur=S.board[s], dmg=20; const done=new Set();
+      for(let i=0;i<4&&cur;i++){done.add(cur.id); const at=cur.sq; hit(p,cur,dmg,"mag",{spell:true}); dmg*=0.75;
+        cur=adjSq(at).map(x=>S.board[x]).find(q=>q&&q.o!==p.o&&!done.has(q.id));}
+      log("Éclair en chaîne");};}
+  if(c==="metamorphe"){run=null; if(!use())return; p.bf.beast=2; log(`${nm(p)} prend sa forme bestiale`); fx(p.sq,"Forme bestiale","info"); return after();}
+  if(c==="artificier"){targets=adjSq(p.sq).filter(s=>{const q=S.board[s];return q&&q.o!==p.o&&!S.bombs.some(b=>b.id===q.id);});
+    run=s=>{if(!use())return; const q=S.board[s]; S.bombs.push({id:q.id,o:p.o,src:p.id}); log(`Une bombe est collée sur ${nm(q)}`); fx(s,"Bombe","info");};}
+  if(c==="pieges"){if((S.traps||[]).filter(x=>x.o===p.o&&!x.u).length>=3) return toast("3 pièges actifs maximum");
+    targets=KN.map(([dr,dc])=>[R_(p.sq)+dr,C_(p.sq)+dc]).filter(([r,cc])=>inb(r,cc)).map(([r,cc])=>sq(r,cc)).filter(s=>empty(s)&&!(S.traps||[]).some(x=>x.s===s));
+    run=s=>{if(!use())return; S.traps.push({s,o:p.o,t:4}); log("Un piège est posé en secret");};}
+  if(!targets.length) return toast("Aucune cible possible");
+  S.mode={targets,run,label:CL[c].sort[0]}; render();
+}
+function actGlob(){
+  const p=S.sel,c=cls(p.o);
+  if(c==="bastion"){
+    const targets=adjSq(p.sq).filter(empty); if(!targets.length) return toast("Aucune case libre autour");
+    S.mode={targets,label:"Barricade défensive",run:s=>{if(!spend(costOf(c,"glob")))return;sfx("wall");say(p.o,"glob");
+      let n=0;[-1,0,1].forEach(dc=>{const cc=C_(s)+dc;if(!inb(R_(s),cc))return;const x=sq(R_(s),cc);if(empty(x)){S.walls[x]={o:p.o,t:2,k:"barr"};n++;}});
+      log(`Barricade défensive : ${n} mur(s) posé(s)`);}}; return render();
+  }
+  if(c==="gardien"&&p.t==="R"){
+    if(!canAct(p)||p.free) return toast("Cette Tour a déjà agi ce tour");
+    const targets=gen(p).atks.map(a=>a.tgt.sq); if(!targets.length) return toast("Aucune cible à portée de la Tour");
+    S.mode={targets,label:"Manœuvre offensive",run:s=>{
+      if(!spend(costOf(c,"glob")))return; sfx("spell"); say(p.o,"glob");
+      const q=S.board[s], bonus=Math.round(armOf(p)*1.0);
+      log(`Manœuvre offensive : la Tour attaque, puis inflige ${bonus} de plus (100 % de son armure)`);
+      hit(p,q,atkOf(p),T[p.t].dt,{direct:true});
+      if(!q.dead) hit(p,q,bonus,"true");
+      p.perm=0; delete p.bf.rempart; delete p.bf.provo; p.acted=true; p.free=false;
+    }}; return render();
+  }
+  if(!spend(costOf(c,"glob"))) return;
+  sfx("spell"); say(p.o,"glob");
+  if(c==="assassin"){p.bf.dagger=2;log(`${nm(p)} reçoit la Dague d’Agamemnon`);}
+  if(c==="controle"){p.bf.ice=2;log(`${nm(p)} se couvre d’un Bouclier de glace`);}
+  if(c==="gardien"){const l=alive(p.o).filter(q=>q.t===p.t);l.forEach(q=>q.bf.rempart=2);log(`Manœuvre offensive : ${l.length} ${T[p.t].n.toLowerCase()}(s) gagnent +20 armure`);}
+  if(c==="soigneur"){p.bf.aura=2;adjSq(p.sq).forEach(s=>{const q=S.board[s];if(q&&q.o===p.o)heal(q,8);});log(`Aura de soin autour de ${nm(p)}`);}
+  if(c==="vampire"){p.bf.blood=2;log(`${nm(p)} a soif de sang`);}
+  if(c==="tireuse"){p.heavy=true;log(`${nm(p)} charge des munitions lourdes`);}
+  if(c==="belier"){p.bf.blind=2;log(`${nm(p)} est blindée`);}
+  if(c==="duelliste"){p.parry=true;log(`${nm(p)} se met en garde`);}
+  if(c==="pieges"){p.net=true;log(`${nm(p)} prépare un filet`);}
+  if(c==="necro"){p.bf.spectral=2;log(`${nm(p)} est lié aux esprits`);}
+  if(c==="tempete"){p.bf.storm=2;log(`${nm(p)} appelle l’orage`);}
+  if(c==="metamorphe"){p.bf.roar=2;delete p.st.slow;log(`${nm(p)} rugit`);}
+  if(c==="artificier"){p.bf.powder=3;log(`${nm(p)} se charge de poudre`);}
+  after();
+}
+function actUlt(){
+  const p=S.sel,pl=S.pl[p.o],c=pl.cls; let targets=[],run;
+  const fire=n=>{pl.ult=true;sfx("ult");say(p.o,"ult");log(`ULTIME : ${n}`);};
+  if(c==="assassin"){if(!spend(4))return;fire(CL[c].ult[0]);S.chain={id:p.id,n:0};p.free=true;if(!(GM.mode==="ai"&&S.cur===GM.ai))toast("Choisis la cible du Cavalier");return after();}
+  if(c==="controle"){if(!spend(4))return;fire(CL[c].ult[0]);
+    S.pieces.filter(q=>!q.dead&&q.o!==p.o&&cheb(q.sq,p.sq)<=2).forEach(q=>{hit(p,q,35,"mag",{spell:true});if(!q.dead)addSt(q,"stun",1);});p.noAtk=true;return after();}
+  if(c==="vampire"){if(!spend(4))return;fire(CL[c].ult[0]);pl.night=9999;return after();}
+  if(c==="gardien"){targets=alive(p.o).map(q=>q.sq);
+    run=s=>{if(!spend(4))return;fire(CL[c].ult[0]);S.board[s].st.immune=true;};}
+  if(c==="soigneur"){targets=[...new Set(S.dead.filter(q=>q.o===p.o&&q.t!=="Q"&&q.t!=="K"&&!q.skel&&empty(q.start)).map(q=>q.start))];
+    run=s=>{if(!spend(4))return;fire(CL[c].ult[0]);const q=S.dead.find(x=>x.o===p.o&&x.start===s&&x.t!=="Q"&&x.t!=="K");
+      S.dead=S.dead.filter(x=>x!==q);Object.assign(q,{dead:false,hp:Math.round(q.max*0.30),st:{},bf:{},shield:0,sq:s,acted:true,free:false});S.board[s]=q;log(`${nm(q)} revient au combat`);};}
+  if(c==="bastion"){targets=[];for(let s=0;s<NN;s++) if(empty(s)) targets.push(s);
+    run=s=>{if(!spend(4))return;fire(CL[c].ult[0]);const r=R_(s),c0=Math.min(N-5,Math.max(0,C_(s)-2));for(let cc=c0;cc<c0+5;cc++){const x=sq(r,cc);if(empty(x))S.walls[x]={o:p.o,t:2,u:1,k:"mur"};}pl.mur=2;log("Grande Muraille : dégâts et défense des pions doublés");};}
+  if(c==="tireuse"){if(!spend(4))return;fire(CL[c].ult[0]);
+    const r=R_(p.sq),cc=C_(p.sq);
+    S.pieces.filter(q=>!q.dead&&q.o!==p.o&&(R_(q.sq)===r||C_(q.sq)===cc)).forEach(q=>hit(p,q,atkOf(p)*0.6,T[p.t].dt,{}));
+    p.acted=true;p.free=false;return after();}
+  if(c==="belier"){const r=R_(p.sq),cc=C_(p.sq);
+    const ends=ORTH.map(([dr,dc])=>{let k=0;while(inb(r+dr*(k+1),cc+dc*(k+1)))k++;return k?{dr,dc,end:sq(r+dr*k,cc+dc*k)}:null;}).filter(Boolean);
+    targets=ends.map(x=>x.end);
+    run=s=>{const e=ends.find(x=>x.end===s); if(!e||!spend(4))return; fire(CL[c].ult[0]);
+      const path=[]; for(let k=1;k<N;k++){const rr=r+e.dr*k,c2=cc+e.dc*k;if(!inb(rr,c2))break;path.push(sq(rr,c2));}
+      path.forEach(x=>{if(S.walls[x]){S.walls[x]=null;log("Un mur vole en éclats");}
+        const q=S.board[x]; if(q&&q.o!==p.o){hit(p,q,atkOf(p),T[p.t].dt,{direct:true});
+          if(!q.dead){const side=e.dr?[[0,1],[0,-1]]:[[1,0],[-1,0]];for(const[a,b] of side){const rr=R_(q.sq)+a,c2=C_(q.sq)+b;if(inb(rr,c2)&&!occ(sq(rr,c2))&&!q.bf.blind){moveTo(q,sq(rr,c2));break;}}}}});
+      let dest=null; for(let i=path.length-1;i>=0;i--){if(!occ(path[i])){dest=path[i];break;}}
+      const from=p.sq; if(dest!=null) moveTo(p,dest); S.last=[from,p.sq]; p.acted=true; p.free=false;};}
+  if(c==="duelliste"){const d=byId(p.duelId); const a=p.bf.duel&&d&&!d.dead&&canAct(p)?gen(p).atks.find(x=>x.tgt===d):null;
+    if(!a) return toast("Il faut une cible défiée à portée d’attaque");
+    targets=[d.sq]; run=s=>{if(!spend(4))return;fire(CL[c].ult[0]);doAttack(p,a,{cost:0,mult:2});if(d.dead&&!p.dead){p.hp=p.max;log(`${nm(p)} récupère tous ses PV`);fx(p.sq,"PV max","heal");}};}
+  if(c==="necro"){if(!spend(4))return;fire(CL[c].ult[0]);
+    let n=0; S.dead.filter(q=>q.o===p.o&&q.t==="P"&&!q.skel&&!q.raised).forEach(q=>{if(empty(q.start)){q.raised=true;spawnSkel(p.o,q.start);n++;}});
+    log(`Armée des morts : ${n} squelette(s)`);return after();}
+  if(c==="tempete"){targets=[];for(let s=0;s<NN;s++)targets.push(s);
+    run=s=>{if(!spend(4))return;fire(CL[c].ult[0]);S.storms.push({c:s,o:p.o,src:p.id});log("Une tempête se prépare…");};}
+  if(c==="metamorphe"){if(!spend(4))return;fire(CL[c].ult[0]);
+    alive(p.o).filter(q=>q.t==="P").forEach(q=>{q.bf.beast=Math.max(q.bf.beast||0,1);}); log("Meute : tous les pions prennent la Forme bestiale");return after();}
+  if(c==="artificier"){if(p.t!=="P") return toast("Seul un pion maître peut se sacrifier");
+    if(!spend(4))return;fire(CL[c].ult[0]);
+    const at=p.sq; fx(at,"Feu d’artifice","crit");
+    S.pieces.filter(q=>!q.dead&&q.o!==p.o&&cheb(q.sq,at)<=2).forEach(q=>hit(p,q,50,"true",{boom:1}));
+    if(!p.dead) kill(p,null); return after();}
+  if(c==="pieges"){if(!spend(4))return;fire(CL[c].ult[0]);
+    let n=0; KN.forEach(([dr,dc])=>{const r=R_(p.sq)+dr,cc=C_(p.sq)+dc;if(!inb(r,cc))return;const s=sq(r,cc);if(empty(s)&&!S.traps.some(x=>x.s===s)){S.traps.push({s,o:p.o,t:4,u:1});n++;}});
+    log(`Terrain miné : ${n} pièges posés`);return after();}
+  if(!targets.length) return toast("Aucune cible possible");
+  S.mode={targets,run,label:CL[c].ult[0]}; render();
+}
+function actCastle(){
+  const pl=S.pl[S.cur],k=alive(S.cur).find(q=>q.t==="K");
+  const ms=pl.mids.map(byId).filter(q=>q&&!q.dead);
+  if(!k||!ms.length) return;
+  if(S.sel.t!=="K") return doCastle(k,S.sel);
+  if(ms.length===1) return doCastle(k,ms[0]);
+  S.mode={targets:ms.map(q=>q.sq),label:"Roque",run:s=>doCastle(k,S.board[s])}; render();
+}
+function doCastle(k,m){
+  if(!spend(3)) return;
+  const a=k.sq,b=m.sq;S.board[a]=m;S.board[b]=k;k.sq=b;m.sq=a;S.last=[a,b];
+  log(`Roque : le Roi ${SIDE[S.cur]} échange avec sa pièce maîtresse`); after();
+}
+
+/* ---------- tours ---------- */
+function startTurn(){
+  const o=S.cur,pl=S.pl[o];S.kc=0;pl.turns++;
+  if(pl.vsAt&&pl.turns>=pl.vsAt){pl.vsAt=0;setTimeout(()=>{if(S.cur===o&&S.winner===null)say(o,"vs",cls(1-o));},700+Math.random()*2500);}S.mana=Math.min(pl.turns+manaBonus(o),manaCap(o));pl.gpass=false;S.sel=null;S.mode=null;
+  log(`Tour ${pl.turns} du côté ${SIDE[o]}`);
+  alive(o).forEach(p=>{if(p.st.bleed){ if(p.st.prot) log(`Saignement de ${nm(p)} en pause`); else hit(null,p,p.st.bleed.d,"true"); }});
+  (S.storms||[]).filter(x=>x.o===o).forEach(st=>{const src=byId(st.src); log("La tempête éclate !"); sfx("mag");
+    S.pieces.filter(q=>!q.dead&&q.o!==o&&cheb(q.sq,st.c)<=1).forEach(q=>hit(src&&!src.dead?src:null,q,35,"mag",{spell:true}));});
+  S.storms=(S.storms||[]).filter(x=>x.o!==o);
+  (S.bombs||[]).filter(b=>b.o===o).forEach(b=>{const q=byId(b.id); if(!q||q.dead) return; const src=byId(b.src), at=q.sq;
+    log(`La bombe collée sur ${nm(q)} explose`); hit(src&&!src.dead?src:null,q,30,"true",{boom:1}); explode(at,o,15,src&&!src.dead?src:null);});
+  S.bombs=(S.bombs||[]).filter(b=>b.o!==o);
+  alive(o).forEach(p=>{delete p.st.prot;delete p.st.immune;delete p.st.camo;});
+  if(pl.cls==="soigneur"){const w=alive(o).filter(p=>p.hp<p.max).sort((a,b)=>(b.max-b.hp)-(a.max-a.hp))[0];if(w)log(`Soin passif : ${nm(w)} +${heal(w,5)} PV`);}
+  alive(o).filter(p=>p.bf.aura).forEach(p=>adjSq(p.sq).forEach(s=>{const q=S.board[s];if(q&&q.o===o)heal(q,8);}));
+  if(pl.night>0){const q=byId(pl.mids[0]);if(q&&!q.dead)adjSq(q.sq).forEach(s=>{const e=S.board[s];if(e&&e.o!==o)hit(q,e,6,"true",{lifesteal:1});});pl.night--;}
+  const b=bossOf(o); if(b&&b.m.regen){const k=alive(o).find(p=>p.t==="K");if(k){const h=heal(k,b.m.regen);if(h)log(`${b.n} : le Roi récupère ${h} PV`);}}
+  render();
+  if(S.winner!==null) return showWin();
+  if(!ON.gameId&&(GM.mode!=="ai"||o!==GM.ai)) sfx("turn");
+  if(ON.gameId) return;
+  if(GM.mode==="ai"){ if(o===GM.ai) aiTurn(); else toast("À toi de jouer"); return; }
+  showPass();
+}
+function endTurn(){
+  if(S.phase!=="play"||S.winner!==null) return;
+  const o=S.cur,freed=[];
+  alive(o).forEach(p=>{
+    ["stun","root","slow","silence","mark","ccImm"].forEach(k=>{if(p.st[k]){p.st[k]--;if(!p.st[k]){delete p.st[k];if(k==="stun"||k==="root")freed.push(p);}}});
+    if(p.st.taunt){p.st.taunt.t--;if(p.st.taunt.t<=0)delete p.st.taunt;}
+    if(p.st.bleed){p.st.bleed.t--;if(p.st.bleed.t<=0)delete p.st.bleed;}
+    Object.keys(p.bf).forEach(k=>{p.bf[k]--;if(p.bf[k]<=0)delete p.bf[k];});
+    p.acted=false;p.free=false;p.sortUsed=false;p.lit=false;p.noAtk=false;
+  });
+  freed.forEach(p=>p.st.ccImm=1);
+  for(let s=0;s<NN;s++){const w=S.walls[s];if(w&&w.o===o){w.t--;if(w.t<=0)S.walls[s]=null;}}
+  if(S.pl[o].mur>0) S.pl[o].mur--;
+  S.traps=(S.traps||[]).filter(x=>x.o!==o||--x.t>0);
+  alive(o).filter(p=>p.skel).forEach(p=>{p.skel--; if(p.skel<=0) vanish(p);});
+  S.chain=null; S.cur=1-o; startTurn();
+}
+function after(){ if(SIM) return; if(S.sel&&S.sel.dead) S.sel=null; render(); if(S.winner!==null) showWin(); }
+
+/* ---------- ordinateur ---------- */
+const VAL={P:1,N:3.2,B:3.3,R:5,Q:9,K:40};
+const STW={bleed:-.12,stun:-.35,root:-.15,slow:-.1,silence:-.1,mark:-.12,taunt:-.08,camo:.15,prot:.08,immune:.4,ccImm:.05};
+const pval=p=>VAL[p.t]*(isMaster(p)?1.25:1);
+function threat(att){
+  const inc={};
+  for(const q of alive(att)){
+    if(q.st.stun) continue;
+    for(const a of gen(q).atks){
+      const t=a.tgt; if(t.st.immune) continue;
+      const def=defOf(t,q,T[q.t].dt);
+      const d=atkOf(q)*100/(100+def);
+      inc[t.id]=Math.max(inc[t.id]||0,d);
+    }
+  }
+  let sum=0;
+  for(const id in inc){const t=byId(+id),d=inc[id];sum+=pval(t)*(d>=t.hp+t.shield?1:0.65*d/t.max);}
+  return sum;
+}
+function evalS(o){
+  if(S.winner!==null) return S.winner===o?1e5:-1e5;
+  let sc=0;
+  for(const p of S.pieces){
+    if(p.dead) continue;
+    const sg=p.o===o?1:-1, v=pval(p);
+    let f=v*(0.35+0.65*p.hp/p.max)+Math.min(p.shield,40)/p.max*v*0.3;
+    for(const k in p.st) f+=(STW[k]||0)*Math.min(v,6);
+    f+=Object.keys(p.bf).length*0.35+p.perm*0.02;
+    if(p.t==="P"){const adv=p.o===0?N-2-R_(p.sq):R_(p.sq)-1;f+=adv*0.06;}
+    sc+=sg*f;
+  }
+  for(const side of [o,1-o]){
+    const ek=alive(1-side).find(p=>p.t==="K"); if(!ek) continue;
+    const sg=side===o?1:-1;
+    for(const p of alive(side)) if(p.t!=="K") sc-=sg*0.035*cheb(p.sq,ek.sq);
+  }
+  S.walls.forEach(w=>{if(w) sc+=(w.o===o?1:-1)*0.08;});
+  if(GM.lvl>0){ sc-=(GM.lvl===1?0.45:0.7)*threat(1-o); sc+=0.12*threat(o); }
+  return sc;
+}
+function applyAct(c){
+  const p=byId(c.id); S.sel=p; S.mode=null;
+  if(c.k==="atk"){const a=gen(p).atks.find(x=>x.tgt.sq===c.t); if(a) doAttack(p,a); return;}
+  if(c.k==="mv"){doMove(p,c.t);return;}
+  if(c.k==="pass"){actPass();return;}
+  ({sort:actSort,glob:actGlob,ult:actUlt})[c.k]();
+  if(S.mode){const m=S.mode;S.mode=null;if(c.t!=null&&m.targets.includes(c.t)) m.run(c.t);}
+}
+function listCands(o,snap){
+  const out=[], pl=S.pl[o];
+  const ids=alive(o).map(p=>p.id);
+  for(const id of ids){
+    const p=byId(id);
+    if(canAct(p)&&(p.free||S.mana>=1)){
+      const g=gen(p);
+      g.atks.forEach(a=>out.push({k:"atk",id,t:a.tgt.sq}));
+      if(!p.free) g.moves.forEach(s=>out.push({k:"mv",id,t:s}));
+    }
+    if(pl.cls==="gardien"&&!pl.gpass&&p.perm<15) out.push({k:"pass",id});
+    const master=isMaster(p),blocked=p.st.silence||p.st.stun;
+    const spells=[];
+    if(master&&!blocked&&!p.sortUsed&&S.mana>=costOf(pl.cls,"sort")) spells.push("sort");
+    if(p.t!=="Q"&&p.t!=="K"&&S.mana>=costOf(pl.cls,"glob")&&(master||GM.lvl>0)) spells.push("glob");
+    if(master&&!pl.ult&&!blocked&&S.mana>=4) spells.push("ult");
+    for(const k of spells){
+      deser(snap); S.sel=byId(id); S.mode=null; const m0=S.mana;
+      ({sort:actSort,glob:actGlob,ult:actUlt})[k]();
+      if(S.mode){let t=S.mode.targets.slice(); if(t.length>10) t=t.sort(()=>Math.random()-.5).slice(0,10); t.forEach(s=>out.push({k,id,t:s}));}
+      else if(S.mana<m0) out.push({k,id,t:null});
+    }
+    deser(snap);
+  }
+  return out;
+}
+function aiChoose(){
+  const o=S.cur, snap=JSON.stringify(ser());
+  SIM=true;
+  let best=null,bs=-Infinity;
+  try{
+    const base=evalS(o), cands=listCands(o,snap), noise=[1.2,0.15,0][GM.lvl];
+    for(const c of cands){
+      deser(snap);
+      try{applyAct(c);}catch(e){continue;}
+      const sc=evalS(o)+(Math.random()*2-1)*noise;
+      if(sc>bs){bs=sc;best=c;}
+    }
+    if(best&&bs-base<0.02) best=null;
+  }finally{ deser(snap); S.sel=null; S.mode=null; SIM=false; }
+  return best;
+}
+const AI_SHOW=850, AI_PAUSE=1300; // rythme de l’ordinateur (ms)
+function aiTurn(){
+  const tok=GM.tok; AIBUSY=true; render();
+  let steps=0;
+  const step=()=>{
+    if(tok!==GM.tok||GM.mode!=="ai"||S.winner!==null||S.cur!==GM.ai){AIBUSY=false;return;}
+    const c=steps++<14?aiChoose():null;
+    if(!c){ AIBUSY=false; S.sel=null; endTurn(); return; }
+    // on montre d'abord la pièce choisie et ses possibilités, puis on joue : un point de mana à la fois
+    S.sel=byId(c.id); S.mode=null; render();
+    setTimeout(()=>{
+      if(tok!==GM.tok||S.winner!==null){AIBUSY=false;return;}
+      applyAct(c); S.mode=null; after();
+      if(S.winner!==null){AIBUSY=false;render();return;}
+      setTimeout(step,AI_PAUSE);
+    },AI_SHOW);
+  };
+  setTimeout(step,900);
+}
+function aiSetup(){
+  const tok=GM.tok;
+  if(tok!==GM.tok||S.phase!=="setup"||S.step!==2) return;
+  const b=bossOf(GM.ai), keys=Object.keys(CL);
+  const k=b?b.cls:keys[Math.floor(Math.random()*keys.length)];
+  pickCls(k);
+  if(S.phase==="setup"&&S.step===3){ [sq(1,4),sq(1,5)].forEach(s=>{const p=S.board[s];if(p&&S.phase==="setup")setMaster(1,p);}); }
+}
+function applyBossMods(){
+  const b=bossOf(GM.ai); if(!b||!b.m.hp) return;
+  alive(GM.ai).forEach(p=>{p.max=Math.round(p.max*b.m.hp);p.hp=p.max;});
+}
+
+/* ---------- saisie ---------- */
+function onCell(s){
+  if(S.winner!==null) return;
+  if(!myTurn()){ if(S.phase==="play"){S.sel=S.board[s]||null;render();} return; }
+  if(S.phase==="setup"){
+    if(S.step===1||S.step===3){
+      const o=S.step===1?0:1,p=S.board[s];
+      if(p&&p.o===o&&p.t===CL[cls(o)].p) setMaster(o,p);
+    }
+    return;
+  }
+  if(S.mode){
+    if(S.mode.targets.includes(s)){const m=S.mode;S.mode=null;m.run(s);after();}
+    else{S.mode=null;render();}
+    return;
+  }
+  const sel=S.sel;
+  if(sel&&canAct(sel)){
+    const g=gen(sel),a=g.atks.find(x=>x.tgt.sq===s);
+    if(a){doAttack(sel,a);return after();}
+    if(!sel.free&&g.moves.includes(s)){doMove(sel,s);return after();}
+  }
+  S.sel=S.board[s]||null; if(S.sel&&S.sel.o===S.cur) sfx("select"); render();
+}
+function masterHp(o){if(S.pl[o].cls==="metamorphe"||S.pl[o].cls==="artificier"){S.pl[o].mids.map(byId).forEach(p=>{if(p&&!p.hpb){p.max=90;p.hp=90;p.hpb=1;}});return;}
+  if(S.pl[o].cls==="tireuse"){S.pl[o].mids.map(byId).forEach(p=>{if(p&&!p.hpb){p.max=150;p.hp=150;p.hpb=1;}});return;}
+  const c=S.pl[o].cls,add=c==="bastion"?35:c==="gardien"?50:0;if(!add)return;S.pl[o].mids.map(byId).forEach(p=>{if(p&&!p.hpb){p.max+=add;p.hp+=add;p.hpb=1;}});}
+function needMasters(o){const t=CL[cls(o)].p;return cls(o)==="bastion"?alive(o).filter(p=>p.t==="P").length:t==="Q"?1:2;}
+function setMaster(o,p){
+  const pl=S.pl[o];
+  if(pl.mids.includes(p.id)) return;
+  pl.mids.push(p.id);
+  if(pl.cls==="vampire"&&p.t==="Q"){p.max=VQHP;p.hp=VQHP;}
+  if(pl.mids.length<needMasters(o)){render();return;}
+  if(o===0){S.step=2;render();if(GM.mode==="ai"){setTimeout(aiSetup,350);}else if(!ON.gameId)showSetup();}
+  else{masterHp(0);masterHp(1);if(GM.mode==="ai")applyBossMods();S.phase="play";S.cur=0;S.log=[];voice("fight",0,15000);S.pl.forEach(pl=>{pl.vsAt=2+Math.floor(Math.random()*4);});startTurn();}
+}
+function pickCls(k){
+  const o=S.step===0?0:1; S.pl[o].cls=k; S.step++; hideOv();
+  sayCls(k,o,"select");
+  const cand=alive(o).filter(p=>p.t===CL[k].p);
+  if(cand.length<=needMasters(o)){ const pl=S.pl[o]; cand.slice(0,-1).forEach(p=>{pl.mids.push(p.id);if(k==="vampire"){p.max=VQHP;p.hp=VQHP;}}); return setMaster(o,cand[cand.length-1]); }
+  render();
+  if(!(GM.mode==="ai"&&o===GM.ai)) toast("Touche les 2 pions qui seront tes pièces maîtresses");
+}
+
+/* ---------- écrans de partie ---------- */
+function ov(html){const e=$("overlay");e.innerHTML=html;e.hidden=false;e.scrollTop=0;}
+function hideOv(){$("overlay").hidden=true;}
+/* filtre par pièce maîtresse (choix de classe et écran Personnages) */
+let clsFilter="all";
+const PF=[["all","Toutes"],["N","Cavaliers"],["R","Tours"],["B","Fous"],["P","Pions"],["Q","Dame"],["K","Roi"]];
+const clsVisible=c=>clsFilter==="all"||c.p===clsFilter;
+function filterChips(){
+  const n=t=>t==="all"?Object.keys(CL).length:Object.values(CL).filter(c=>c.p===t).length;
+  return `<div class="fchips" role="group" aria-label="Filtrer par pièce maîtresse">${PF.filter(([t])=>n(t)>0).map(([t,l])=>`<button class="fchip" data-act="cfilt" data-id="${t}" aria-pressed="${clsFilter===t}">${t!=="all"?piece(t,null,"","--c:currentColor"):""}${l} <small>${n(t)}</small></button>`).join("")}</div>`;
+}
+const mastersLabel=(k,c)=>c.p==="Q"?"la Dame":k==="bastion"?"tous les Pions":c.p==="P"?"2 Pions au choix":c.p==="K"?"le Roi":"les 2 "+T[c.p].n+"s";
+function showSetup(quiet){
+  const o=S.step===0?0:1, b=bossOf(GM.ai);
+  if(!quiet) voice(b&&S.step===0?"prepare_yourself":"choose_your_character");
+  const title=GM.mode==="ai"?"Choisis ta classe":`Côté ${SIDE[o]} : choisis ta classe`;
+  const sub=b?`Ton adversaire : <b>${esc(b.n)}</b>, ${esc(b.t)}, joue <b style="color:${CL[b.cls].col}">${CL[b.cls].n}</b>.`
+    :GM.mode==="ai"?`Tu joues côté bleu contre l’ordinateur (${LV[GM.lvl]}).`
+    :"La classe désigne tes pièces maîtresses. Toutes tes autres pièces jouent en version de base.";
+  ov(`<div class="sheet"><h2 class="${SCLS[o]}">${title}</h2><p class="sub">${sub}</p>
+  ${filterChips()}<div class="clsgrid">${Object.entries(CL).filter(([k,c])=>clsVisible(c)).map(([k,c])=>`<button class="clsbtn" data-cls="${k}" style="--c:${c.col}"><span class="ci">${portrait(clsKey(k),piece(c.p,null,"","--c:#fff",setOf(k)))}</span><b><span class="champ">${c.champ}</span>, ${c.n}</b><span class="cp">Pièces maîtresses : ${mastersLabel(k,c)}</span><span class="cd">${c.passif}</span></button>`).join("")}</div>
+  <button class="ghost" data-act="home">Retour au menu</button></div>`);
+}
+function showPass(){
+  const o=S.cur;
+  ov(`<div class="sheet center"><p class="eyebrow">Passe le téléphone</p><p class="big ${SCLS[o]}">Côté ${SIDE[o]}</p>
+  <p class="sub">Tour ${S.pl[o].turns} : ${S.mana} mana disponible${S.mana>1?"s":""}</p><button class="primary" data-act="go">Jouer</button></div>`);
+}
+function showWin(){
+  if(SIM) return;
+  winSound();
+  const o=S.winner;
+  if(GM.mode==="ai"){
+    if(GM.demo){ov(`<div class="sheet center"><p class="eyebrow">Démo : Exécution orchestrée</p><p class="big gold">Le Roi rouge est tombé</p><div class="row wide"><button class="primary" data-act="again">Rejouer la démo</button></div><div class="row wide"><button class="ghost" data-act="close">Voir le plateau</button></div></div>`);return;}
+    const won=o!==GM.ai, b=bossOf(GM.ai);
+    if(b&&won&&!GM.done){GM.done=true;recordBoss(GM.boss);}
+    const nxt=b&&won&&GM.boss<9?GM.boss+1:null;
+    ov(`<div class="sheet center"><p class="eyebrow">${won?"Le Roi rouge est tombé":"Ton Roi est tombé"}</p>
+    <p class="big ${won?"gold":"red"}">${won?(b?`${esc(b.n)} est vaincu`:"Victoire"):(b?`${esc(b.n)} l’emporte`:"Défaite")}</p>
+    ${b&&won?`<p class="sub">${GM.boss===9?"Tu as vaincu les 10 boss. La campagne est terminée.":`Boss suivant débloqué : ${esc(BOSSES[nxt].n)}.`}</p>`:""}
+    <div class="row wide">${nxt!=null?`<button class="primary" data-act="boss" data-id="${nxt}">Affronter ${esc(BOSSES[nxt].n)}</button>`:`<button class="primary" data-act="again">${won?"Rejouer":"Réessayer"}</button>`}</div>
+    <div class="row wide">${b?`<button class="ghost" data-act="campaign">Campagne</button>`:""}<button class="ghost" data-act="home">Menu</button><button class="ghost" data-act="close">Voir le plateau</button></div></div>`);
+    return;
+  }
+  ov(`<div class="sheet center"><p class="eyebrow">Le Roi ${SIDE[1-o]} est tombé</p><p class="big ${SCLS[o]}">Victoire du côté ${SIDE[o]}</p>
+  ${ON.gameId?`<button class="primary" data-act="hub">Retour aux parties en ligne</button><button class="ghost wide" data-act="close">Voir le plateau</button>`
+  :`<button class="primary" data-act="again">Rejouer</button><button class="ghost wide" data-act="home">Menu</button>`}</div>`);
+}
+
+/* ---------- affichage ---------- */
+function pname(o){
+  if(ON.gameId&&ON.game) return (ON.names[o===0?ON.game.blue:ON.game.red]||"Joueur")+(o===ON.side?" (toi)":"");
+  if(GM.mode==="ai"){ if(o===GM.ai){const b=bossOf(o);return b?b.n:`Ordinateur · ${LV[GM.lvl]}`;} return ON.names[ON.uid]||"Toi"; }
+  return o===0?"Bleu":"Rouge";
+}
+function plate(o){
+  const play=S.phase==="play", on=play&&S.cur===o&&S.winner===null;
+  const c=cls(o), C=c?CL[c]:null;
+  const k=S.pieces.find(p=>p.t==="K"&&p.o===o), kh=k&&!k.dead?k.hp:0, km=k?k.max:180;
+  const think=GM.mode==="ai"&&o===GM.ai&&AIBUSY?` · <span class="think">réfléchit…</span>`:"";
+  const line=C?`${C.champ} · ${C.n} · ${S.pl[o].ult?"ultime utilisé":"ultime prêt"}${c==="tireuse"?` · critique dans ${4-(S.pl[o].kc||0)}`:""}`:"choisit sa classe";
+  let elx="";
+  if(on){
+    const cap=manaCap(o), avail=Math.min(S.pl[o].turns+manaBonus(o),cap);
+    let segs="";for(let i=0;i<cap;i++) segs+=`<span class="seg ${i<S.mana?"on":""} ${i>=avail?"lock":""}"></span>`;
+    elx=`<div class="elx" aria-label="${S.mana} mana sur ${avail}"><span class="drop">${S.mana}</span><div class="bar" style="--n:${cap}">${segs}</div></div>`;
+  }
+  return `<div class="plate ${SCLS[o]}${on?" on":""}"><div class="prow">
+    <span class="crest">${crestFor(o)}</span>
+    <div class="pinfo"><b>${esc(pname(o))}</b><small>${line}${think}</small></div>
+    <div class="khp" title="PV du Roi"><i style="width:${Math.max(0,kh/km*100)}%"></i><span>${kh}</span></div></div></div>`;
+}
+function render(){
+  if(SIM) return;
+  const play=S.phase==="play";
+  const o=play?S.cur:(S.step<2?0:1);
+  const sn=$("sideName");
+  sn.textContent=!play?"Préparation":S.winner!==null?"Partie terminée":GM.mode==="ai"?(S.cur===GM.ai?"Tour adverse":`À toi · tour ${S.pl[o].turns}`):ON.gameId?(myTurn()?`À toi · tour ${S.pl[o].turns}`:"Tour adverse"):`Côté ${SIDE[o]} · tour ${S.pl[o].turns}`;
+  const eb=$("endBtn"), canEnd=play&&myTurn()&&S.winner===null&&!AIBUSY;
+  eb.disabled=!canEnd;
+  eb.textContent=!play?"Préparation":S.winner!==null?"Partie terminée":canEnd?"Fin du tour":"Tour adverse…";
+  $("elxBar").innerHTML=elxHTML(play&&S.winner===null?S.cur:null);
+  const flip=!!ON.gameId&&ON.side===1, bottom=flip?1:0;
+  $("plateTop").innerHTML=plate(1-bottom);
+  $("plateBot").innerHTML=plate(bottom);
+
+  let mv=[],at=[],tg=[];
+  if(S.mode) tg=S.mode.targets;
+  else if(play&&S.sel&&canAct(S.sel)&&(S.sel.free||S.mana>=1)){const g=gen(S.sel);at=g.atks.map(a=>a.tgt.sq);if(!S.sel.free)mv=g.moves;}
+  if(!play&&(S.step===1||S.step===3)&&myTurn()) tg=alive(o).filter(p=>p.t===CL[cls(o)].p&&!isMaster(p)).map(p=>p.sq);
+  const fxs=S.fx||[];
+
+  let b="";
+  for(let i=0;i<NN;i++){
+    const s=flip?NN-1-i:i;
+    const d=(R_(s)+C_(s))%2===1,p=S.board[s],w=S.walls[s];
+    let k="cell"+(d?" d":"");
+    if(S.last&&S.last.includes(s)) k+=" lm";
+    if(S.sel&&S.sel.sq===s&&!S.sel.dead) k+=" sel";
+    if(mv.includes(s)) k+=" mv";
+    if(at.includes(s)) k+=" at";
+    if(tg.includes(s)) k+=" tg";
+    let inner="";
+    if(i%N===0) inner+=`<span class="co r">${N-R_(s)}</span>`;
+    if(Math.floor(i/N)===N-1) inner+=`<span class="co f">${"abcdefghij"[C_(s)]}</span>`;
+    if(w) inner+=`<span class="wall ${SCLS[w.o]} ${w.k||""}"></span>`;
+    if((S.storms||[]).some(x=>cheb(x.c,s)<=1)) inner+=`<span class="stz"></span>`;
+    const tr=(S.traps||[]).find(x=>x.s===s); if(tr&&trapVisible(tr)) inner+=`<span class="trap"></span>`;
+    if(p){
+      const ratio=p.hp/p.max, m=isMaster(p), col=m?CL[cls(p.o)].col:"";
+      const icons=Object.keys(p.st).map(x=>STI[x]).slice(0,3).join("");
+      const dim=play&&p.o===S.cur&&p.acted&&!p.free?"dim":"";
+      if(m) inner+=`<span class="ring" style="--c:${col}"></span>`;
+      inner+=piece(p.bf.beast?"N":p.t,p.o,(m?"m ":"")+dim+(p.skel?" skel":""),m?`--c:${col}`:"",setOf(cls(p.o)));
+      if(p.chg) inner+=`<span class="chg">⚡${p.chg}</span>`;
+      if((S.bombs||[]).some(b=>b.id===p.id)) inner+=`<span class="bomb">💣</span>`;
+      if(m) inner+=`<span class="star">★</span>`;
+      if(icons) inner+=`<span class="sts">${icons}</span>`;
+      inner+=`<span class="hpb ${SCLS[p.o]}"><i style="width:${Math.max(0,ratio*100)}%"></i>${p.shield?`<em style="width:${Math.min(100,p.shield/p.max*100)}%"></em>`:""}</span>`;
+    }
+    fxs.filter(f=>f.s===s).forEach((f,j)=>{inner+=`<span class="fx ${f.k}" style="margin-top:${j*-16}px">${f.t}</span>`;});
+    const lab=p?`${nm(p)}, ${p.hp} PV`:w?"Mur":"Case vide";
+    b+=`<button class="${k}" data-s="${s}" aria-label="${lab}">${inner}</button>`;
+  }
+  $("board").innerHTML=b;
+  S.fx=[];
+  renderPanel(play,o);
+}
+const ICN={assassin:{passif:"hidden",sort:"shadow-follower",glob:"daggers",ult:"sprint"},
+  controle:{passif:"snowflake-2",sort:"crossed-chains",glob:"ice-spell-cast",ult:"magick-trick"},
+  gardien:{passif:"armor-upgrade",sort:"gauntlet",glob:"stakes-fence",ult:"air-force"},
+  soigneur:{passif:"health-normal",sort:"deadly-strike",glob:"health-normal",ult:"angel-outfit"},
+  bastion:{passif:"rally-the-troops",sort:"stone-wall",glob:"defensive-wall",ult:"master-of-arms"},
+  vampire:{passif:"dripping-blade",sort:"neck-bite",glob:"vampire-cape",ult:"moon"}};
+const icOf=(c,k)=>(ICN[c]||{})[k]||"";
+function icon(n){
+  if(n.startsWith("pc-")) return `<svg class="ic pcic" viewBox="0 0 100 100" aria-hidden="true"><use href="#${n}"/></svg>`;
+  return `<svg class="ic" viewBox="0 0 512 512" aria-hidden="true"><use href="#ic-${n}"/></svg>`;
+}
+const spellIc=(c,k)=>icOf(c,k)||"pc-"+CL[c].p;
+function elxHTML(o){
+  const cap=o==null?5:manaCap(o), avail=o==null?0:Math.min(S.pl[o].turns+manaBonus(o),cap), m=o==null?0:S.mana;
+  let segs="";for(let i=0;i<cap;i++) segs+=`<span class="seg ${i<m?"on":""} ${i>=avail?"lock":""}"></span>`;
+  return `<div class="elx" aria-label="${m} mana sur ${avail}"><span class="drop">${m}</span><div class="bar" style="--n:${cap}">${segs}</div></div>`;
+}
+function showHist(){
+  const rows=S.log.map(x=>{
+    const k=/^Tour \d+ du côté/.test(x)?("turn"+(x.includes("rouge")?" r":"")):/est tombé/.test(x)?"kill":/^ULTIME/.test(x)?"ult":/\+\d+ PV|récupère|soin/i.test(x)?"heal":"";
+    return `<div class="${k}">${x}</div>`;}).join("");
+  ov(`<div class="sheet"><div class="hubtop"><h2>Historique</h2><button class="ghost" data-act="close">Fermer</button></div>
+  <p class="sub">Chaque déplacement, attaque, sort et dégât de la partie, du plus récent au plus ancien.</p>
+  <div class="hist">${rows||`<p class="hint">Rien pour l’instant : la partie n’a pas commencé.</p>`}</div></div>`);
+}
+function showRules(){ ov(`<div class="sheet rulesheet"><div class="hubtop"><h2>Règles</h2><button class="ghost" data-act="${AUTH?"home":"close"}">Retour</button></div>${$("rulesTpl").innerHTML}</div>`); }
+function btn(a,name,cost,desc,dis,extra="",col="",ic=""){
+  const c=cost===0?`<span class="cost free">gratuit</span>`:`<span class="cost">${cost}</span>`;
+  return `<button class="act ${extra}${col?" k":""}${ic?" hasic":""}" data-a="${a}" ${col?`style="--c:${col}"`:""} ${dis?"disabled":""}>${ic?`<span class="aic">${icon(ic)}</span>`:""}<b>${name}</b>${c}<small>${desc}</small></button>`;
+}
+function renderPanel(play,o){
+  const P=$("panel");
+  if(!play){
+    if(!myTurn()){P.innerHTML=`<p class="hint">${GM.mode==="ai"?"L’ordinateur choisit sa classe…":"En attente du choix de ton adversaire."}</p>`;return;}
+    if(S.step===1||S.step===3){const c=CL[cls(o)];P.innerHTML=`<p class="hint">Touche 2 pions qui porteront la classe ${c.n} (${S.pl[o].mids.length}/2). Les cases dorées sont les choix possibles.</p>`;}
+    else P.innerHTML=`<p class="hint">Chaque joueur choisit une classe et ses pièces maîtresses.</p>`;
+    return;
+  }
+  if(S.mode){P.innerHTML=`<div class="modebar"><p class="hint"><b>${S.mode.label}</b> : touche une case dorée.</p><button class="ghost" data-a="cancel">Annuler</button></div>`;return;}
+  const p=S.sel;
+  if(!myTurn()&&(!p||p.dead)){P.innerHTML=`<p class="hint">${GM.mode==="ai"&&AIBUSY?"L’adversaire joue. ":"Tour de l’adversaire. "}Tu peux toucher une pièce pour voir ses stats.</p>`;return;}
+  if(!p||p.dead){
+    const c=CL[cls(o)];
+    P.innerHTML=`<p class="hint">Touche une de tes pièces pour voir ses actions.</p><p class="desc" style="--c:${c.col}"><b class="champ">Passif ${c.champ} :</b> ${c.passif}</p>`;
+    return;
+  }
+  const master=isMaster(p),c=cls(p.o),C=CL[c];
+  let h=`<div class="ptitle"><span class="crest">${piece(p.t,p.o,master?"m":"",master?`--c:${C.col}`:"",setOf(c))}</span><b>${T[p.t].n} ${SIDE[p.o]}</b>${master?`<span class="tag" style="--c:${C.col}">★ ${C.champ}, ${C.n}</span>`:""}</div>`;
+  h+=`<div class="stats"><div class="stat"><span>PV</span><b>${p.hp}/${p.max}</b></div><div class="stat"><span>${T[p.t].dt==="mag"?"Att. mag.":T[p.t].dt==="hyb"?"Att. hyb.":"Att. phys."}</span><b>${Math.round(atkOf(p))}</b></div><div class="stat"><span>Armure</span><b>${armOf(p)}</b></div><div class="stat"><span>RM</span><b>${mrOf(p)}</b></div></div>`;
+  if(p.shield) h+=`<p class="desc">Bouclier : ${p.shield} PV</p>`;
+  h+=`<p class="desc" style="--c:${C.col}">${master&&icOf(c,"passif")?`<span class="dic">${icon(icOf(c,"passif"))}</span>`:""}${master?C.passif:LAMBDA[p.t]}</p>`;
+  const chips=[...Object.keys(p.st).map(k=>{const v=p.st[k];const t=typeof v==="object"?v.t:(v===true?"":v);return `<span class="chip ${NEG.includes(k)?"bad":"good"}">${STI[k]} ${STL[k]}${t?` (${t})`:""}</span>`;}),
+    ...Object.keys(p.bf).map(k=>`<span class="chip good">${BFL[k]} (${p.bf[k]})</span>`)];
+  if(chips.length) h+=`<div class="chips">${chips.join("")}</div>`;
+  if(p.noAtk) h+=`<p class="hint">Stase arcanique : cette pièce ne peut plus attaquer ce tour.</p>`;
+  if(p.o===S.cur&&myTurn()){
+    const pl=S.pl[p.o],m=S.mana,blocked=p.st.silence||p.st.stun;
+    let a="";
+    if(canAct(p)&&p.free) a+=`<p class="hint">Attaque gratuite : touche une case rouge.</p>`;
+    else if(canAct(p)){} else if(p.st.stun) a+=`<p class="hint">Étourdie : elle ne peut rien faire ce tour.</p>`;
+    else a+=`<p class="hint">Cette pièce a déjà agi ce tour.</p>`;
+    a+=`<div class="acts">`;
+    if(c==="gardien"&&!pl.gpass&&p.perm<15) a+=btn("pass","Renforcer (passif)",0,"+5 armure et +5 RM, une fois par tour.",false,"",CL.gardien.col,"shield");
+    a+=btn("prot","Protection",1,"Bloque les nouveaux statuts jusqu’à ton prochain tour.",m<1||p.st.prot,"","#5B6785","shield");
+    if(master) a+=btn("sort",C.sort[0],costOf(c,"sort"),C.sort[1],m<costOf(c,"sort")||blocked||(c==="assassin"&&p.acted&&!p.free)||p.sortUsed,"",C.col,spellIc(c,"sort"));
+    if(p.t!=="Q"&&p.t!=="K") a+=btn("glob",C.glob[0],costOf(c,"glob"),C.glob[1],m<costOf(c,"glob"),"",C.col,spellIc(c,"glob"));
+    if(p.t==="K"||master){const ok=pl.mids.some(id=>{const q=byId(id);return q&&!q.dead;});a+=btn("castle","Roque",3,"Échange le Roi et une pièce maîtresse.",m<3||!ok,"","#5B6785","pc-K");}
+    if(master&&!pl.ult) a+=btn("ult",C.ult[0],4,C.ult[1],m<4||blocked,"ult",C.col,spellIc(c,"ult"));
+    a+=`</div>`;
+    h+=a;
+  }
+  P.innerHTML=h;
+}
+
+/* ---------- compte, menus et jeu en ligne ---------- */
+const ON={db:null,uid:null,ready:null,names:{},friends:[],games:[],gameId:null,game:null,side:0,unsubGame:null,lastPushed:"",rev:0,wq:Promise.resolve(),screen:null};
+let ACC=null, AUTH=false;
+const esc=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const accRef=()=>ON.db.doc("data/users/"+ON.uid+"/account");
+function myTurn(){
+  if(ON.gameId){
+    if(S.winner!==null) return false;
+    if(S.phase==="setup") return (S.step<2?0:1)===ON.side;
+    return S.cur===ON.side;
+  }
+  if(GM.mode==="ai"){
+    if(S.winner!==null) return false;
+    if(S.phase==="setup") return S.step<2;
+    return S.cur!==GM.ai;
+  }
+  return true;
+}
+function ser(){return {pieces:S.pieces,walls:S.walls,dead:S.dead.map(p=>p.id),pl:S.pl,cur:S.cur,mana:S.mana,phase:S.phase,step:S.step,log:S.log.slice(0,120),winner:S.winner,chain:S.chain,nid:S.nid,last:S.last,traps:S.traps||[],storms:S.storms||[],bombs:S.bombs||[],n:N};}
+function deser(str){
+  const d=JSON.parse(str),selId=S&&S.sel?S.sel.id:null;
+  if(d.n!==N) throw new Error("old-board");
+  S={board:Array(NN).fill(null),walls:d.walls,pieces:d.pieces,dead:[],pl:d.pl,cur:d.cur,mana:d.mana,phase:d.phase,step:d.step,sel:null,mode:null,log:d.log||[],winner:d.winner,chain:d.chain,nid:d.nid,last:d.last||null,fx:[],traps:d.traps||[],storms:d.storms||[],bombs:d.bombs||[]};
+  d.pl.forEach(pl=>{if(!pl.mids)pl.mids=pl.mid!=null?[pl.mid]:[];});
+  d.dead.forEach(id=>{const p=S.pieces.find(q=>q.id===id);if(p)S.dead.push(p);});
+  S.pieces.forEach(p=>{if(!p.dead)S.board[p.sq]=p;});
+  if(selId){const p=byId(selId);if(p&&!p.dead)S.sel=p;}
+}
+function commit(){
+  if(SIM||!ON.gameId||!ON.game) return;
+  const st=JSON.stringify(ser()); if(st===ON.lastPushed) return;
+  ON.lastPushed=st; ON.rev++;
+  const g=ON.game, side=S.phase==="setup"?(S.step<2?0:1):S.cur;
+  const body={state:st,rev:ON.rev,toMove:side===0?g.blue:g.red,updatedAt:Date.now()};
+  if(S.winner!==null){body.status="done";body.winner=S.winner===0?g.blue:g.red;}
+  const ref=ON.db.doc("games/"+ON.gameId);
+  ON.wq=ON.wq.then(()=>ref.update(body)).catch(e=>toast("Coup non envoyé : vérifie ta connexion ("+((e&&e.code)||"erreur")+")"));
+}
+async function initOnline(){
+  try{
+    if(!(window.claude&&window.claude.use)) return setOnline("off");
+    const [db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
+    if(!db||!user) return setOnline("off");
+    const uid=await user.id(); if(!uid) return setOnline("off");
+    ON.db=db; ON.uid=uid;
+    watchPortraits(db);
+    window.claude.use("assets").then(a=>{ASSETS=a||null;if(ON.screen==="chars")showChars();}).catch(()=>{});
+    const first=new Promise(res=>{
+      let done=false; const fin=()=>{if(!done){done=true;res();}};
+      db.collection("profiles").onSnapshot(sn=>{ON.names={};sn.docs.forEach(d=>{ON.names[d.id]=d.data().pseudo;});fin();refreshScreens();render();},fin);
+      setTimeout(fin,6000);
+    });
+    db.collection("friends").where("members","array-contains",uid).onSnapshot(sn=>{ON.friends=sn.docs.map(d=>Object.assign({id:d.id},d.data()));refreshScreens();},()=>{});
+    db.collection("games").where("members","array-contains",uid).onSnapshot(sn=>{ON.games=sn.docs.map(d=>Object.assign({id:d.id},d.data())).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));refreshScreens();},()=>{});
+    let a=null; try{const sn=await accRef().get(); if(sn.exists) a=sn.data();}catch(e){}
+    await first; ACC=a;
+    setOnline(true);
+  }catch(e){setOnline("off");}
+}
+function setOnline(v){
+  ON.ready=v;
+  if(v==="off"){ // hors claude.ai : compte gardé sur cet appareil
+    ON.local=true; ON.uid="local"; loadLocalPortraits();
+    try{const a=JSON.parse(localStorage.getItem("rs_account")||"null"); if(a){ACC=a;ON.names.local=a.pseudo;}}catch(e){}
+  }
+  if(!AUTH) routeAuth();
+}
+function saveLocal(){try{localStorage.setItem("rs_account",JSON.stringify(Object.assign({},ACC,{pseudo:ON.names.local})));}catch(e){}}
+function refreshScreens(){if(ON.screen==="hub")fillHub(); if(ON.screen==="home")fillHome();}
+function hasAccount(){return !!(ACC&&ACC.email&&ACC.age&&ON.names[ON.uid]);}
+function routeAuth(){
+  if(ON.ready!==true&&ON.ready!=="off") return showBoot();
+  if(hasAccount()) return showWelcome();
+  showSignup(false);
+}
+function logo(){return `<p class="brand">Roque <span class="amp">&amp;</span> Sort</p>`;}
+function showBoot(){
+  ON.screen="boot";
+  ov(`<div class="sheet center">${logo()}<p class="sub">Connexion au serveur…</p></div>`);
+}
+function showNoAuth(){
+  ON.screen="noauth";
+  ov(`<div class="sheet center">${logo()}<p class="sub">Pour jouer, il faut un compte. Ouvre le jeu depuis son lien claude.ai en étant connecté à ton compte Claude, puis crée ton profil de joueur.</p></div>`);
+}
+function showSignup(edit){
+  ON.screen="signup";
+  const pseudo=ON.names[ON.uid]||"", email=ACC&&ACC.email||"", age=ACC&&ACC.age||"";
+  ov(`<div class="sheet">${edit?`<h2>Mon profil</h2>`:`${logo()}<h2>Crée ton compte</h2><p class="sub">Un compte est nécessaire pour jouer, suivre ta campagne et défier tes amis.</p>`}
+  <form class="form" id="suForm" novalidate>
+    <div class="fl"><label for="suEmail">Adresse e-mail</label><input id="suEmail" type="email" autocomplete="email" inputmode="email" value="${esc(email)}" placeholder="toi@exemple.fr" required></div>
+    <div class="fl"><label for="suPseudo">Pseudo</label><input id="suPseudo" maxlength="16" autocomplete="nickname" autocapitalize="off" value="${esc(pseudo)}" placeholder="3 à 16 caractères" required></div>
+    <div class="fl"><label for="suAge">Âge</label><input id="suAge" type="number" inputmode="numeric" min="6" max="120" value="${esc(age)}" placeholder="Ton âge" required></div>
+    <p class="fine">Ton e-mail et ton âge restent privés : toi seul peux les voir. Ton pseudo est visible par les autres joueurs, qui te trouvent avec.</p>
+    <button class="primary wide" type="submit">${edit?"Enregistrer":"Créer mon compte"}</button>
+    ${edit?`<button class="ghost wide" type="button" data-act="home">Retour</button>`:""}
+  </form></div>`);
+  $("suForm").addEventListener("submit",e=>{e.preventDefault();saveAccount(edit);});
+  setTimeout(()=>{const i=$(email?"suPseudo":"suEmail");if(i&&!edit)i.focus();},60);
+}
+async function saveAccount(edit){
+  const email=($("suEmail").value||"").trim(), v=($("suPseudo").value||"").trim(), age=parseInt($("suAge").value,10);
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return toast("Adresse e-mail invalide");
+  if(!/^[A-Za-z0-9_-]{3,16}$/.test(v)) return toast("Pseudo invalide : 3 à 16 lettres, chiffres, - ou _");
+  if(Object.entries(ON.names).some(([id,n])=>id!==ON.uid&&String(n).toLowerCase()===v.toLowerCase())) return toast("Ce pseudo est déjà pris");
+  if(!(age>=6&&age<=120)) return toast("Indique un âge entre 6 et 120 ans");
+  const now=Date.now(), acc={email,age,boss:ACC&&ACC.boss||0,createdAt:ACC&&ACC.createdAt||now,updatedAt:now};
+  if(ON.local){ ACC=acc; ON.names.local=v; saveLocal(); AUTH=true; showHome(); return toast(edit?"Profil enregistré":"Compte créé sur cet appareil, bienvenue "+v); }
+  try{
+    await Promise.all([ON.db.doc("profiles/"+ON.uid).set({pseudo:v,lower:v.toLowerCase(),updatedAt:now}),accRef().set(acc)]);
+    ACC=acc; ON.names[ON.uid]=v; AUTH=true; showHome(); toast(edit?"Profil enregistré":"Compte créé, bienvenue "+v);
+  }catch(e){toast(e&&e.code==="invalid_argument"?"Accès en écriture refusé : demande au propriétaire de te donner l’accès Contributeur":"Enregistrement impossible, réessaie");}
+}
+function maskMail(m){const [u,d]=String(m).split("@");return (u.length<=2?u[0]+"•":u.slice(0,2)+"•••")+"@"+(d||"");}
+function showWelcome(){
+  ON.screen="welcome";
+  ov(`<div class="sheet center">${logo()}<p class="sub">Les échecs, avec des champions, du mana et des sorts.</p>
+  <div class="pcard wide" style="text-align:left"><span class="crest">${piece("K",0)}</span><div class="pinfo"><b>${esc(ON.names[ON.uid])}</b><small>${esc(maskMail(ACC.email))}</small></div></div>
+  <button class="primary wide" data-act="enter">Entrer</button><button class="link" data-act="profile">Modifier mon profil</button></div>`);
+}
+function inGame(){return S.phase!=="setup"&&S.winner===null&&!ON.gameId;}
+function showHome(){
+  if(ON.gameId) closeGame();
+  ON.screen="home";
+  const done=ACC&&ACC.boss||0;
+  ov(`<div class="sheet"><div class="hubtop">${`<p class="brand sm">Roque <span class="amp">&amp;</span> Sort</p>`}<div class="row" style="flex:0 0 auto">${inGame()?`<button class="ghost" data-act="close">Reprendre</button>`:""}<button class="ghost" data-mute data-act="mute">Son</button></div></div>
+  <div class="pcard"><span class="crest">${piece("K",0)}</span><div class="pinfo"><b id="homeName"></b><small>Campagne : ${done}/10 boss vaincus</small></div><button class="link" data-act="profile">Profil</button></div>
+  <div class="modes">
+    <button class="mode hero y" data-act="campaign"><span class="mi">${piece("K",1)}</span><b>Campagne des 10 boss</b><small>${done>=10?"Terminée. Tu peux rejouer chaque boss.":`Prochain adversaire : ${esc(BOSSES[done].n)}, ${esc(BOSSES[done].t)}`}</small><span class="prog">${done}/10</span></button>
+    <button class="mode b" data-act="vsai"><span class="mi">${piece("N",0)}</span><b>Contre l’ordinateur</b><small>Facile, Normal ou Difficile</small></button>
+    <button class="mode g" data-act="online"><span class="mi">${piece("R",0)}</span><b>En ligne</b><small>Défie tes amis</small></button>
+    <button class="mode p" data-act="local"><span class="mi">${piece("B",1)}</span><b>Local à deux</b><small>Sur le même écran</small></button>
+    <button class="mode r hero" data-act="chars"><span class="mi">${piece("Q",0)}</span><b>Personnages</b><small>Les 6 champions et les 10 boss, avec leurs portraits</small></button>
+  </div><button class="ghost wide" data-act="rules">Règles du jeu</button></div>`);
+  fillHome(); muteUI();
+}
+function fillHome(){const n=$("homeName"); if(n) n.textContent=ON.names[ON.uid]||"Joueur";}
+function showVsAI(){
+  voice("battle_mode");
+  ON.screen="vsai";
+  const g=["P","N","Q"], d=["Joue vite et fait des erreurs. Idéal pour apprendre.","Surveille les menaces et exploite tes erreurs.","Calcule chaque coup et protège son Roi."];
+  ov(`<div class="sheet"><h2>Contre l’ordinateur</h2><p class="sub">Tu joues côté bleu. L’ordinateur prend une classe au hasard.</p>
+  <div class="diffs">${LV.map((l,i)=>`<button class="diff d${i}" data-act="ai" data-id="${i}"><span class="mi">${piece(g[i],1)}</span><b>${l}</b><small>${d[i]}</small></button>`).join("")}</div>
+  <button class="ghost" data-act="home">Retour</button></div>`);
+}
+function showCampaign(){
+  voice("story_mode");
+  ON.screen="campaign";
+  const done=ACC&&ACC.boss||0;
+  ov(`<div class="sheet"><h2>Campagne des 10 boss</h2><p class="sub">Bats chaque boss pour débloquer le suivant. Progression : ${done}/10.</p>
+  <div class="bosses">${BOSSES.map((b,i)=>{
+    const st=i<done?"won":i===done?"cur":"lock", C=CL[b.cls];
+    const lv=`<span class="lvl" aria-label="${LV[b.lvl]}">${[0,1,2].map(x=>`<i class="${x<=b.lvl?"on":""}">★</i>`).join("")}</span>`;
+    return `<div class="boss ${st}"><span class="bn">${PORT[bossKey(i)]?portrait(bossKey(i),""):i+1}</span><div class="bt"><b>${esc(b.n)}</b><small>${esc(b.t)} · <span class="cl" style="--c:${C.col}">${C.n}</span> ${lv}</small><small>${esc(b.d)}</small></div>
+    ${st==="lock"?`<button class="mini" disabled>Verrouillé</button>`:`<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">${st==="won"?`<span class="won">Vaincu</span>`:""}<button class="mini ${st==="cur"?"primary":""}" data-act="boss" data-id="${i}">${st==="won"?"Rejouer":"Affronter"}</button></div>`}</div>`;
+  }).join("")}</div>
+  <button class="ghost" data-act="home">Retour</button></div>`);
+}
+function recordBoss(i){
+  if(!ACC||i<(ACC.boss||0)) return;
+  ACC.boss=i+1;
+  if(ON.local) return saveLocal();
+  accRef().update({boss:ACC.boss,updatedAt:Date.now()}).catch(()=>toast("Progression non enregistrée, vérifie ta connexion"));
+}
+function startGame(cfg){
+  closeGame(); ON.screen=null; AIBUSY=false; vqClear();
+  GM=Object.assign({mode:"local",ai:1,lvl:1,boss:null,done:false},cfg,{tok:GM.tok+1});
+  if(GM.boss!=null) GM.lvl=BOSSES[GM.boss].lvl;
+  initState(); render(); showSetup();
+}
+function replay(){ if(GM.demo) return demoNyx(); startGame({mode:GM.mode,lvl:GM.lvl,boss:GM.boss}); }
+function goOnline(){ if(ON.ready!==true) return toast("Le jeu en ligne entre amis n’est pas encore disponible sur cette version : joue contre l’ordinateur, la campagne ou à deux sur le même écran"); showHub(); }
+function showHub(){
+  closeGame(); ON.screen="hub"; voice("championship_mode");
+  ov(`<div class="sheet hub"><div class="hubtop"><p class="brand sm">En ligne</p><button class="ghost" data-act="home">Menu</button></div>
+  <p class="sub">Connecté en tant que <b id="myName"></b></p>
+  <h3>Parties</h3><div id="hubGames"></div>
+  <h3>Amis</h3><div class="field"><input id="friendIn" maxlength="16" placeholder="Pseudo de ton ami" autocomplete="off" autocapitalize="off"><button class="primary" data-act="addfriend">Ajouter</button></div>
+  <div id="hubFriends"></div></div>`);
+  fillHub();
+}
+function fillHub(){
+  if(ON.screen!=="hub") return;
+  const nmU=id=>ON.names[id]||"Joueur";
+  const me=$("myName"); if(me) me.textContent=nmU(ON.uid);
+  const Gs=$("hubGames");
+  if(Gs) Gs.innerHTML=ON.games.length?ON.games.map(g=>{
+    const opp=g.blue===ON.uid?g.red:g.blue,side=g.blue===ON.uid?0:1;let st,b;
+    let old=false; try{old=JSON.parse(g.state).n!==N;}catch(e){old=true;}
+    if(old){st="ancienne version (8×8), impossible à ouvrir";b=`<button class="mini" data-act="delgame" data-id="${g.id}">Supprimer</button>`;}
+    else if(g.status==="invite"&&g.red===ON.uid){st="te défie";b=`<button class="mini primary" data-act="accept" data-id="${g.id}">Accepter</button><button class="mini" data-act="delgame" data-id="${g.id}">Refuser</button>`;}
+    else if(g.status==="done"){st=g.winner===ON.uid?"victoire":"défaite";b=`<button class="mini" data-act="open" data-id="${g.id}">Revoir</button><button class="mini" data-act="delgame" data-id="${g.id}">Supprimer</button>`;}
+    else{st=g.status==="invite"?"invitation envoyée, tu peux déjà choisir ta classe":g.toMove===ON.uid?"à toi de jouer":"tour de l’adversaire";
+      b=`<button class="mini primary" data-act="open" data-id="${g.id}">Jouer</button>`+(g.status==="invite"?`<button class="mini" data-act="delgame" data-id="${g.id}">Annuler</button>`:"");}
+    const hot=g.status!=="done"&&(g.toMove===ON.uid||(g.status==="invite"&&g.red===ON.uid));
+    return `<div class="rowi"><span class="dot ${SCLS[side]}"></span><div class="rt"><b>contre ${esc(nmU(opp))}</b><small class="${hot?"hot":""}">${st}</small></div><div class="rb">${b}</div></div>`;
+  }).join(""):`<p class="hint">Aucune partie. Ajoute un ami, puis défie-le.</p>`;
+  const Fs=$("hubFriends");
+  if(Fs) Fs.innerHTML=ON.friends.length?ON.friends.map(f=>{
+    const o=f.members.find(x=>x!==ON.uid);let st="",b;
+    if(f.status==="accepted") b=`<button class="mini primary" data-act="challenge" data-id="${o}">Défier</button><button class="mini" data-act="delfriend" data-id="${f.id}">Retirer</button>`;
+    else if(f.from===ON.uid){st="demande envoyée";b=`<button class="mini" data-act="delfriend" data-id="${f.id}">Annuler</button>`;}
+    else{st="veut t’ajouter en ami";b=`<button class="mini primary" data-act="acceptfriend" data-id="${f.id}">Accepter</button><button class="mini" data-act="delfriend" data-id="${f.id}">Refuser</button>`;}
+    return `<div class="rowi"><div class="rt"><b>${esc(nmU(o))}</b>${st?`<small class="${f.from!==ON.uid&&f.status!=="accepted"?"hot":""}">${st}</small>`:""}</div><div class="rb">${b}</div></div>`;
+  }).join(""):`<p class="hint">Pas encore d’amis. Ton ami doit d’abord ouvrir le jeu et créer son compte.</p>`;
+}
+function dbw(pr,ok){return pr.then(()=>{if(ok)toast(ok);}).catch(e=>toast(e&&e.code==="invalid_argument"?"Accès en écriture refusé":"Action impossible, réessaie"));}
+function addFriend(){
+  const inp=$("friendIn"),v=(inp.value||"").trim().toLowerCase(); if(!v) return;
+  const t=Object.keys(ON.names).find(id=>String(ON.names[id]).toLowerCase()===v);
+  if(!t) return toast("Aucun joueur avec ce pseudo");
+  if(t===ON.uid) return toast("C’est ton propre pseudo");
+  const id=[ON.uid,t].sort().join("__"),ex=ON.friends.find(f=>f.id===id);
+  if(ex){ if(ex.status==="pending"&&ex.from!==ON.uid) return dbw(ON.db.doc("friends/"+id).update({status:"accepted"}),"Ami ajouté"); return toast("Déjà dans ta liste"); }
+  inp.value="";
+  dbw(ON.db.doc("friends/"+id).set({members:[ON.uid,t],from:ON.uid,status:"pending",createdAt:Date.now()}),"Demande envoyée");
+}
+async function challenge(f){
+  const old=S; initState(); const st=JSON.stringify(ser()); S=old; const now=Date.now();
+  try{const ref=await ON.db.collection("games").add({blue:ON.uid,red:f,members:[ON.uid,f],status:"invite",state:st,rev:1,toMove:ON.uid,winner:null,createdAt:now,updatedAt:now});
+    toast("Défi envoyé : tu joues côté bleu"); openGame(ref.id);}
+  catch(e){toast("Impossible de créer la partie");}
+}
+async function acceptGame(id){
+  try{await ON.db.doc("games/"+id).update({status:"active",updatedAt:Date.now()});openGame(id);}catch(e){toast("Action impossible, réessaie");}
+}
+function closeGame(){ if(ON.unsubGame) ON.unsubGame(); ON.unsubGame=null; ON.gameId=null; ON.game=null; }
+function openGame(id){
+  closeGame(); ON.screen=null; hideOv();
+  GM={mode:"online",ai:1,lvl:1,boss:null,done:false,tok:GM.tok+1}; AIBUSY=false;
+  ON.gameId=id; ON.rev=0; ON.lastPushed="";
+  ON.unsubGame=ON.db.doc("games/"+id).onSnapshot(sn=>{
+    if(ON.gameId!==id) return;
+    if(!sn.exists){toast("Cette partie a été supprimée");showHub();return;}
+    const g=sn.data(); ON.game=g; ON.side=g.blue===ON.uid?0:1;
+    if(g.rev>ON.rev){
+      const first=ON.rev===0, wasMine=!first&&myTurn();
+      try{deser(g.state);}catch(e){toast("Cette partie date de l’ancien plateau 8×8");showHub();return;}
+      ON.rev=g.rev; ON.lastPushed=g.state; hideOv();
+      if(S.winner!==null) showWin();
+      else if(S.phase==="setup"&&myTurn()&&(S.step===0||S.step===2)) showSetup();
+      if(!first&&!wasMine&&myTurn()&&S.winner===null){toast("À toi de jouer");sfx("turn");}
+    }
+    render();
+  },()=>toast("Connexion à la partie perdue, rouvre-la depuis le menu"));
+}
+
+/* ---------- bruitages (synthétisés, aucun fichier) ---------- */
+let AC=null, MUTED=false, lastSnd={};
+try{MUTED=localStorage.getItem("rs_mute")==="1";}catch(e){}
+function ac(){
+  if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return null;}}
+  if(AC.state==="suspended") AC.resume().catch(()=>{});
+  return AC;
+}
+function tone(f,dur,type,vol,to,delay=0){
+  const c=AC; if(!c) return;
+  const t=c.currentTime+delay, o=c.createOscillator(), g=c.createGain();
+  o.type=type; o.frequency.setValueAtTime(f,t);
+  if(to) o.frequency.exponentialRampToValueAtTime(to,t+dur);
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g).connect(c.destination); o.start(t); o.stop(t+dur+0.02);
+}
+function noise(dur,vol,freq,delay=0,type="lowpass"){
+  const c=AC; if(!c) return;
+  const t=c.currentTime+delay, len=Math.max(1,Math.floor(c.sampleRate*dur)), buf=c.createBuffer(1,len,c.sampleRate), d=buf.getChannelData(0);
+  for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*(1-i/len);
+  const s=c.createBufferSource(), f=c.createBiquadFilter(), g=c.createGain();
+  s.buffer=buf; f.type=type; f.frequency.value=freq; g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  s.connect(f).connect(g).connect(c.destination); s.start(t);
+}
+const SFX={
+  click:()=>tone(700,.05,"square",.04,500),
+  select:()=>{tone(520,.07,"triangle",.09);tone(780,.08,"triangle",.07,0,.05);},
+  move:()=>{noise(.06,.35,2200);tone(200,.09,"triangle",.14,110);},
+  hit:()=>{noise(.12,.45,900);tone(150,.16,"sawtooth",.13,60);},
+  crit:()=>{noise(.16,.5,1200);tone(160,.18,"sawtooth",.15,55);tone(1100,.22,"square",.07,1700,.04);},
+  mag:()=>{tone(880,.28,"sine",.11,1760);tone(1320,.22,"triangle",.07,660,.05);noise(.18,.08,5000,0,"highpass");},
+  heal:()=>{[523,659,784].forEach((f,i)=>tone(f,.18,"sine",.1,0,i*.07));},
+  info:()=>tone(1250,.1,"triangle",.07,620),
+  kill:()=>{noise(.35,.5,450);tone(240,.38,"sawtooth",.16,50);tone(90,.4,"sine",.2,40,.02);},
+  spell:()=>{tone(380,.32,"sine",.11,1150);noise(.25,.09,4200,0,"highpass");},
+  ult:()=>{[196,247,294,392].forEach((f,i)=>tone(f,.7,"sawtooth",.07,f*1.5,i*.03));noise(.6,.15,3000,0,"highpass");},
+  wall:()=>{noise(.25,.55,280);tone(95,.28,"square",.1,48);},
+  turn:()=>{tone(523,.12,"triangle",.11);tone(784,.2,"triangle",.11,0,.1);},
+  win:()=>{[523,659,784,1047].forEach((f,i)=>tone(f,i===3?.55:.16,"square",.08,0,i*.13));},
+  lose:()=>{[392,330,262,196].forEach((f,i)=>tone(f,.3,"sawtooth",.07,0,i*.2));}
+};
+function sfx(k){
+  if(SIM||MUTED||!SFX[k]) return;
+  if(!ac()) return;
+  const now=performance.now(); if(lastSnd[k]&&now-lastSnd[k]<45) return; lastSnd[k]=now;
+  try{SFX[k]();}catch(e){}
+}
+function setMute(v){MUTED=v;try{localStorage.setItem("rs_mute",v?"1":"0");}catch(e){}muteUI();if(!v){ac();sfx("select");}}
+function muteUI(){document.querySelectorAll("[data-mute]").forEach(b=>{b.textContent=MUTED?"Son coupé":"Son";b.setAttribute("aria-pressed",String(!MUTED));b.classList.toggle("off",MUTED);});}
+/* file d'attente des voix : une réplique ne coupe jamais la précédente */
+let VQ=[], vqBusy=false, vqSafe=null, curVox=null, curSay=null;
+function vqNext(){ vqBusy=false; clearTimeout(vqSafe); setTimeout(vqPump,280); }
+function vqPump(){
+  if(vqBusy) return;
+  let it; while((it=VQ.shift())){ if(performance.now()-it.t<=it.maxWait) break; }
+  if(!it) return;
+  vqBusy=true;
+  if(it.show) try{it.show();}catch(e){}
+  if(MUTED){ vqSafe=setTimeout(vqNext,it.show?1800:0); return; }
+  try{
+    const a=new Audio(it.src); a.volume=.95; curVox=a;
+    a.onended=vqNext; a.onerror=vqNext;
+    a.play().catch(vqNext);
+    vqSafe=setTimeout(vqNext,9000);
+  }catch(e){ vqNext(); }
+}
+function vqClear(){ VQ=[]; try{if(curVox)curVox.pause();}catch(e){} vqBusy=false; clearTimeout(vqSafe); }
+function enqueue(src,show,maxWait){ if(SIM) return; VQ.push({src,show,t:performance.now(),maxWait:maxWait||6000}); vqPump(); }
+function voice(n,delay=0,maxWait=5000){
+  if(SIM) return;
+  if(MUTED) return;
+  const go=()=>enqueue("sons/voix/"+n+".mp3",null,maxWait);
+  delay?setTimeout(go,delay):go();
+}
+/* répliques des champions : fichiers dans sons/voix/<dossier>/<clé>.mp3 */
+const LINES={
+  assassin:{dir:"nyx",
+    select:"Le roi a oublié ses ombres. Moi, je n’oublie rien.",
+    kill1:"Un nom de moins sur ma liste.",
+    kill2:"Ils ne se sont même pas vus tomber.",
+    kill3:"La Guilde serait fière… s’il en restait quelqu’un.",
+    sort:"Je t’ai vu. Maintenant, tout le monde va te voir saigner.",
+    prot:"Pas de sang sur mes vêtements.",
+    glob:"Une lame pour chaque frère pendu.",
+    ult:"Silence. La représentation commence.",
+    lose:"Agamemnon… pardonne-moi. J’ai perdu.",
+    vs:{assassin:"Une copie. La Guilde n’a jamais formé deux fois la même lame.",
+        controle:"Gèle tout ce que tu veux, mage. Les ombres ne gèlent pas.",
+        gardien:"Un mur de plus. J’ai toujours trouvé la faille.",
+        soigneur:"Soigne-les bien. Je repasserai derrière toi.",
+        bastion:"Construis tes murs, nain. Je passerai par-dessus.",
+        vampire:"Toi aussi, tu vis la nuit. Mais moi, je ne laisse pas de traces."}},
+  controle:{dir:"vaelis",
+    select:"L’Académie dort sous la glace. Je suis le seul à pouvoir la réveiller.",
+    kill1:"Une leçon de plus.",
+    kill2:"Erreur. Le froid ne pardonne pas.",
+    kill3:"Maître Solen aurait applaudi… s’il n’avait pas fui.",
+    sort:"Ne bouge plus. Ce n’est pas une demande.",
+    glob:"Le froid se propage. Comme une rumeur.",
+    prot:"Mon esprit est une forteresse de glace.",
+    ult:"Le temps s’arrête. Ici, c’est moi qui décide.",
+    lose:"Pardonnez-moi, maître… la glace a gagné.",
+    vs:{assassin:"Tu frappes dans l’ombre. Moi, je fige l’ombre.",
+        controle:"Un reflet dans la glace. Voyons lequel de nous deux va fondre.",
+        gardien:"Une armure plus épaisse ne fait qu’un plus beau bloc de glace.",
+        soigneur:"Tu réchauffes les cœurs. Je les ralentis.",
+        bastion:"Tes murs gèleront comme le reste, bâtisseur.",
+        vampire:"Le sang gèle aussi, vampire. Plus lentement, c’est tout."}}
+};
+let sayT=null;
+function sayCls(c,o,key,sub,maxWait){
+  const L=LINES[c]; if(SIM||!L) return false;
+  const text=sub?(L[key]||{})[sub]:L[key]; if(!text) return false;
+  const file=sub?key+"_"+sub:key;
+  enqueue(`sons/voix/${L.dir}/${file}.mp3`,()=>bubble(c,o,text),maxWait||(key==="select"||key==="vs"||key==="lose"?15000:key==="ult"?12000:key.startsWith("kill")?4000:8000));
+  return true;
+}
+function bubble(c,o,text){
+  const el=$("say"); el.innerHTML=`<b>${CL[c].champ} :</b> « ${text} »`; el.style.setProperty("--c",CL[c].col);
+  const bottom=(!!ON.gameId&&ON.side===1)?1:0, box=$(o===bottom?"plateBot":"plateTop").getBoundingClientRect();
+  el.style.top=(o===bottom?Math.max(4,box.top-el.offsetHeight-6):box.bottom+6)+"px";
+  el.classList.add("show"); clearTimeout(sayT); sayT=setTimeout(()=>el.classList.remove("show"),4200);
+}
+const say=(o,key,sub)=>o!=null&&S.pl[o]&&S.pl[o].cls?sayCls(S.pl[o].cls,o,key,sub):false;
+let winSndKey=null;
+function winSound(){
+  const key=(ON.gameId||"")+":"+GM.tok; if(winSndKey===key) return; winSndKey=key;
+  const humanWon=ON.gameId?S.winner===ON.side:GM.mode==="ai"?S.winner!==GM.ai:true;
+  sfx(humanWon?"win":"lose");
+  const me=ON.gameId?ON.side:GM.mode==="ai"?1-GM.ai:S.winner;
+  const flawless=alive(me).length===16;
+  setTimeout(()=>say(1-S.winner,"lose"),700);
+  voice(GM.mode==="local"&&!ON.gameId?(flawless?"flawless_victory":"winner"):humanWon?(flawless?"flawless_victory":"you_win"):"you_lose",650);
+}
+
+/* ---------- portraits des personnages ---------- */
+const PORT={}; let ASSETS=null, portDocs={};
+/* portraits livrés avec le jeu (dossier portraits/) : toujours affichés, en local comme en ligne */
+const PORT_DEFAULT={};
+["c_assassin","c_controle","c_gardien","c_soigneur","c_bastion","c_vampire","b_0","b_1","b_2","b_3","b_4","b_5","b_6","b_7","b_8","b_9"].forEach(k=>PORT_DEFAULT[k]="portraits/"+k+".webp");
+Object.assign(PORT,PORT_DEFAULT);
+const canPortrait=()=>!!ASSETS||!!ON.local;
+function loadLocalPortraits(){try{Object.assign(PORT,JSON.parse(localStorage.getItem("rs_portraits")||"{}"));}catch(e){}}
+function saveLocalPortraits(){try{localStorage.setItem("rs_portraits",JSON.stringify(PORT));return true;}catch(e){toast("Image trop lourde pour ce navigateur, essaie une image plus petite");return false;}}
+const clsKey=k=>"c_"+k, bossKey=i=>"b_"+i;
+function portrait(key,fallback){
+  const u=PORT[key];
+  return u?`<img class="por" src="${esc(u)}" alt="">`:fallback;
+}
+function crestFor(o){
+  const c=cls(o); if(!c) return piece("K",o);
+  const b=bossOf(o), fb=piece(CL[c].p,null,"",`--c:${CL[c].col}`,setOf(c));
+  return b&&PORT[bossKey(GM.boss)]?portrait(bossKey(GM.boss),fb):portrait(clsKey(c),fb);
+}
+function shrink(file,max,type){
+  return new Promise((res,rej)=>{
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const r=Math.min(1,max/Math.max(img.width,img.height)), cv=document.createElement("canvas");
+      cv.width=Math.round(img.width*r); cv.height=Math.round(img.height*r);
+      cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height); URL.revokeObjectURL(url);
+      if(type==="data") return res(cv.toDataURL("image/webp",.85));
+      cv.toBlob(b=>b?res(b):rej(new Error("encode")),"image/webp",.88);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("read"));};
+    img.src=url;
+  });
+}
+let picKey=null;
+function pickPortrait(key){ if(!canPortrait()) return toast("Seuls les éditeurs du jeu peuvent ajouter des images"); picKey=key; const i=$("picIn"); i.value=""; i.click(); }
+async function onPortraitFile(file){
+  const key=picKey; if(!file||!key) return;
+  if(!/^image\//.test(file.type)) return toast("Choisis une image (PNG, JPG ou WebP)");
+  try{
+    if(ON.local){
+      PORT[key]=await shrink(file,320,"data");
+      if(saveLocalPortraits()){toast("Portrait ajouté");refreshPortraitViews();}
+      return;
+    }
+    toast("Envoi de l’image…");
+    const blob=await shrink(file,640);
+    const up=await ASSETS.upload(blob,{type:blob.type||"image/png"});
+    const old=portDocs[key];
+    await ON.db.doc("portraits/"+key).set({asset:up.id,updatedAt:Date.now()});
+    if(old&&old!==up.id) ASSETS.delete(old).catch(()=>{});
+    toast("Portrait ajouté");
+  }catch(e){
+    const c=e&&e.code;
+    toast(c==="quota_exceeded"?"Espace de stockage plein":c==="unsupported_type"?"Format d’image non accepté":c==="not_granted"?"Tu n’as pas le droit d’ajouter des images ici":"Envoi impossible, réessaie");
+  }
+}
+async function removePortrait(key){
+  if(ON.local){delete PORT[key];if(PORT_DEFAULT[key])PORT[key]=PORT_DEFAULT[key];saveLocalPortraits();refreshPortraitViews();return toast("Portrait retiré");}
+  const old=portDocs[key];
+  try{await ON.db.doc("portraits/"+key).delete(); if(old&&ASSETS) ASSETS.delete(old).catch(()=>{}); toast("Portrait retiré");}
+  catch(e){toast("Action impossible, réessaie");}
+}
+function watchPortraits(db){
+  db.collection("portraits").onSnapshot(sn=>{
+    Object.keys(PORT).forEach(k=>delete PORT[k]); Object.assign(PORT,PORT_DEFAULT); portDocs={};
+    sn.docs.forEach(d=>{const a=d.data().asset; if(a&&/^[0-9a-f]{32}$/.test(a)){PORT[d.id]="/_blob/"+a;portDocs[d.id]=a;}});
+    refreshPortraitViews();
+  },()=>{});
+}
+function refreshPortraitViews(){ render(); if(ON.screen==="chars") fillChars(); }
+
+let charTab="c";
+function showChars(){ ON.screen="chars"; ov(`<div class="sheet"><div class="hubtop"><h2>Personnages</h2><button class="ghost" data-act="home">Retour</button></div>
+  <div class="tabs" role="tablist"><button class="tab" role="tab" data-act="ctab" data-id="c">Champions</button><button class="tab" role="tab" data-act="ctab" data-id="b">Boss</button></div>
+  <div id="charList" class="chars"></div>
+  <p class="fine">${canPortrait()?"Touche un cadre pour ajouter ou changer le portrait d’un personnage."+(ON.local?" Les images restent sur cet appareil.":" Tous les joueurs verront l’image."):"Seuls les éditeurs du jeu peuvent ajouter des portraits."}</p></div>`); fillChars(); }
+function fillChars(){
+  const L=$("charList"); if(!L) return;
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",String(t.dataset.id===charTab)));
+  const up=canPortrait();
+  const frame=(key,fb,col)=>`<button class="pframe${PORT[key]?" has":""}" style="--c:${col}" data-act="pic" data-id="${key}" ${up?"":"disabled"} aria-label="${PORT[key]?"Changer le portrait":"Ajouter un portrait"}">${portrait(key,fb+(up?`<span class="padd">+ Portrait</span>`:""))}</button>`;
+  const rm=key=>up&&PORT[key]?`<button class="link" data-act="unpic" data-id="${key}">Retirer l’image</button>`:"";
+  if(charTab==="c") L.innerHTML=filterChips()+Object.entries(CL).filter(([k,c])=>clsVisible(c)).map(([k,c])=>`<div class="char" style="--c:${c.col}">${frame(clsKey(k),piece(c.p,null,"","--c:#fff",setOf(k)),c.col)}
+    <div class="ctext"><b>${c.champ}</b><span class="cls">${c.n} · ${mastersLabel(k,c)}</span>
+    ${[["passif","Passif",c.passif],["sort",c.sort[0]+" ("+costOf(k,"sort")+")",c.sort[1]],["glob",c.glob[0]+" ("+costOf(k,"glob")+")",c.glob[1]],["ult","Ultime, "+c.ult[0]+" (4)",c.ult[1]]].map(([kk,l,d])=>`<div class="ab">${icOf(k,kk)?`<span class="abic">${icon(icOf(k,kk))}</span>`:""}<small><b>${l} :</b> ${d}</small></div>`).join("")}${rm(clsKey(k))}</div></div>`).join("");
+  else L.innerHTML=BOSSES.map((b,i)=>{const c=CL[b.cls];return `<div class="char" style="--c:${c.col}">${frame(bossKey(i),`<span class="pnum">${i+1}</span>`,c.col)}
+    <div class="ctext"><b>${esc(b.n)}</b><span class="cls">${esc(b.t)} · ${c.n} · ${LV[b.lvl]}</span><small>${esc(b.d)}</small>${rm(bossKey(i))}</div></div>`;}).join("");
+}
+
+/* ---------- branchements ---------- */
+$("board").addEventListener("click",e=>{const c=e.target.closest(".cell");if(c){onCell(+c.dataset.s);commit();}});
+$("panel").addEventListener("click",e=>{
+  const b=e.target.closest("[data-a]");if(!b||b.disabled)return;
+  if(!myTurn()) return;
+  ({prot:actProt,pass:actPass,sort:actSort,glob:actGlob,ult:actUlt,castle:actCastle,cancel:()=>{S.mode=null;render();}})[b.dataset.a]();
+  commit();
+});
+$("endBtn").addEventListener("click",()=>{if(!myTurn())return;S.mode=null;endTurn();commit();});
+$("menuBtn").addEventListener("click",()=>{ if(AUTH) showHome(); else routeAuth(); });
+$("overlay").addEventListener("click",e=>{
+  const c=e.target.closest("[data-cls]");if(c){pickCls(c.dataset.cls);commit();return;}
+  const a=e.target.closest("[data-act]");if(!a)return;
+  const act=a.dataset.act,id=a.dataset.id;
+  const need=f=>()=>{ if(!AUTH) return routeAuth(); f(); };
+  ({go:()=>{hideOv();render();},close:()=>{ON.screen=null;hideOv();},
+    enter:()=>{AUTH=true;showHome();},profile:()=>showSignup(hasAccount()),
+    home:need(showHome),campaign:need(showCampaign),vsai:need(showVsAI),
+    ai:need(()=>startGame({mode:"ai",lvl:+id})),boss:need(()=>startGame({mode:"ai",boss:+id})),
+    local:need(()=>startGame({mode:"local"})),again:need(replay),
+    online:need(goOnline),hub:need(showHub),chars:need(showChars),ctab:()=>{charTab=id;fillChars();},cfilt:()=>{clsFilter=id; if(ON.screen==="chars") fillChars(); else showSetup(true);},
+    pic:()=>pickPortrait(id),unpic:()=>removePortrait(id),mute:()=>setMute(!MUTED),rules:showRules,
+    addfriend:addFriend,open:()=>openGame(id),accept:()=>acceptGame(id),challenge:()=>challenge(id),
+    delgame:()=>{if(a.dataset.sure){dbw(ON.db.doc("games/"+id).delete());}else{a.dataset.sure="1";a.textContent="Confirmer";}},
+    acceptfriend:()=>dbw(ON.db.doc("friends/"+id).update({status:"accepted"}),"Ami ajouté"),
+    delfriend:()=>dbw(ON.db.doc("friends/"+id).delete())})[act]?.();
+});
+$("overlay").addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="friendIn")addFriend();});
+$("sndBtn").addEventListener("click",()=>setMute(!MUTED));
+$("histBtn").addEventListener("click",showHist);
+$("picIn").addEventListener("change",e=>onPortraitFile(e.target.files&&e.target.files[0]));
+document.addEventListener("pointerdown",()=>{if(!MUTED)ac();},true);
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(b&&!b.classList.contains("cell")&&!b.hasAttribute("data-mute")&&!b.disabled)sfx("click");},true);
+muteUI();
+/* démo à filmer : ouvrir la page avec #demo-nyx */
+function demoNyx(){
+  GM={mode:"ai",ai:1,lvl:0,boss:0,tok:(GM.tok||0)+1,done:true,demo:true}; vqClear();
+  ON.local=true; ON.uid="local"; ON.ready="off"; AUTH=true; loadLocalPortraits();
+  try{const a=JSON.parse(localStorage.getItem("rs_account")||"null"); if(a){ACC=a;ON.names.local=a.pseudo;}}catch(e){}
+  initState(); S.phase="play";
+  const at=(r,c)=>S.board[sq(r,c)];
+  const put=(p,r,c)=>{S.board[p.sq]=null;p.sq=sq(r,c);S.board[p.sq]=p;p.moved=true;};
+  const bury=p=>{p.dead=true;p.hp=0;S.board[p.sq]=null;S.dead.push(p);};
+  S.pl[0].cls="assassin"; S.pl[1].cls="bastion";
+  const kA=at(N-1,2), kB=at(N-1,7); S.pl[0].mids=[kA.id,kB.id];
+  const m1=at(1,3), m2=at(1,6); S.pl[1].mids=[m1.id,m2.id]; [m1,m2].forEach(p=>{p.max=90;p.hp=90;});
+  put(kA,6,4);
+  const pawn=at(1,5); put(pawn,4,5); pawn.hp=25;
+  const bish=at(0,6); put(bish,2,6); bish.hp=40;
+  const king=at(0,5); king.hp=40;
+  bury(at(N-2,1)); bury(at(1,8)); put(at(N-2,6),N-4,6); put(at(1,2),3,2); at(3,2).hp=38;
+  S.pl[0].turns=5; S.pl[1].turns=4; S.cur=0; S.mana=5;
+  S.log=["Démo : Exécution orchestrée de Nyx"]; S.last=[sq(1,2),sq(3,2)];
+  render(); hideOv();
+  setTimeout(()=>toast("Touche le Cavalier de Nyx au centre, puis lance son ultime"),400);
+}
+if(location.hash==="#demo-nyx") demoNyx(); else { initState(); render(); showBoot(); initOnline(); }
+</script>
+
+</body>
+</html>
