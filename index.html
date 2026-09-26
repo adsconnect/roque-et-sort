@@ -1701,7 +1701,7 @@ function showSignup(edit){
     <div class="fl"><label for="suEmail">Adresse e-mail</label><input id="suEmail" type="email" autocomplete="email" inputmode="email" value="${esc(email)}" placeholder="toi@exemple.fr" required></div>
     <div class="fl"><label for="suPseudo">Pseudo</label><input id="suPseudo" maxlength="16" autocomplete="nickname" autocapitalize="off" value="${esc(pseudo)}" placeholder="3 à 16 caractères" required></div>
     <div class="fl"><label for="suAge">Âge</label><input id="suAge" type="number" inputmode="numeric" min="6" max="120" value="${esc(age)}" placeholder="Ton âge" required></div>
-    <p class="fine">Ton e-mail et ton âge restent privés : toi seul peux les voir. Ton pseudo est visible par les autres joueurs, qui te trouvent avec.</p>
+    <p class="fine">${ON.local?"Ton compte est gardé sur cet appareil uniquement : personne d’autre ne voit ton e-mail ni ton âge.":"Ton e-mail et ton âge restent privés : toi seul peux les voir. Ton pseudo est visible par les autres joueurs, qui te trouvent avec."}</p>
     <button class="primary wide" type="submit">${edit?"Enregistrer":"Créer mon compte"}</button>
     ${edit?`<button class="ghost wide" type="button" data-act="home">Retour</button>`:""}
   </form></div>`);
