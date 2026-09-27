@@ -1964,39 +1964,96 @@ async function acceptGame(id){
 }
 function closeGame(){ if(ON.unsubGame) ON.unsubGame(); ON.unsubGame=null; if(ON.gameId==="p2p") p2pClose(); ON.gameId=null; ON.game=null; }
 /* ---------- partie entre amis sans serveur : connexion directe entre les deux appareils (PeerJS) ---------- */
-let P2P={peer:null,conn:null,host:false,code:null};
+let P2P={peer:null,conn:null,host:false,code:null,started:false};
 let JOIN=((location.hash||"").match(/^#ami-([A-Za-z0-9]{5})$/)||[])[1]||null;
-const P2P_PREFIX="roqueetsort-v1-";
-function loadPeer(){return new Promise((res,rej)=>{ if(window.Peer) return res();
-  const s=document.createElement("script"); s.src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"; s.onload=()=>res(); s.onerror=()=>rej(new Error("load")); document.head.appendChild(s);});}
-function p2pClose(){ try{P2P.conn&&P2P.conn.close();}catch(e){} try{P2P.peer&&P2P.peer.destroy();}catch(e){} P2P={peer:null,conn:null,host:false,code:null}; }
+/* transport : relais MQTT public par WebSocket sécurisé (fonctionne derrière n'importe quelle box ou réseau mobile) */
+const BROKERS=["wss://broker.hivemq.com:8884/mqtt","wss://broker.emqx.io:8084/mqtt","wss://test.mosquitto.org:8081/mqtt"];
+function loadMqtt(){return new Promise((res,rej)=>{ if(window.mqtt) return res();
+  const s=document.createElement("script"); s.src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"; s.onload=()=>res(); s.onerror=()=>rej(new Error("load")); document.head.appendChild(s);});}
+function p2pClose(){
+  const P=P2P; P2P={peer:null,conn:null,host:false,code:null,started:false};
+  try{ if(P.conn&&P.conn.open) P.conn.send({t:"bye"}); }catch(e){}
+  try{ if(P.peer) setTimeout(()=>{try{P.peer.end(true);}catch(_){}} ,300); }catch(e){}
+}
 const myName=()=>ON.names[ON.uid]||"Joueur";
+function p2pConnect(code,role){
+  return new Promise((res,rej)=>{
+    const other=role==="h"?"g":"h", base="roqueetsort/v1/"+code+"/"; let i=0;
+    const next=()=>{
+      if(i>=BROKERS.length) return rej({type:"network"});
+      const url=BROKERS[i++]; let done=false;
+      const c=mqtt.connect(url,{clientId:"rs_"+Math.random().toString(16).slice(2,12),connectTimeout:6000,reconnectPeriod:3000,keepalive:20,clean:true,
+        will:{topic:base+other,payload:JSON.stringify({t:"bye"}),qos:1,retain:false}});
+      const fail=()=>{ if(done) return; done=true; try{c.end(true);}catch(e){} next(); };
+      const tm=setTimeout(fail,7000);
+      c.on("error",fail);
+      c.once("connect",()=>{ if(done) return; clearTimeout(tm); done=true; c.removeListener("error",fail);
+        c.subscribe(base+role,{qos:1},err=>{ if(err){ try{c.end(true);}catch(e){} return next(); }
+          res({client:c,conn:{open:true,send:d=>{try{c.publish(base+other,JSON.stringify(d),{qos:1});}catch(e){}}}}); }); });
+    };
+    next();
+  });
+}
+function p2pErr(e){
+  const k=e&&e.type;
+  const msg=k==="notfound"?"Personne n’a répondu à ce code : vérifie-le, ou demande à ton ami de recréer une partie et de garder la page ouverte."
+    :k==="network"?"Impossible de joindre le service de connexion. Vérifie ta connexion internet."
+    :"La connexion avec ton ami a échoué, réessaie.";
+  toast(msg); p2pClose(); if(ON.screen==="p2pwait"||ON.screen==="p2pjoin") showP2P();
+}
+function p2pListen(client,host){
+  client.on("message",(topic,buf)=>{
+    let d; try{ d=JSON.parse(String(buf)); }catch(e){ return; }
+    if(!d||typeof d!=="object") return;
+    if(d.t==="hello"){
+      ON.names[host?"p2p-1":"p2p-0"]=String(d.name||"Ami").slice(0,16);
+      if(host){ P2P.conn.send({t:"hello",name:myName()});
+        if(!P2P.started){ P2P.started=true; p2pStart(); }
+        else P2P.conn.send({t:"state",state:JSON.stringify(ser()),rev:ON.rev}); // l'ami revient : on lui renvoie la partie
+      } else { clearTimeout(P2P.wait); }
+      render(); return;
+    }
+    if(d.t==="bye"){ if(ON.gameId==="p2p"&&S.winner===null) toast("Ton ami s’est déconnecté"); return; }
+    if(d.t==="state"&&!host){
+      clearTimeout(P2P.wait);
+      if(ON.gameId!=="p2p"){ ON.gameId="p2p"; ON.side=1; ON.game={blue:"p2p-0",red:"p2p-1"}; ON.names["p2p-1"]=myName(); ON.rev=0; ON.lastPushed="";
+        GM={mode:"online",ai:1,lvl:1,boss:null,done:false,tok:GM.tok+1}; AIBUSY=false; ON.screen=null; }
+      p2pApply(d.state,d.rev); return;
+    }
+    if(d.t==="state"&&host) p2pApply(d.state,d.rev);
+  });
+  client.on("offline",()=>{ if(ON.gameId==="p2p") toast("Connexion perdue, reconnexion…"); });
+  client.on("reconnect",()=>{});
+  client.on("connect",()=>{ if(P2P.started||ON.gameId==="p2p") P2P.conn.send({t:"hello",name:myName()}); });
+}
+async function p2pHost(){
+  try{ await loadMqtt(); }catch(e){ return toast("Impossible de charger le module de connexion. Vérifie ta connexion internet."); }
+  p2pClose(); const code=genCode(); P2P.code=code; P2P.host=true;
+  ON.screen="p2pjoin"; ov(`<div class="sheet center"><p class="sub">Création de la partie…</p></div>`);
+  try{ const r=await p2pConnect(code,"h"); P2P.peer=r.client; P2P.conn=r.conn; p2pListen(r.client,true); showP2PWait(code); }
+  catch(e){ p2pErr(e); }
+}
+async function p2pJoin(code){
+  code=String(code||"").trim().toUpperCase();
+  if(!/^[A-Z0-9]{5}$/.test(code)) return toast("Le code fait 5 caractères");
+  try{ await loadMqtt(); }catch(e){ return toast("Impossible de charger le module de connexion. Vérifie ta connexion internet."); }
+  p2pClose(); P2P.code=code; P2P.host=false; ON.screen="p2pjoin";
+  ov(`<div class="sheet center"><p class="eyebrow">Connexion</p><p class="sub">Connexion à la partie ${esc(code)}…</p><button class="ghost wide" data-act="p2pcancel">Annuler</button></div>`);
+  try{ const r=await p2pConnect(code,"g"); P2P.peer=r.client; P2P.conn=r.conn; p2pListen(r.client,false);
+    P2P.conn.send({t:"hello",name:myName()});
+    P2P.wait=setTimeout(()=>{ if(ON.gameId!=="p2p") p2pErr({type:"notfound"}); },12000);
+  }catch(e){ p2pErr(e); }
+}
 function genCode(){const A="ABCDEFGHJKMNPQRSTUVWXYZ23456789";let c="";for(let i=0;i<5;i++)c+=A[Math.floor(Math.random()*A.length)];return c;}
 function p2pLink(code){return location.origin+location.pathname+"#ami-"+code;}
 function showP2P(){
   ON.screen="p2p";
   ov(`<div class="sheet"><div class="hubtop"><h2>Jouer avec un ami</h2><button class="ghost" data-act="home">Retour</button></div>
-  <p class="sub">Crée une partie et envoie le lien à ton ami, ou entre le code qu’il t’a donné. Vos deux appareils se connectent directement.</p>
+  <p class="sub">Crée une partie et envoie le lien à ton ami, ou entre le code qu’il t’a donné. La partie passe par un relais en ligne gratuit.</p>
   <button class="primary wide" data-act="p2phost">Créer une partie</button>
   <h3 style="margin:6px 0 0;font-family:var(--disp);font-weight:600">Rejoindre avec un code</h3>
   <div class="field"><input id="p2pCode" maxlength="5" placeholder="Code à 5 caractères" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase"><button class="primary" data-act="p2pjoin">Rejoindre</button></div>
-  <p class="fine">Il faut une connexion internet des deux côtés. Sur certains réseaux (wifi d’entreprise, certaines connexions mobiles), la connexion directe peut échouer : essaie alors un autre réseau.</p></div>`);
-}
-function p2pErr(e){
-  const k=e&&e.type;
-  const msg=k==="peer-unavailable"?"Code introuvable : vérifie le code, ou demande à ton ami de recréer une partie."
-    :k==="network"||k==="server-error"||k==="socket-error"?"Impossible de joindre le service de connexion. Vérifie ta connexion internet."
-    :k==="browser-incompatible"?"Ce navigateur ne permet pas le jeu en ligne. Essaie Chrome, Firefox ou Safari à jour."
-    :"La connexion avec ton ami a échoué, réessaie.";
-  toast(msg); if(ON.screen==="p2pwait"||ON.screen==="p2pjoin") showP2P();
-}
-async function p2pHost(){
-  try{ await loadPeer(); }catch(e){ return toast("Impossible de charger le module de connexion. Vérifie ta connexion internet."); }
-  p2pClose(); const code=genCode(); P2P.code=code; P2P.host=true;
-  P2P.peer=new Peer(P2P_PREFIX+code);
-  P2P.peer.on("open",()=>showP2PWait(code));
-  P2P.peer.on("error",e=>{ if(e.type==="unavailable-id") return p2pHost(); p2pErr(e); });
-  P2P.peer.on("connection",c=>{ if(P2P.conn){ try{c.close();}catch(_){} return; } p2pWire(c,true); });
+  <p class="fine">Il faut une connexion internet des deux côtés, et garder la page ouverte pendant la partie.</p></div>`);
 }
 function showP2PWait(code){
   ON.screen="p2pwait"; const link=p2pLink(code);
@@ -2011,30 +2068,6 @@ async function p2pShare(){
   const link=p2pLink(P2P.code), text=`Viens jouer à Roque & Sort avec moi ! Code : ${P2P.code}`;
   if(navigator.share){ try{ await navigator.share({title:"Roque & Sort",text,url:link}); return; }catch(e){ if(e&&e.name==="AbortError") return; } }
   try{ await navigator.clipboard.writeText(link); toast("Lien copié"); }catch(e){ toast("Copie impossible : note le code "+P2P.code); }
-}
-async function p2pJoin(code){
-  code=String(code||"").trim().toUpperCase();
-  if(!/^[A-Z0-9]{5}$/.test(code)) return toast("Le code fait 5 caractères");
-  try{ await loadPeer(); }catch(e){ return toast("Impossible de charger le module de connexion. Vérifie ta connexion internet."); }
-  p2pClose(); P2P.code=code; P2P.host=false; ON.screen="p2pjoin";
-  ov(`<div class="sheet center"><p class="eyebrow">Connexion</p><p class="sub">Connexion à la partie ${esc(code)}…</p><button class="ghost wide" data-act="p2pcancel">Annuler</button></div>`);
-  P2P.peer=new Peer();
-  P2P.peer.on("open",()=>{ const c=P2P.peer.connect(P2P_PREFIX+code,{reliable:true}); p2pWire(c,false); });
-  P2P.peer.on("error",p2pErr);
-}
-function p2pWire(c,host){
-  P2P.conn=c;
-  c.on("open",()=>{ c.send({t:"hello",name:myName()}); if(host) p2pStart(); else toast("Connecté ! L’hôte choisit sa classe en premier."); });
-  c.on("data",d=>{ if(!d||typeof d!=="object") return;
-    if(d.t==="hello"){ ON.names[host?"p2p-1":"p2p-0"]=String(d.name||"Ami").slice(0,16); render(); }
-    if(d.t==="state"){
-      if(ON.gameId!=="p2p"){ closeGame(); ON.gameId="p2p"; ON.side=1; ON.game={blue:"p2p-0",red:"p2p-1"}; ON.names["p2p-1"]=myName(); ON.rev=0; ON.lastPushed="";
-        GM={mode:"online",ai:1,lvl:1,boss:null,done:false,tok:GM.tok+1}; AIBUSY=false; ON.screen=null; }
-      p2pApply(d.state,d.rev);
-    }
-  });
-  c.on("close",()=>{ if(ON.gameId==="p2p"&&S.winner===null) toast("Ton ami s’est déconnecté"); });
-  c.on("error",p2pErr);
 }
 function p2pStart(){
   ON.gameId="p2p"; ON.side=0; ON.game={blue:"p2p-0",red:"p2p-1"}; ON.names["p2p-0"]=myName(); ON.lastPushed="";
@@ -2322,7 +2355,7 @@ $("overlay").addEventListener("click",e=>{
     home:need(showHome),campaign:need(showCampaign),vsai:need(showVsAI),
     ai:need(()=>startGame({mode:"ai",lvl:+id})),boss:need(()=>startGame({mode:"ai",boss:+id})),
     local:need(()=>startGame({mode:"local"})),again:need(replay),
-    online:need(goOnline),p2phost:need(p2pHost),p2pjoin:need(()=>p2pJoin(($("p2pCode")||{}).value)),p2pshare:p2pShare,p2pcancel:()=>{p2pClose();showP2P();},p2pquit:()=>{closeGame();showHome();},p2prematch:()=>{if(P2P.host&&P2P.conn&&P2P.conn.open)p2pStart();else toast("Seul l’hôte peut relancer une partie");},hub:need(showHub),chars:need(showChars),ctab:()=>{charTab=id;fillChars();},cfilt:()=>{clsFilter=id; if(ON.screen==="chars") fillChars(); else showSetup(true);},
+    online:need(goOnline),p2phost:need(p2pHost),p2pjoin:need(()=>p2pJoin(($("p2pCode")||{}).value)),p2pshare:p2pShare,p2pcancel:()=>{clearTimeout(P2P.wait);p2pClose();showP2P();},p2pquit:()=>{closeGame();showHome();},p2prematch:()=>{if(P2P.host&&P2P.conn&&P2P.conn.open)p2pStart();else toast("Seul l’hôte peut relancer une partie");},hub:need(showHub),chars:need(showChars),ctab:()=>{charTab=id;fillChars();},cfilt:()=>{clsFilter=id; if(ON.screen==="chars") fillChars(); else showSetup(true);},
     pic:()=>pickPortrait(id),unpic:()=>removePortrait(id),mute:()=>setMute(!MUTED),rules:showRules,
     addfriend:addFriend,open:()=>openGame(id),accept:()=>acceptGame(id),challenge:()=>challenge(id),
     delgame:()=>{if(a.dataset.sure){dbw(ON.db.doc("games/"+id).delete());}else{a.dataset.sure="1";a.textContent="Confirmer";}},
